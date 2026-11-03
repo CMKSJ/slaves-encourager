@@ -1,0 +1,25 @@
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <AssemblyName>SlavesEncourager</AssemblyName>
+    <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
+    <OutputPath>..\..\dist\</OutputPath>
+    <WarningLevel>4</WarningLevel>
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    <ApplicationManifest>app.manifest</ApplicationManifest>
+    <StartupObject>SlavesEncourager.Program</StartupObject>
+    <ApplicationIcon>..\..\assets\app.ico</ApplicationIcon>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System"/><Reference Include="System.Core"/><Reference Include="System.Xaml"/>
+    <Reference Include="System.Runtime.Serialization"/><Reference Include="System.Xml"/>
+    <Reference Include="WindowsBase"/><Reference Include="PresentationCore"/><Reference Include="PresentationFramework"/>
+    <Reference Include="System.Windows.Forms"/><Reference Include="System.Drawing"/>
+    <Compile Include="Engine.cs"/><Compile Include="FlipDisplay.cs"/><Compile Include="EditorControls.cs"/><Compile Include="HomeTextEditor.cs"/><Compile Include="Program.cs"/><Compile Include="Localization.cs"/><Compile Include="AssemblyInfo.cs"/>
+    <EmbeddedResource Include="Main.xaml"><LogicalName>Main.xaml</LogicalName></EmbeddedResource>
+    <EmbeddedResource Include="Settings.xaml"><LogicalName>Settings.xaml</LogicalName></EmbeddedResource>
+    <EmbeddedResource Include="..\..\assets\app.png"><LogicalName>AppIcon.png</LogicalName></EmbeddedResource>
+    <EmbeddedResource Include="..\..\locales\catalog.tsv"><LogicalName>Locales.tsv</LogicalName></EmbeddedResource>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets"/>
+</Project>

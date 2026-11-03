@@ -1,0 +1,6 @@
+# 官方 Windows .NET Framework SDK / Official Windows .NET Framework SDK.
+FROM mcr.microsoft.com/dotnet/framework/sdk:4.8-windowsservercore-ltsc2022
+WORKDIR C:/src
+COPY . .
+RUN powershell -NoProfile -File scripts/build.ps1 -Native
+CMD ["cmd", "/c", "dir", "C:\\src\\dist"]

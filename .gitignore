@@ -1,0 +1,15 @@
+dist/
+.build/
+bin/
+obj/
+__pycache__/
+*.pyc
+*.user
+*.suo
+*.pdb
+*.zip
+settings.json
+*.bak
+*.tmp
+.vs/
+Thumbs.db
