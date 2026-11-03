@@ -42,8 +42,10 @@ def validate():
         for target in re.findall(r'\]\(([^)#]+)(?:#[^)]*)?\)', text):
             if "://" not in target and not target.startswith("mailto:"):
                 assert (readme.parent / target).exists(), f"Broken link: {readme.name} -> {target}"
-        for target in re.findall(r'<img[^>]+src="([^"]+)"', text):
-            assert (readme.parent / target).exists(), f"Missing screenshot: {target}"
+        for target in re.findall(r'<(?:img|a)[^>]+(?:src|href)="([^"]+)"', text):
+            # 网络徽章保留远程地址，仅核对本地资源 / Keep remote badges external and check local resources.
+            if "://" not in target and not target.startswith("#"):
+                assert (readme.parent / target).exists(), f"Missing local resource: {target}"
     license_text = (ROOT / "LICENSE").read_text(encoding="utf-8")
     assert "MIT License" in license_text and "Permission is hereby granted" in license_text
     summary = {"languages": LANGUAGES, "translation_keys": len(keys), "referenced_keys": len(referenced), "xml": "PASS", "translation_tokens": "PASS", "icon_sizes": icon_sizes, "readme_links": "PASS", "license": "MIT"}

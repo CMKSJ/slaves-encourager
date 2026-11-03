@@ -1,10 +1,21 @@
+<p align="center"><img src="assets/app.png" width="96" alt="Slaves Encourager"></p>
+
 # 직장인 응원 / Slaves Encourager
+
+<p align="center">
+  <a href="https://github.com/thisemailrectrash-cpu/slaves-encourager/actions/workflows/windows.yml"><img src="https://github.com/thisemailrectrash-cpu/slaves-encourager/actions/workflows/windows.yml/badge.svg?branch=main" alt="CI"></a>
+  <a href="LICENSE"><img src="https://img.shields.io/badge/code-MIT-blue" alt="Code: MIT"></a>
+  <a href="https://github.com/thisemailrectrash-cpu/slaves-encourager/releases/latest"><img src="https://img.shields.io/github/v/release/thisemailrectrash-cpu/slaves-encourager?label=release" alt="Latest release"></a>
+</p>
+
+<p align="center"><a href="README.md">简体中文</a> · <a href="README.zh-Hant.md">繁體中文</a> · <a href="README.en.md">English</a> · <a href="README.ja.md">日本語</a> · <a href="README.es.md">Español</a> · <strong>한국어</strong></p>
+
+<p align="center"><a href="https://github.com/thisemailrectrash-cpu/slaves-encourager/releases/latest"><strong>Windows 버전 다운로드</strong></a></p>
 
 고정된 홈 문구를 두 번 클릭하거나 버튼을 우클릭해 편집하세요 (`Ctrl+E`). 저장·취소·개별 문구 또는 현재 언어 복원을 지원하며 언어별로 저장됩니다. [설명](docs/HOME_TEXT.md).
 
 열심히 보낸 시간을 작은 보상으로 바꿔 보세요. Windows용 수입 시계, 퇴근 카운트다운, 근무 달력과 목표 목록입니다.
 
-[简体中文](README.md) · [繁體中文](README.zh-Hant.md) · [English](README.en.md) · [日本語](README.ja.md) · [Español](README.es.md) · **한국어**
 
 <img src="docs/screenshots/ko-main.png" width="380" alt="한국어 화면">
 

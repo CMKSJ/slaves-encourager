@@ -20,7 +20,8 @@ Verified locally on **2026-11-04** for version **1.3.1**.
 | README links and screenshots | PASS |
 | Source archive scope | PASS: no settings, private machine paths, binaries, backups or old packages |
 | ZIP contents and CRC | PASS; packaged bytes matched source files |
-| GitHub repository / remote CI / Release | Check the repository and Actions links in the publishing guide for remote status |
+| Public repository and first remote Windows CI | PASS: initial commit `f1bf4a5`, [run 41684486237](https://github.com/thisemailrectrash-cpu/slaves-encourager/actions/runs/41684486237); later results shown by the live badge |
+| Release assets | Verify the published Release and its SHA256SUMS.txt |
 
 The visible preview uses an isolated developer configuration rather than the normal user settings file. It may remain open for the user to inspect. Developer logs and such configurations are excluded from both source and portable packages.
 

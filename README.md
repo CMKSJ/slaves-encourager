@@ -1,12 +1,21 @@
-<p align="center"><img src="assets/app.png" width="112" alt="牛马鼓励器图标"></p>
+<p align="center"><img src="assets/app.png" width="96" alt="Slaves Encourager"></p>
 
 # 牛马鼓励器 / Slaves Encourager
+
+<p align="center">
+  <a href="https://github.com/thisemailrectrash-cpu/slaves-encourager/actions/workflows/windows.yml"><img src="https://github.com/thisemailrectrash-cpu/slaves-encourager/actions/workflows/windows.yml/badge.svg?branch=main" alt="CI"></a>
+  <a href="LICENSE"><img src="https://img.shields.io/badge/code-MIT-blue" alt="Code: MIT"></a>
+  <a href="https://github.com/thisemailrectrash-cpu/slaves-encourager/releases/latest"><img src="https://img.shields.io/github/v/release/thisemailrectrash-cpu/slaves-encourager?label=release" alt="Latest release"></a>
+</p>
+
+<p align="center"><strong>简体中文</strong> · <a href="README.zh-Hant.md">繁體中文</a> · <a href="README.en.md">English</a> · <a href="README.ja.md">日本語</a> · <a href="README.es.md">Español</a> · <a href="README.ko.md">한국어</a></p>
+
+<p align="center"><a href="https://github.com/thisemailrectrash-cpu/slaves-encourager/releases/latest"><strong>下载 Windows 便携版</strong></a></p>
 
 主页固定文字支持直接修改：双击文字，或右键按钮选择「编辑主页文字」（`Ctrl+E`）。支持保存、取消、恢复单项和恢复当前语言，修改按语言独立保存。详见[文字编辑说明](docs/HOME_TEXT.md)。
 
 把工作时间变成看得见的小奖励。一个支持翻页数字、收入估算、下班倒计时、排班日历和多个目标的 Windows 桌面悬窗。
 
-**简体中文** · [繁體中文](README.zh-Hant.md) · [English](README.en.md) · [日本語](README.ja.md) · [Español](README.es.md) · [한국어](README.ko.md)
 
 <img src="docs/screenshots/zh-Hans-main.png" width="370" alt="雾蓝暖杏主题的主窗口"> <img src="docs/screenshots/en-main.png" width="370" alt="English interface">
 

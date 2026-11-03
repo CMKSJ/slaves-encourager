@@ -1,10 +1,21 @@
+<p align="center"><img src="assets/app.png" width="96" alt="Slaves Encourager"></p>
+
 # おしごと応援 / Slaves Encourager
+
+<p align="center">
+  <a href="https://github.com/thisemailrectrash-cpu/slaves-encourager/actions/workflows/windows.yml"><img src="https://github.com/thisemailrectrash-cpu/slaves-encourager/actions/workflows/windows.yml/badge.svg?branch=main" alt="CI"></a>
+  <a href="LICENSE"><img src="https://img.shields.io/badge/code-MIT-blue" alt="Code: MIT"></a>
+  <a href="https://github.com/thisemailrectrash-cpu/slaves-encourager/releases/latest"><img src="https://img.shields.io/github/v/release/thisemailrectrash-cpu/slaves-encourager?label=release" alt="Latest release"></a>
+</p>
+
+<p align="center"><a href="README.md">简体中文</a> · <a href="README.zh-Hant.md">繁體中文</a> · <a href="README.en.md">English</a> · <strong>日本語</strong> · <a href="README.es.md">Español</a> · <a href="README.ko.md">한국어</a></p>
+
+<p align="center"><a href="https://github.com/thisemailrectrash-cpu/slaves-encourager/releases/latest"><strong>Windows版をダウンロード</strong></a></p>
 
 ホームの固定文字をダブルクリック、またはボタンを右クリックして編集できます（`Ctrl+E`）。保存・キャンセル・項目や現在の言語のリセットに対応。変更は言語ごとに保存されます。[説明](docs/HOME_TEXT.md)。
 
 がんばる時間を、見えるごほうびに。Windows用の収入時計、退勤カウントダウン、勤務カレンダー、目標リストです。
 
-[简体中文](README.md) · [繁體中文](README.zh-Hant.md) · [English](README.en.md) · **日本語** · [Español](README.es.md) · [한국어](README.ko.md)
 
 <img src="docs/screenshots/ja-main.png" width="380" alt="日本語の画面">
 

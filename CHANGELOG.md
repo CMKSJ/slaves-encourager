@@ -2,6 +2,8 @@
 
 ## 1.3.1 — 2026-11-04
 
+- Centered live CI, MIT and release badges; six-language README navigation and localized download links.
+
 - Directly edit fixed home captions and button text; per-language persistence, cancel, reset and numeric-placeholder protection.
 - Rename the English product, executable, project and release packages to Slaves Encourager.
 - Preserve all six languages, the blue icon and existing settings compatibility.

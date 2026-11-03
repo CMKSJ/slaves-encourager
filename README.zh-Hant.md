@@ -1,10 +1,21 @@
+<p align="center"><img src="assets/app.png" width="96" alt="Slaves Encourager"></p>
+
 # 牛馬鼓勵器
+
+<p align="center">
+  <a href="https://github.com/thisemailrectrash-cpu/slaves-encourager/actions/workflows/windows.yml"><img src="https://github.com/thisemailrectrash-cpu/slaves-encourager/actions/workflows/windows.yml/badge.svg?branch=main" alt="CI"></a>
+  <a href="LICENSE"><img src="https://img.shields.io/badge/code-MIT-blue" alt="Code: MIT"></a>
+  <a href="https://github.com/thisemailrectrash-cpu/slaves-encourager/releases/latest"><img src="https://img.shields.io/github/v/release/thisemailrectrash-cpu/slaves-encourager?label=release" alt="Latest release"></a>
+</p>
+
+<p align="center"><a href="README.md">简体中文</a> · <strong>繁體中文</strong> · <a href="README.en.md">English</a> · <a href="README.ja.md">日本語</a> · <a href="README.es.md">Español</a> · <a href="README.ko.md">한국어</a></p>
+
+<p align="center"><a href="https://github.com/thisemailrectrash-cpu/slaves-encourager/releases/latest"><strong>下載 Windows 便攜版</strong></a></p>
 
 主頁固定文字可直接修改：按兩下文字，或以右鍵點按鈕選擇「編輯主頁文字」（`Ctrl+E`）。支援儲存、取消、還原單項與目前語言，各語言分別保存。詳見[文字編輯說明](docs/HOME_TEXT.md)。
 
 把工作時間變成看得見的小獎勵。支援翻頁數字、收入估算、下班倒數、排班日曆與多個目標的 Windows 桌面工具。
 
-[简体中文](README.md) · **繁體中文** · [English](README.en.md) · [日本語](README.ja.md) · [Español](README.es.md) · [한국어](README.ko.md)
 
 <img src="docs/screenshots/zh-Hant-main.png" width="380" alt="繁體中文介面">
 
