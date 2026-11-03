@@ -112,10 +112,11 @@ namespace SlavesEncourager
         }
         readonly List<GoalRow> rows = new List<GoalRow>();
         readonly Action changed;
+        readonly string prefix;
         public int Count { get { return rows.Count; } }
-        public GoalListEditor(IEnumerable<RewardGoal> goals, Action onChange)
+        public GoalListEditor(IEnumerable<RewardGoal> goals, Action onChange, string labelPrefix = "goal")
         {
-            changed = onChange;
+            changed = onChange; prefix = labelPrefix;
             foreach (RewardGoal goal in goals) Add(goal);
             Reorder();
         }
@@ -129,20 +130,20 @@ namespace SlavesEncourager
             row.Number = new TextBlock { FontSize = 10, VerticalAlignment = VerticalAlignment.Center };
             row.Number.SetResourceReference(TextBlock.ForegroundProperty, "Muted"); header.Children.Add(row.Number);
             var actions = new StackPanel { Orientation = Orientation.Horizontal, HorizontalAlignment = HorizontalAlignment.Right };
-            row.Up = RowButton("↑", "goal.moveUp", delegate { Move(row, -1); });
-            row.Down = RowButton("↓", "goal.moveDown", delegate { Move(row, 1); });
+            row.Up = RowButton("↑", prefix + ".moveUp", delegate { Move(row, -1); });
+            row.Down = RowButton("↓", prefix + ".moveDown", delegate { Move(row, 1); });
             actions.Children.Add(row.Up); actions.Children.Add(row.Down);
-            actions.Children.Add(RowButton("goal.remove", "goal.removeTip", delegate { rows.Remove(row); Reorder(); }));
+            actions.Children.Add(RowButton(prefix + ".remove", prefix + ".removeTip", delegate { rows.Remove(row); Reorder(); }));
             header.Children.Add(actions); body.Children.Add(header);
             var fields = new Grid { Margin = new Thickness(0, 5, 0, 0) };
             fields.ColumnDefinitions.Add(new ColumnDefinition()); fields.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(12) });
             fields.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(125) });
             row.Name = new TextBox { Text = goal.Name, MaxLength = 28, Margin = new Thickness(0, 5, 0, 0) };
             row.Amount = new TextBox { Text = goal.Amount.ToString(CultureInfo.InvariantCulture), MaxLength = 16, Margin = new Thickness(0, 5, 0, 0) };
-            row.Name.SetResourceReference(AutomationProperties.NameProperty, "goal.name"); row.Amount.SetResourceReference(AutomationProperties.NameProperty, "goal.amount");
+            row.Name.SetResourceReference(AutomationProperties.NameProperty, prefix + ".name"); row.Amount.SetResourceReference(AutomationProperties.NameProperty, prefix + ".amount");
             row.Name.TextChanged += delegate { Notify(); }; row.Amount.TextChanged += delegate { Notify(); };
-            var nameLabel = new TextBlock { FontSize = 10 }; nameLabel.SetResourceReference(TextBlock.TextProperty, "goal.name");
-            var amountLabel = new TextBlock { FontSize = 10 }; amountLabel.SetResourceReference(TextBlock.TextProperty, "goal.amountShort");
+            var nameLabel = new TextBlock { FontSize = 10 }; nameLabel.SetResourceReference(TextBlock.TextProperty, prefix + ".name");
+            var amountLabel = new TextBlock { FontSize = 10 }; amountLabel.SetResourceReference(TextBlock.TextProperty, prefix + ".amountShort");
             var names = new StackPanel(); names.Children.Add(nameLabel); names.Children.Add(row.Name);
             var amounts = new StackPanel(); amounts.Children.Add(amountLabel); amounts.Children.Add(row.Amount);
             fields.Children.Add(names); Grid.SetColumn(amounts, 2); fields.Children.Add(amounts); body.Children.Add(fields);
@@ -169,14 +170,14 @@ namespace SlavesEncourager
             Children.Clear();
             for (int i = 0; i < rows.Count; i++)
             {
-                rows[i].Number.Text = L.T("goal.number", i + 1);
+                rows[i].Number.Text = L.T(prefix + ".number", i + 1);
                 rows[i].Up.IsEnabled = i > 0; rows[i].Down.IsEnabled = i < rows.Count - 1;
                 Children.Add(rows[i].Card);
             }
             if (rows.Count == 0)
             {
                 var empty = new TextBlock { TextWrapping = TextWrapping.Wrap, Margin = new Thickness(0, 12, 0, 20) };
-                empty.SetResourceReference(TextBlock.TextProperty, "goal.emptyEditor");
+                empty.SetResourceReference(TextBlock.TextProperty, prefix + ".emptyEditor");
                 empty.SetResourceReference(TextBlock.ForegroundProperty, "Muted"); Children.Add(empty);
             }
             Notify();
@@ -188,14 +189,14 @@ namespace SlavesEncourager
             {
                 decimal amount;
                 if (!decimal.TryParse(rows[i].Amount.Text.Trim(), NumberStyles.AllowDecimalPoint, CultureInfo.InvariantCulture, out amount))
-                    throw new ArgumentException(L.T("validation.goalNumber", i + 1));
+                    throw new ArgumentException(L.T(prefix == "goal" ? "validation.goalNumber" : "validation.expenseNumber", i + 1));
                 result.Add(new RewardGoal(rows[i].Name.Text.Trim(), amount));
             }
             return result;
         }
         public void RefreshLanguage()
         {
-            for (int i = 0; i < rows.Count; i++) rows[i].Number.Text = L.T("goal.number", i + 1);
+            for (int i = 0; i < rows.Count; i++) rows[i].Number.Text = L.T(prefix + ".number", i + 1);
         }
     }
 }

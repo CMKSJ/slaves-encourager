@@ -119,6 +119,8 @@ namespace SlavesEncourager
                 theme == "forest" ? new[] { "#242337", "#302D46", "#3C3755", "#504969", "#F5F0FC", "#B7ACC9", "#D5BDEB", "#302441", "#45405C", "#3A354F" } :
                 new[] { "#F1F4FA", "#FFFFFF", "#E7EDF8", "#D6DFEE", "#27364D", "#74839A", "#526FA8", "#FFFFFF", "#DEE7F4", "#D2DFF0" };
             for (int i = 0; i < names.Length; i++) resources[names[i]] = new SolidColorBrush((Color)ColorConverter.ConvertFromString(colors[i]));
+            resources["ExpenseRed"] = new SolidColorBrush((Color)ColorConverter.ConvertFromString(theme == "forest" ? "#F298AA" : "#BD465D"));
+            resources["ExpenseTrack"] = new SolidColorBrush((Color)ColorConverter.ConvertFromString(theme == "forest" ? "#533747" : "#F1DEE4"));
         }
     }
 
@@ -131,6 +133,7 @@ namespace SlavesEncourager
         readonly FlipDisplay display = new FlipDisplay();
         readonly DispatcherTimer timer = new DispatcherTimer();
         Forms.NotifyIcon tray;
+        ExpenseWindow expenseWindow;
         bool demo, privacy, mini;
         int selectedGoal = -1;
         readonly Stopwatch demoWatch = Stopwatch.StartNew();
@@ -195,6 +198,7 @@ namespace SlavesEncourager
             Find<Button>("PrivacyButton").Click += delegate { privacy = !privacy; display.Reset(); Refresh(false); };
             Find<Button>("DemoButton").Click += delegate { demo = !demo; display.Reset(); Refresh(false); };
             Find<Button>("SettingsButton").Click += delegate { OpenSettings(); };
+            Find<Button>("ExpensesButton").Click += delegate { OpenExpenses(); };
             Find<Button>("PreviousGoalButton").Click += delegate { ChangeGoal(-1); };
             Find<Button>("NextGoalButton").Click += delegate { ChangeGoal(1); };
             Window.PreviewKeyDown += delegate(object sender, KeyEventArgs e)
@@ -307,6 +311,7 @@ namespace SlavesEncourager
             Find<ProgressBar>("WorkProgress").Value = data.Progress * 100;
             Text("HourlyText", privacy ? "••••" : Engine.Money(data.Hourly, settings));
             Text("MonthText", privacy ? "••••" : Engine.Money(data.Month, settings));
+            Find<TextBlock>("MonthText").ToolTip = L.T("income.period", data.PeriodStart.ToString("yyyy-MM-dd"), data.PeriodEnd.AddDays(-1).ToString("yyyy-MM-dd"));
             List<GoalProgress> goals = Engine.Goals(data.Month, settings);
             int goalIndex = GoalIndex(goals);
             GoalProgress goal = goals.Count == 0 ? null : goals[goalIndex];
@@ -333,6 +338,13 @@ namespace SlavesEncourager
             Find<Button>("MiniButton").SetResourceReference(Button.ForegroundProperty, mini ? "AccentInk" : "Ink");
             Caption("PinButton", Window.Topmost ? "main.pinned" : "main.pin");
             Caption("SettingsButton", settings.Configured ? "settings.open" : "main.firstUse");
+            Caption("ExpensesButton", "main.expenses");
+            Find<Button>("ExpensesButton").Visibility = settings.ExpensesEnabled ? Visibility.Visible : Visibility.Collapsed;
+            if (expenseWindow != null)
+            {
+                if (!settings.ExpensesEnabled) expenseWindow.Window.Close();
+                else expenseWindow.Update(settings, data.Month, privacy, demo, animate);
+            }
         }
 
         int GoalIndex(List<GoalProgress> goals)
@@ -352,9 +364,23 @@ namespace SlavesEncourager
             Refresh(false);
         }
 
-        void OpenSettings()
+        void OpenExpenses()
+        {
+            if (!settings.ExpensesEnabled) return;
+            if (expenseWindow == null)
+            {
+                var opened = new ExpenseWindow(Window, delegate { OpenSettings(4); });
+                expenseWindow = opened;
+                opened.Window.Closed += delegate { if (expenseWindow == opened) expenseWindow = null; };
+                Refresh(false); opened.Window.Show();
+            }
+            expenseWindow.Window.Activate();
+        }
+
+        void OpenSettings(int tab = -1)
         {
             var editor = new SettingsEditor(settings, Window);
+            if (tab >= 0) ((TabControl)editor.Window.FindName("SettingsTabs")).SelectedIndex = tab;
             editor.LanguageChanged += delegate(string choice) { ApplyLanguage(choice); };
             if (editor.Show() != true) { ApplyLanguage(settings.Language); return; }
             Settings candidate = editor.Result;
@@ -381,6 +407,8 @@ namespace SlavesEncourager
         public void Preview(string directory)
         {
             timer.Stop();
+            if (Find<Button>("ExpensesButton").Visibility != Visibility.Collapsed) throw new InvalidOperationException("Expenses must default to hidden");
+            VerifySetupConfirmation();
             settings.Goals = new List<RewardGoal> { new RewardGoal(L.T("sample.coffee"), 150m), new RewardGoal(L.T("goal.default"), 3000m), new RewardGoal(L.T("sample.headphones"), 1600m) };
             foreach (var theme in new[] { "midnight", "forest", "paper" })
             {
@@ -394,6 +422,7 @@ namespace SlavesEncourager
             editor.Window.Show(); ((TabControl)editor.Window.FindName("SettingsTabs")).SelectedIndex = 0; editor.RefreshPreview(false);
             Program.Render(editor.Window, Path.Combine(directory, "preview-settings.png")); editor.Window.Close();
             var scheduleEditor = new SettingsEditor(settings, Window);
+            if (((TabItem)scheduleEditor.Window.FindName("ExpensesTab")).Visibility != Visibility.Collapsed) throw new InvalidOperationException("Expenses tab must default to hidden");
             scheduleEditor.Window.Show(); ((TabControl)scheduleEditor.Window.FindName("SettingsTabs")).SelectedIndex = 1;
             Program.Render(scheduleEditor.Window, Path.Combine(directory, "preview-schedule.png")); scheduleEditor.Window.Close();
             var calendarEditor = new SettingsEditor(settings, Window);
@@ -402,6 +431,28 @@ namespace SlavesEncourager
             var goalEditor = new SettingsEditor(settings, Window);
             goalEditor.Window.Show(); ((TabControl)goalEditor.Window.FindName("SettingsTabs")).SelectedIndex = 3;
             Program.Render(goalEditor.Window, Path.Combine(directory, "preview-goal.png")); goalEditor.Window.Close();
+            Settings beforeExpenses = settings.Copy();
+            settings.ExpensesEnabled = true; settings.SettlementDay = 15;
+            settings.Expenses = settings.ExpenseItems;
+            Refresh(false); Program.Render(Window, Path.Combine(directory, "preview-with-expenses.png"));
+            var expenseEditor = new SettingsEditor(settings, Window);
+            expenseEditor.Window.Show();
+            var enabledBox = (CheckBox)expenseEditor.Window.FindName("ExpensesEnabledBox");
+            enabledBox.IsChecked = false;
+            if (((TabItem)expenseEditor.Window.FindName("ExpensesTab")).Visibility != Visibility.Collapsed) throw new InvalidOperationException("Expenses tab must hide when disabled");
+            enabledBox.IsChecked = true;
+            if (((TabItem)expenseEditor.Window.FindName("ExpensesTab")).Visibility != Visibility.Visible) throw new InvalidOperationException("Expenses tab must show when enabled");
+            ((TabControl)expenseEditor.Window.FindName("SettingsTabs")).SelectedIndex = 4;
+            Program.Render(expenseEditor.Window, Path.Combine(directory, "preview-expense-settings.png")); expenseEditor.Window.Close();
+            var expensesPreview = new ExpenseWindow(Window, null); expensesPreview.Window.Show();
+            expensesPreview.Update(settings, 3750m, false, true, false); Program.Render(expensesPreview.Window, Path.Combine(directory, "preview-expenses.png"));
+            expensesPreview.Update(settings, 8000m, false, true, false); Program.Render(expensesPreview.Window, Path.Combine(directory, "preview-expenses-covered.png"));
+            expensesPreview.Update(settings, 3750m, true, true, false); Program.Render(expensesPreview.Window, Path.Combine(directory, "preview-expenses-private.png"));
+            var emptyExpenses = settings.Copy(); emptyExpenses.Expenses = new List<RewardGoal>();
+            expensesPreview.Update(emptyExpenses, 3750m, false, true, false); Program.Render(expensesPreview.Window, Path.Combine(directory, "preview-expenses-empty.png")); expensesPreview.Window.Close();
+            var openingPreview = new IncomeConfirmation(settings, Window, demoStart);
+            openingPreview.Window.Show(); Program.Render(openingPreview.Window, Path.Combine(directory, "preview-income-confirmation.png")); openingPreview.Window.Close();
+            settings = beforeExpenses; Refresh(false);
             var copyEditor = new HomeTextEditor(settings, Window, "main.headline");
             copyEditor.Window.Show(); Program.Render(copyEditor.Window, Path.Combine(directory, "preview-copy-editor.png")); copyEditor.Window.Close();
             Settings originalCopy = settings.Copy();
@@ -427,8 +478,37 @@ namespace SlavesEncourager
             };
             animationTimer.Start(); Dispatcher.PushFrame(frame);
             if (failure != null) throw failure;
-            var report = "XAML load + all theme layouts + mini + privacy + settings rendering PASS\n";
+            var report = "XAML + themes + mini/privacy + expense opt-in + setup confirmation/edit/cancel + all settings rendering PASS\n";
             File.WriteAllText(Path.Combine(directory, "render-result.txt"), report, new UTF8Encoding(false));
+        }
+
+        void VerifySetupConfirmation()
+        {
+            // 使用示例副本走真实模态保存流程，不读写用户文件 / Exercise modal save with sample drafts; never read or write user files.
+            foreach (bool cancel in new[] { true, false })
+            {
+                var initial = new Settings();
+                var editor = new SettingsEditor(initial, Window);
+                ((CheckBox)editor.Window.FindName("ExpensesEnabledBox")).IsChecked = true;
+                ((ComboBox)editor.Window.FindName("SettlementBox")).SelectedIndex = 14;
+                editor.Window.Dispatcher.BeginInvoke(DispatcherPriority.ApplicationIdle, new Action(delegate
+                {
+                    editor.Window.Dispatcher.BeginInvoke(DispatcherPriority.ApplicationIdle, new Action(delegate
+                    {
+                        Window confirmation = Application.Current.Windows.Cast<Window>().Single(w => w.Owner == editor.Window && w.Title == L.T("income.title"));
+                        var panel = (StackPanel)confirmation.Content;
+                        panel.Children.OfType<TextBox>().Single().Text = "123.45";
+                        var buttons = panel.Children.OfType<WrapPanel>().Single().Children.OfType<Button>();
+                        buttons.Single(b => (string)b.Content == L.T(cancel ? "action.cancel" : "income.confirm")).RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
+                        if (cancel) editor.Window.Close();
+                    }));
+                    ((Button)editor.Window.FindName("SaveButton")).RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
+                }));
+                bool? saved = editor.Show();
+                if (cancel ? saved == true || editor.Result != null : saved != true || editor.Result.OpeningIncome != 123.45m || editor.Result.CycleDay != 15 || !editor.Result.ExpensesEnabled)
+                    throw new InvalidOperationException("Setup confirmation/cancel failed");
+                if (initial.OpeningIncome != null || initial.ExpensesEnabled || initial.CycleDay != 1) throw new InvalidOperationException("Setup mutated original settings");
+            }
         }
     }
 
@@ -440,8 +520,8 @@ namespace SlavesEncourager
         readonly FlipDisplay preview = new FlipDisplay();
         readonly DispatcherTimer timer = new DispatcherTimer();
         readonly ScheduleCalendar calendar;
-        readonly GoalListEditor goals;
-        bool ready;
+        readonly GoalListEditor goals, expenses;
+        bool ready, confirmIncome;
         int ticks;
         string validationError = "";
         public event Action<string> LanguageChanged;
@@ -467,6 +547,12 @@ namespace SlavesEncourager
             Find<Grid>("PreviewHost").Children.Add(preview);
             Select("LanguageBox", settings.Language ?? "auto");
             Put("SalaryText", settings.MonthlySalary.ToString(CultureInfo.InvariantCulture));
+            var settlement = Find<ComboBox>("SettlementBox");
+            for (int day = 1; day <= 31; day++) settlement.Items.Add(new ComboBoxItem { Content = day.ToString(CultureInfo.InvariantCulture), Tag = day.ToString(CultureInfo.InvariantCulture) });
+            Select("SettlementBox", settings.CycleDay.ToString(CultureInfo.InvariantCulture));
+            Find<ComboBox>("SettlementBox").SelectionChanged += delegate { validationError = ""; };
+            Find<Button>("AdjustIncomeButton").Click += delegate { confirmIncome = true; Find<TextBlock>("IncomeAdjustmentHint").Visibility = Visibility.Visible; };
+            Find<CheckBox>("ExpensesEnabledBox").IsChecked = settings.ExpensesEnabled;
             Put("StartText", settings.Start); Put("EndText", settings.End);
             Put("LunchStartText", settings.LunchStart); Put("LunchEndText", settings.LunchEnd);
             Find<CheckBox>("LunchBox").IsChecked = settings.LunchEnabled;
@@ -477,6 +563,17 @@ namespace SlavesEncourager
             Find<Grid>("CalendarHost").Children.Add(calendar);
             goals = new GoalListEditor(settings.GoalItems, delegate { validationError = ""; });
             Find<StackPanel>("GoalsHost").Children.Add(goals);
+            expenses = new GoalListEditor(settings.ExpenseItems, delegate { validationError = ""; }, "expense");
+            Find<StackPanel>("ExpensesHost").Children.Add(expenses);
+            Find<Button>("AddExpenseButton").Click += delegate
+            {
+                if (expenses.Count >= 20) { validationError = L.T("validation.expenseCount"); Find<TextBlock>("ErrorText").Text = validationError; return; }
+                expenses.Add(new RewardGoal(L.T("expense.new"), 1000m));
+            };
+            Find<Button>("OpenExpensesButton").Click += delegate { Find<TabControl>("SettingsTabs").SelectedIndex = 4; };
+            Find<CheckBox>("ExpensesEnabledBox").Checked += delegate { UpdateExpensesTab(); };
+            Find<CheckBox>("ExpensesEnabledBox").Unchecked += delegate { UpdateExpensesTab(); };
+            UpdateExpensesTab();
             Find<Button>("AddGoalButton").Click += delegate
             {
                 if (goals.Count >= 20) { validationError = L.T("validation.goalCount"); Find<TextBlock>("ErrorText").Text = validationError; return; }
@@ -503,7 +600,19 @@ namespace SlavesEncourager
             Find<CheckBox>("GroupingBox").Unchecked += delegate { RefreshPreview(false); };
             Find<Button>("SaveButton").Click += delegate
             {
-                try { Settings candidate = Read(true); candidate.Validate(); Result = candidate; Window.DialogResult = true; }
+                try
+                {
+                    Settings candidate = Read(true); candidate.Validate();
+                    if (confirmIncome || !original.Configured || original.CycleDay != candidate.CycleDay || (!original.ExpensesEnabled && candidate.ExpensesEnabled))
+                    {
+                        if (original.CycleDay != candidate.CycleDay) { candidate.OpeningAt = null; candidate.OpeningIncome = null; }
+                        DateTime now = DateTime.Now;
+                        var confirmation = new IncomeConfirmation(candidate, Window, now);
+                        if (confirmation.Window.ShowDialog() != true) return;
+                        candidate.ConfirmIncome(now, confirmation.Amount);
+                    }
+                    Result = candidate; Window.DialogResult = true;
+                }
                 catch (Exception ex)
                 {
                     if (!(ex is ArgumentException || ex is FormatException || ex is OverflowException)) throw;
@@ -515,7 +624,7 @@ namespace SlavesEncourager
             {
                 if (!ready) return;
                 string choice = Selected("LanguageBox"); L.Use(choice); L.Apply(Window.Resources);
-                calendar.Refresh(); goals.RefreshLanguage(); validationError = "";
+                calendar.Refresh(); goals.RefreshLanguage(); expenses.RefreshLanguage(); validationError = "";
                 if (LanguageChanged != null) LanguageChanged(choice);
                 preview.Reset(); RefreshPreview(false);
             };
@@ -525,10 +634,19 @@ namespace SlavesEncourager
             timer.Interval = TimeSpan.FromSeconds(1); timer.Tick += delegate { ticks++; RefreshPreview(true); }; timer.Start();
         }
 
+        void UpdateExpensesTab()
+        {
+            bool enabled = Find<CheckBox>("ExpensesEnabledBox").IsChecked == true;
+            if (!enabled && Find<TabControl>("SettingsTabs").SelectedIndex == 4) Find<TabControl>("SettingsTabs").SelectedIndex = 1;
+            Find<TabItem>("ExpensesTab").Visibility = enabled ? Visibility.Visible : Visibility.Collapsed;
+            Find<Button>("OpenExpensesButton").IsEnabled = enabled; validationError = "";
+        }
+
         Settings Read(bool all)
         {
             Settings result = original.Copy();
             result.Language = Selected("LanguageBox");
+            result.ExpensesEnabled = Find<CheckBox>("ExpensesEnabledBox").IsChecked == true;
             result.Animation = Selected("AnimationBox"); result.Theme = Selected("ThemeBox"); result.Font = Selected("FontBox");
             result.Decimals = int.Parse(Selected("DecimalsBox"), CultureInfo.InvariantCulture);
             result.Currency = Selected("CurrencyBox"); result.Speed = int.Parse(Selected("SpeedBox"), CultureInfo.InvariantCulture);
@@ -539,6 +657,8 @@ namespace SlavesEncourager
                 decimal salary;
                 if (!decimal.TryParse(GetText("SalaryText"), NumberStyles.AllowDecimalPoint, CultureInfo.InvariantCulture, out salary)) throw new ArgumentException(L.T("validation.salaryNumber"));
                 result.MonthlySalary = salary;
+                result.SettlementDay = int.Parse(Selected("SettlementBox"), CultureInfo.InvariantCulture);
+                if (result.ExpensesEnabled) result.Expenses = expenses.Read();
                 result.Goals = goals.Read();
                 if (result.Goals.Count > 0) { result.GoalName = result.Goals[0].Name; result.GoalAmount = result.Goals[0].Amount; }
                 result.Start = GetText("StartText"); result.End = GetText("EndText");

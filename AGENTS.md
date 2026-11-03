@@ -12,3 +12,5 @@
 
 - Home copy overrides are per language and main-window only. Preserve numeric placeholders, atomic save, cancel isolation and default restoration; update docs/HOME_TEXT.md and behavior checks if these rules change.
 - README animation uses real WPF sample controls and the settings language event. Rebuild with scripts/render-demo.ps1 and an existing FFmpeg; see docs/DEMO.md. Never capture real salary/settings or replace published versioned assets for a documentation-only change.
+
+- Pay-cycle, opening-income and expense-first rules are specified in docs/EXPENSES.md. Preserve default-off visibility, cancel/save isolation, month-end clamping, no duplicate allocation and zero-baseline compatibility; update all six READMEs and meaningful boundary checks when these rules change.

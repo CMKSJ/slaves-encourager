@@ -1,39 +1,35 @@
 # Verification / 验证记录
 
-Verified locally on **2026-11-04** for version **1.3.1**.
+Verified locally on **2026-11-04** for version **1.4.0**. Publication targets `v1.4.0`; consult the matching Release and Actions pages for remote publication/build status. Existing v1.3.1 Release assets remain unchanged.
 
 | Check | Result |
 | --- | --- |
-| Native application compilation | PASS, warnings treated as errors, zero warnings |
-| Behavior and localization checks | 105 passed, 0 failed |
-| Language catalog | 194 complete keys across 6 languages; placeholders preserved |
-| WPF/XAML/XML | PASS |
-| All six language renders | PASS: main, themes, mini/privacy and settings tabs |
-| Real Windows display | New icon and blue palette; double-click opens the text editor; cancel restores the home screen |
-| Interactive language selection/cancel/restart | Full click-through not completed: user activity interrupted automation |
-| Custom home copy | PASS: save/load, language isolation, reset, cancel-copy isolation, placeholder validation and unchanged earnings |
-| Copy editor renders | PASS across all six languages, including a customized home render |
-| Language setting save/load | PASS in behavior tests for all six languages |
-| Old settings without language | PASS; user-written names/templates preserved |
-| Source icon | PNG, RGBA, 1254 × 1254, alpha range 0–255 |
-| Windows icon | 16, 24, 32, 48, 64, 128 and 256 pixels |
-| README links and screenshots | PASS |
-| README animation | PASS: 1000 × 660, 360 frames, 20 fps, 18 seconds, infinite loop; 401,621 bytes; full decode and six-language visual review |
-| Source archive scope | PASS: no settings, private machine paths, binaries, backups or old packages |
-| ZIP contents and CRC | PASS; packaged bytes matched source files |
-| Public repository and first remote Windows CI | PASS: initial commit `f1bf4a5`, [run 41684486237](https://github.com/thisemailrectrash-cpu/slaves-encourager/actions/runs/41684486237); later results shown by the live badge |
-| Release assets | Verify the published Release and its SHA256SUMS.txt |
+| Native compilation | PASS, warnings treated as errors, zero warnings |
+| Behavior and localization | 151 passed, 0 failed |
+| Expense allocation | PASS: default off, partial/complete coverage, surplus-only rewards, no duplicate income, goal time includes pending costs |
+| Expense persistence | PASS: order, empty list, disabled behavior, draft copy isolation and limits |
+| Payroll boundaries | PASS: day 15, midnight rollover, day 31 clamping, leap February, year change, actual-day reconciliation and overnight attribution |
+| Opening earnings | PASS: edited and zero baseline, future increments, restart recovery, next-cycle expiry, JSON validation and old-setting defaults |
+| Real modal UI flows | PASS in all six languages: first-use opt-in, day selection, edited amount, confirm/save, cancel and original-settings isolation; sample drafts only |
+| Language catalog | 243 complete keys × 6 languages; placeholder parity and localized default settings valid |
+| WPF/XML and six-language rendering | PASS: themes, mini/privacy, all settings tabs, home editor, expense opt-in, partial/complete/empty/private expenses and income confirmation |
+| Spanish default goal | PASS: shortened to fit the 28-character limit; no saved user names changed |
+| Home text | Existing save/load, language isolation, reset, cancel and placeholder checks pass; expense button caption is editable |
+| README animation | Existing 1000 × 660, 360-frame, 20-fps, 18-second looping sample GIF preserved; no real user data |
+| Icons | PNG 1254 × 1254; ICO 16/24/32/48/64/128/256 |
+| Static checks | UTF-8 without BOM, XML, translations, README links, GIF structure and MIT license PASS |
+| Packages | Source/portable ZIP CRC and byte comparison PASS; SHA256SUMS.txt generated |
+| Remote CI / Release | Local checks below passed; remote status is recorded on the matching commit in [Actions](https://github.com/thisemailrectrash-cpu/slaves-encourager/actions) and [v1.4.0 Release](https://github.com/thisemailrectrash-cpu/slaves-encourager/releases/tag/v1.4.0) |
 
-The visible preview uses an isolated developer configuration rather than the normal user settings file. It may remain open for the user to inspect. Developer logs and such configurations are excluded from both source and portable packages.
+All screenshots and modal tests use built-in sample settings. User settings were not modified. Visual review includes Chinese, English, Japanese, Korean and long Spanish labels. Scrollable expense lists deliberately retain all rows, including completed ones.
 
-Windows container execution was unavailable on the development host. The documented existing-compiler fallback was used; no host packages were installed. Separate Windows 10, ARM, multi-monitor and long-duration tray testing have not been performed.
-
-Reproduce local checks:
+Windows containers were unavailable on this development host. The documented existing .NET Framework compiler fallback was used, with no host packages installed. Independent Windows 10, ARM, multi-monitor, DPI matrix and long-duration tray testing have not been performed. Automated modal checks do not replace broad manual interaction testing.
 
 ```powershell
 ./scripts/build.ps1 -Native -VisualCheck
 python scripts/validate.py
 python scripts/package.py
+git diff --check
 ```
 
-Build and test logs are generated in `.build/`; portable/source archives and checksums are generated in `dist/`.
+Build and test logs are generated in `.build/`; portable/source archives and checksums are generated in `dist/`. Rules and examples: [EXPENSES.md](EXPENSES.md).

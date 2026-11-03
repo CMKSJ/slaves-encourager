@@ -14,11 +14,11 @@ main.demoBadge	● 演示 · 示例数据	● 示範 · 範例資料	● DEMO ·
 main.countdownOff	距离下班	距離下班	Until clock-out	退勤まで	Hasta la salida	퇴근까지
 main.countdownOn	距离开工	距離開工	Until work starts	始業まで	Hasta empezar	출근까지
 main.hourly	每小时的价值	每小時的價值	Your hourly value	1時間の価値	Valor por hora	시간당 가치
-main.month	本月累计 · 估算	本月累計 · 估算	This month · estimated	今月の累計 · 推定	Este mes · estimado	이번 달 누적 · 추정
+main.month	本期累计 · 估算	本期累計 · 估算	This cycle · estimated	今期の累計 · 推定	Este ciclo · estimado	이번 주기 누적 · 추정
 goal.heading	给自己的奖励	給自己的獎勵	Your next reward	自分へのごほうび	Tu próxima recompensa	나를 위한 보상
 goal.previous	上一个目标	上一個目標	Previous goal	前の目標	Objetivo anterior	이전 목표
 goal.next	下一个目标	下一個目標	Next goal	次の目標	Siguiente objetivo	다음 목표
-goal.default	下一站，周末旅行	下一站，週末旅行	A weekend getaway	週末の小旅行	Una escapada de fin de semana	주말 여행
+goal.default	下一站，周末旅行	下一站，週末旅行	A weekend getaway	週末の小旅行	Escapada de fin de semana	주말 여행
 main.footnote	收入按排班估算，过去工作日默认满勤。	收入按排班估算，過去工作日預設全勤。	Income is estimated; past shifts assume full attendance.	収入は推定です。過去の勤務日は皆勤として計算します。	Ingreso estimado; los turnos pasados se consideran completos.	수입은 추정치이며 지난 근무일은 만근으로 계산합니다.
 mode.privacy	隐私模式	隱私模式	Privacy mode	プライバシー	Modo privado	개인정보 모드
 mode.privacyOnTip	开启隐私模式 / Ctrl+Shift+P	開啟隱私模式 / Ctrl+Shift+P	Enable privacy / Ctrl+Shift+P	金額を隠す / Ctrl+Shift+P	Ocultar importes / Ctrl+Shift+P	금액 숨기기 / Ctrl+Shift+P
@@ -75,7 +75,7 @@ currency.help	仅改变显示符号，不进行汇率换算。	僅變更顯示�
 tab.salary	工资与排班	薪資與排班	Pay & schedule	給与と勤務	Sueldo y horario	급여 및 근무
 salary.amount	月薪金额	月薪金額	Monthly salary	月給	Sueldo mensual	월급
 salary.basis	折算口径	折算方式	Calculation basis	計算方法	Base de cálculo	계산 기준
-basis.actual	按当月排班天数分摊	按當月排班天數分攤	Divide by scheduled days this month	当月の勤務日数で按分	Dividir por los días programados del mes	이번 달 근무일 수로 나누기
+basis.actual	按本期排班天数分摊	按本期排班天數分攤	Divide by scheduled days in this cycle	今期の勤務日数で按分	Dividir por los días del ciclo	이번 주기 근무일 수로 나누기
 basis.fixed	固定 21.75 天折算	固定 21.75 天折算	Use a fixed 21.75-day basis	21.75日固定で計算	Usar una base fija de 21,75 días	고정 21.75일 기준
 salary.start	上班时间 · HH:mm	上班時間 · HH:mm	Work starts · HH:mm	始業時刻 · HH:mm	Entrada · HH:mm	출근 시간 · HH:mm
 salary.end	下班时间 · 支持跨午夜	下班時間 · 支援跨午夜	Work ends · overnight supported	終業時刻 · 日またぎ対応	Salida · admite turnos nocturnos	퇴근 시간 · 야간 근무 지원
@@ -96,8 +96,8 @@ tab.calendar	休息与补班	休息與補班	Calendar	カレンダー	Calendario
 tab.goals	目标与使用	目標與使用	Goals & tips	目標と使い方	Metas y ayuda	목표 및 도움말
 goal.listTitle	给自己的奖励清单	給自己的獎勵清單	Your reward list	ごほうびリスト	Tu lista de recompensas	나를 위한 보상 목록
 goal.add	＋ 新增目标	＋ 新增目標	＋ Add goal	＋ 目標を追加	＋ Añadir meta	＋ 목표 추가
-goal.allocationHelp	本月收入按清单顺序分配，完成一个再推进下一个。	本月收入按清單順序分配，完成一個再推進下一個。	Allocate monthly income in list order, one goal at a time.	今月の収入をリストの順に割り当てます。	El ingreso mensual se reparte por orden, una meta a la vez.	이번 달 수입을 목록 순서대로 목표에 배분합니다.
-goal.estimateHelp	目标按估算收入累计，并非实际储蓄；每月重新计数。	目標按估算收入累計，並非實際儲蓄；每月重新計數。	Goals use estimated income, not savings, and reset each month.	目標は推定収入に基づき、貯金残高ではありません。毎月リセットします。	Las metas usan ingresos estimados, no ahorros, y se reinician cada mes.	목표는 저축이 아닌 추정 수입 기준이며 매달 초기화됩니다.
+goal.allocationHelp	本期收入先覆盖已启用的生活开支，余下的按目标清单顺序分配。	本期收入先覆蓋已啟用的生活開支，餘下的按目標清單順序分配。	This cycle's income covers enabled expenses first, then goals in list order.	今期の収入は有効な生活費へ先に充当し、残額を目標の順に配分します。	El ingreso cubre primero los gastos activados y después las metas por orden.	이번 주기 수입은 활성화한 생활비를 먼저 충당하고 나머지를 목표 순서대로 배분합니다.
+goal.estimateHelp	目标按估算收入累计，并非实际储蓄；每个工资周期重新计数。	目標按估算收入累計，並非實際儲蓄；每個薪資週期重新計數。	Goals use estimated income, not savings, and reset each pay cycle.	目標は推定収入に基づき、貯金残高ではありません。給与の周期ごとにリセットします。	Las metas usan ingresos estimados, no ahorros, y se reinician cada ciclo salarial.	목표는 저축이 아닌 추정 수입 기준이며 급여 주기마다 초기화됩니다.
 help.title	随手使用	隨手使用	Quick tips	使い方のヒント	Consejos rápidos	빠른 도움말
 help.drag	主窗口的任意非按钮区域都可拖动；置顶让它留在前台。	主視窗的任意非按鈕區域都可拖曳；置頂讓它留在前方。	Drag any non-button area. Pin keeps the window on top.	ボタン以外の場所をドラッグして移動できます。固定で最前面に表示します。	Arrastra cualquier zona sin botones. Fijar mantiene la ventana al frente.	버튼 외 영역을 드래그해 이동하세요. 고정하면 항상 위에 표시됩니다.
 help.shortcuts	迷你模式：Ctrl+M；隐私模式：Ctrl+Shift+P。	迷你模式：Ctrl+M；隱私模式：Ctrl+Shift+P。	Mini: Ctrl+M. Privacy: Ctrl+Shift+P.	ミニ表示：Ctrl+M。金額非表示：Ctrl+Shift+P。	Mini: Ctrl+M. Privacidad: Ctrl+Shift+P.	미니: Ctrl+M. 개인정보: Ctrl+Shift+P.
@@ -120,8 +120,8 @@ goal.emptyHint	在设置中添加一份期待。	在設定中新增一份期待�
 goal.allDone	全部目标已达成，奖励一下自己吧。	全部目標已達成，獎勵一下自己吧。	All goals reached. Treat yourself.	すべて達成！自分にごほうびを。	¡Todas las metas cumplidas! Date un premio.	모든 목표 달성! 나에게 보상을 주세요.
 goal.done	此目标已达成，收入继续流入下一个。	此目標已達成，收入繼續流入下一個。	Goal reached. Income flows to the next one.	この目標は達成済み。収入は次の目標へ。	Meta cumplida. El ingreso pasa a la siguiente.	목표 달성! 수입이 다음 목표로 이어집니다.
 goal.remaining	按清单顺序分配，达成此目标还需约 {0:F1} 小时	按清單順序分配，達成此目標還需約 {0:F1} 小時	About {0:F1} work hours to reach this goal in order	順番に割り当てた場合、達成まで約 {0:F1} 時間	Faltan unas {0:F1} horas de trabajo para esta meta	순서대로 배분 시 달성까지 약 {0:F1}시간
-main.actualFootnote	当月 {0} 个排班日均摊 · 历史排班按满勤估算	當月 {0} 個排班日均攤 · 過去排班按全勤估算	Spread across {0} shifts · past shifts assume full attendance	当月 {0} 勤務日で按分 · 過去は皆勤と仮定	Repartido entre {0} turnos · los pasados se consideran completos	이번 달 {0}일로 나눔 · 지난 근무는 만근으로 추정
-main.fixedFootnote	固定 21.75 天折算 · 历史排班按满勤估算	固定 21.75 天折算 · 過去排班按全勤估算	Fixed 21.75-day basis · past shifts assume full attendance	21.75日固定 · 過去は皆勤と仮定	Base fija de 21,75 días · turnos pasados completos	고정 21.75일 기준 · 지난 근무는 만근으로 추정
+main.actualFootnote	本期 {0} 个排班日均摊 · 收入按排班估算	本期 {0} 個排班日均攤 · 收入按排班估算	Spread across {0} shifts this cycle · estimated income	今期 {0} 勤務日で按分 · 推定収入	Repartido entre {0} turnos del ciclo · estimado	이번 주기 {0}일로 나눔 · 추정 수입
+main.fixedFootnote	固定 21.75 天折算 · 收入按排班估算	固定 21.75 天折算 · 收入按排班估算	Fixed 21.75-day basis · estimated income	21.75日固定 · 推定収入	Base fija de 21,75 días · estimado	고정 21.75일 기준 · 추정 수입
 tray.show	显示悬窗	顯示浮動視窗	Show window	ウィンドウを表示	Mostrar ventana	창 표시
 tray.mini	迷你 / 完整	迷你 / 完整	Mini / full	ミニ / 通常	Mini / completo	미니 / 전체
 tray.quit	退出	結束	Quit	終了	Salir	종료
@@ -193,3 +193,52 @@ copy.reset	恢复此项	還原此項	Reset text	この項目を戻す	Restaurar 
 copy.resetAll	恢复当前语言	還原目前語言	Reset language	この言語を戻す	Restaurar idioma	현재 언어 복원
 copy.invalid	文字无效或超过 300 字。	文字無效或超過 300 字。	Text is invalid or exceeds 300 characters.	文字が無効か、300文字を超えています。	Texto no válido o de más de 300 caracteres.	문구가 잘못되었거나 300자를 초과했습니다.
 copy.tokens	请完整保留默认文案中的数字占位符，例如 {0:F2}；不要添加其他花括号。	請完整保留預設文案中的數字預留位置，例如 {0:F2}；不要加入其他大括號。	Keep the numeric placeholders exactly, such as {0:F2}. Do not add other braces.	{0:F2} などの数値プレースホルダーをそのまま残し、他の波括弧は追加しないでください。	Conserva los marcadores numéricos exactos, como {0:F2}. No añadas otras llaves.	{0:F2} 같은 숫자 자리표시자를 그대로 유지하고 다른 중괄호는 추가하지 마세요.
+main.expenses	生活开支	生活開支	Expenses	生活費	Gastos	생활비
+expense.title	生活开支	生活開支	Living expenses	生活費	Gastos básicos	생활비
+expense.edit	编辑开支	編輯開支	Edit expenses	費用を編集	Editar gastos	생활비 편집
+expense.pending	本期待覆盖	本期待覆蓋	Left to cover	今期の未充当額	Pendiente de cubrir	이번 주기 미충당액
+expense.monthly	本期 · 估算	本期 · 估算	This cycle · estimate	今期 · 推定	Este ciclo · estimado	이번 주기 · 추정
+expense.covered	已覆盖	已覆蓋	Covered	充当済み	Cubierto	충당 완료
+expense.rewardBalance	可用于奖励	可用於獎勵	Available for rewards	ごほうびに使える額	Para recompensas	보상에 쓸 수 있는 금액
+expense.summary	还差 {0}，本期开支合计 {1}	還差 {0}，本期開支合計 {1}	{0} left of {1} this cycle	今期の合計 {1} のうち、あと {0}	Faltan {0} de {1} en este ciclo	이번 주기 합계 {1} 중 {0} 남음
+expense.hidden	开支金额与进度已隐藏	開支金額與進度已隱藏	Amounts and progress hidden	金額と進捗を非表示	Importes y progreso ocultos	금액과 진행률 숨김
+expense.emptyTotal	还没有开支项目，可以随时添加。	還沒有開支項目，可以隨時新增。	No expenses yet. Add one whenever you like.	費用は未登録です。いつでも追加できます。	Aún no hay gastos. Añádelos cuando quieras.	등록된 생활비가 없습니다. 언제든 추가하세요.
+expense.allCovered	本期开支已全部覆盖，继续为自己积累奖励。	本期開支已全部覆蓋，繼續為自己累積獎勵。	All expenses covered. Keep building your rewards.	今期の生活費はすべて充当済み。次はごほうびへ。	Gastos cubiertos. Sigue sumando para tus recompensas.	이번 주기 생활비 충당 완료! 이제 보상을 쌓아 보세요.
+expense.remainingValue	还差 {0}	還差 {0}	{0} left	あと {0}	Faltan {0}	{0} 남음
+expense.coveredValue	已覆盖 {0} / {1}	已覆蓋 {0} / {1}	Covered {0} / {1}	充当済み {0} / {1}	Cubierto {0} / {1}	충당 {0} / {1}
+expense.completed	已覆盖 ✓	已覆蓋 ✓	Covered ✓	充当済み ✓	Cubierto ✓	충당 완료 ✓
+expense.explanation	收入按清单顺序先覆盖开支，余下的再进入奖励目标。红条表示剩余未覆盖比例，会随收入减少。仅为估算分配，不代表已付款；每个工资周期重新累计。	收入按清單順序先覆蓋開支，餘下的再進入獎勵目標。紅條表示剩餘未覆蓋比例，會隨收入減少。僅為估算分配，不代表已付款；每個薪資週期重新累計。	Income covers expenses in list order, then funds reward goals. Red bars shrink as the uncovered share falls. These are estimated allocations, not payments; each pay cycle starts over.	収入はリスト順に生活費へ充当し、残額をごほうびへ回します。赤いバーは未充当の割合です。実際の支払いではなく推定配分で、給与の周期ごとにリセットします。	El ingreso cubre gastos por orden y después las metas. Las barras rojas bajan al reducirse lo pendiente. Son asignaciones estimadas, no pagos; se reinician en cada ciclo salarial.	수입은 목록 순서대로 생활비에 먼저 배분하고 나머지를 보상에 사용합니다. 빨간 막대는 미충당 비율입니다. 실제 결제가 아닌 추정 배분이며 급여 주기마다 초기화됩니다.
+expense.rent	租金	租金	Rent	家賃	Alquiler	월세
+expense.living	生活费	生活費	Living costs	日常生活費	Vida diaria	생활비
+expense.essential	必要开支	必要開支	Essentials	必要経費	Necesidades	필수 지출
+expense.enable	开启生活开支页面（可选）	開啟生活開支頁面（選用）	Enable living expenses (optional)	生活費ページを有効にする（任意）	Activar gastos básicos (opcional)	생활비 페이지 켜기 (선택)
+expense.listTitle	本期开支清单	本期開支清單	Expenses this cycle	今期の費用リスト	Gastos del ciclo	이번 주기 생활비 목록
+expense.add	＋ 新增开支	＋ 新增開支	＋ Add expense	＋ 費用を追加	＋ Añadir gasto	＋ 생활비 추가
+expense.editorHelp	每期重复使用这份清单，最多 20 项。可改名、改金额或调整优先顺序；收入先覆盖前面的开支。关闭功能会保留已保存清单。	每期重複使用這份清單，最多 20 項。可改名、改金額或調整優先順序；收入先覆蓋前面的開支。關閉功能會保留已儲存清單。	Reuse this list each cycle, up to 20 items. Edit names, amounts and priority; income covers earlier items first. Turning this off keeps your saved list.	最大20項目を周期ごとに繰り返します。名前・金額・優先順を変更でき、上から充当します。無効にしても保存済みリストは残ります。	La lista se repite cada ciclo, hasta 20 gastos. Edita nombres, importes y prioridad; se cubren por orden. Desactivar conserva la lista guardada.	매 주기 최대 20개 항목을 반복 사용합니다. 이름, 금액, 순서를 바꿀 수 있으며 위 항목부터 충당합니다. 꺼도 저장한 목록은 유지됩니다.
+expense.new	新开支	新開支	New expense	新しい費用	Nuevo gasto	새 생활비
+expense.name	开支名称	開支名稱	Expense name	費用名	Nombre del gasto	지출 이름
+expense.number	开支 {0}	開支 {0}	Expense {0}	費用 {0}	Gasto {0}	생활비 {0}
+expense.emptyEditor	暂无开支，点击“新增开支”添加。	暫無開支，點選「新增開支」新增。	No expenses. Choose “Add expense” to begin.	費用はありません。「費用を追加」で登録できます。	Sin gastos. Pulsa «Añadir gasto» para empezar.	생활비가 없습니다. ‘생활비 추가’를 눌러 시작하세요.
+validation.expenseCount	最多添加 20 个开支。	最多新增 20 個開支。	Add up to 20 expenses.	費用は20個までです。	Se permiten hasta 20 gastos.	생활비는 최대 20개입니다.
+validation.expenseName	开支名称不能为空，最多 28 个字符。	開支名稱不能為空，最多 28 個字元。	Expense names require 1–28 characters.	費用名は1～28文字です。	El nombre debe tener de 1 a 28 caracteres.	생활비 이름은 1~28자여야 합니다.
+validation.expenseAmount	开支金额必须大于 0 且不超过 100,000,000。	開支金額必須大於 0 且不超過 100,000,000。	Expense amounts must be above 0 and at most 100,000,000.	費用は0より大きく100,000,000以下にしてください。	Cada gasto debe ser mayor que 0 y como máximo 100.000.000.	생활비 금액은 0 초과, 100,000,000 이하여야 합니다.
+validation.expenseNumber	开支 {0} 的金额请填写数字，小数使用英文句点。	開支 {0} 的金額請填寫數字，小數使用英文句點。	Enter a number for expense {0}, using a decimal point.	費用 {0} は数値で入力し、小数点はピリオドを使ってください。	Introduce un número para el gasto {0}, con punto decimal.	생활비 {0}에 숫자를 입력하세요. 소수점은 마침표를 사용하세요.
+salary.settlement	工资结算日（每月几号）	薪資結算日（每月幾號）	Pay-cycle reset day (day of month)	給与周期の開始日（毎月）	Día de inicio del ciclo salarial	급여 주기 시작일 (매월)
+salary.cycleHelp	结算日零点重置本期收入、开支和目标；不足该日期的月份按月末。例：15 日至下月 14 日。	結算日零點重置本期收入、開支和目標；不足該日期的月份按月底。例：15 日至下月 14 日。	Income, expenses and goals reset at midnight on this day. Short months use their last day. Example: the 15th through the next month's 14th.	指定日の午前0時に収入・生活費・目標をリセットします。日付がない月は月末を使います。例：15日～翌月14日。	Ingresos, gastos y metas se reinician a medianoche. Si el mes es más corto se usa el último día. Ejemplo: del 15 al 14 siguiente.	이 날짜 자정에 수입, 생활비, 목표를 초기화합니다. 해당 날짜가 없는 달은 말일을 사용합니다. 예: 15일~다음 달 14일.
+validation.settlement	工资结算日请选择 1 至 31。	薪資結算日請選擇 1 至 31。	Choose a reset day from 1 to 31.	開始日は1～31を選んでください。	Elige un día del 1 al 31.	주기 시작일은 1~31일로 선택하세요.
+income.title	确认本期已累计收入	確認本期已累計收入	Confirm earnings so far	今期の累計収入を確認	Confirma lo acumulado	이번 주기 누적 수입 확인
+income.period	本期：{0} 至 {1}	本期：{0} 至 {1}	This cycle: {0} to {1}	今期：{0} ～ {1}	Este ciclo: {0} a {1}	이번 주기: {0} ~ {1}
+income.estimate	此前已累计约 {0}	此前已累計約 {0}	Estimated earnings so far: {0}	これまでの推定収入：{0}	Acumulado estimado: {0}	지금까지 추정 수입: {0}
+income.help	请确认或修改下面的金额。首次估算将此前排班视为满勤；这不是到账记录。保存后从确认金额继续累计，也可以改为 0 从现在开始。下个周期自动重置。	請確認或修改下方金額。首次估算將此前排班視為全勤；這不是入帳紀錄。儲存後從確認金額繼續累計，也可改為 0 從現在開始。下個週期自動重置。	Confirm or edit the amount below. The first estimate assumes full attendance for past shifts; it is not a payment record. Continue from your confirmed amount, or choose 0 to start now. The next cycle resets automatically.	金額を確認・修正してください。初回の推定では過去の勤務を皆勤とみなします。入金記録ではありません。確定額から累計し、0なら今から開始します。次の周期にリセットします。	Confirma o corrige el importe. La primera estimación supone asistencia completa; no es un registro de cobro. Continúa desde lo confirmado o elige 0 para empezar ahora. Se reinicia en el próximo ciclo.	금액을 확인하거나 수정하세요. 최초 추정은 지난 근무를 만근으로 계산하며 입금 기록이 아닙니다. 확인한 금액부터 누적하거나 0으로 지금 시작할 수 있습니다. 다음 주기에 자동 초기화됩니다.
+income.amount	确认金额（{0}，小数用英文句点）	確認金額（{0}，小數用英文句點）	Confirmed amount ({0}, decimal point)	確認額（{0}、小数点はピリオド）	Importe confirmado ({0}, punto decimal)	확인 금액 ({0}, 소수점은 마침표)
+income.zero	从 0 开始	從 0 開始	Start from 0	0から開始	Empezar desde 0	0부터 시작
+income.confirm	确认并保存	確認並儲存	Confirm & save	確認して保存	Confirmar y guardar	확인 및 저장
+income.adjust	校正本期已累计收入…	校正本期已累計收入…	Adjust earnings so far…	今期の累計額を修正…	Corregir lo acumulado…	현재 누적 수입 수정…
+validation.opening	确认金额须为 0 至 100,000,000，且确认时间必须有效。	確認金額須為 0 至 100,000,000，且確認時間必須有效。	Use an amount from 0 to 100,000,000 and a valid confirmation time.	確認額は0～100,000,000で、有効な確認日時が必要です。	El importe debe ser de 0 a 100.000.000 y la fecha de confirmación válida.	확인 금액은 0~100,000,000이며 확인 시간이 유효해야 합니다.
+expense.moveUp	目标上移	目標上移	Move goal up	目標を上へ	Subir meta	목표 위로
+expense.moveDown	目标下移	目標下移	Move goal down	目標を下へ	Bajar meta	목표 아래로
+expense.remove	移除	移除	Remove	削除	Quitar	삭제
+expense.removeTip	移除此开支	移除此開支	Remove this expense	この費用を削除	Eliminar este gasto	이 생활비 삭제
+expense.amount	目标金额	目標金額	Goal amount	目標金額	Importe de la meta	목표 금액
+expense.amountShort	金额	金額	Amount	金額	Importe	금액
+income.adjustHint	保存设置时将确认本期已累计金额。	儲存設定時將確認本期已累計金額。	Saving will ask you to confirm earnings so far.	設定の保存時に今期の累計額を確認します。	Al guardar se confirmará lo acumulado.	설정을 저장할 때 현재 누적 금액을 확인합니다.

@@ -22,13 +22,24 @@ A local-first Windows earnings clock: see your time turn into small rewards.
 
 <img src="docs/screenshots/en-main.png" width="380" alt="Slaves Encourager in English">
 
+## Pay cycles and living expenses (1.4.0)
+
+Choose a reset day from 1–31 (default: 1). Day 15 means the 15th through the next month's 14th; short months use their last day. Income, expense coverage and goals reset at midnight on that day.
+
+Living expenses are hidden by default. Enable them in first-time salary settings and customize up to 20 names, amounts and priorities. Red bars show the uncovered share and shrink as income increases. Income covers expenses before reward goals. Turning the feature off keeps the saved list.
+
+On first setup, enabling expenses mid-cycle or changing the reset day, saving asks you to confirm estimated earnings so far. Edit the amount or start from 0; only income after confirmation is added. “Adjust earnings so far…” lets you correct it later. The opening amount expires next cycle. Allocations are estimates, not bill payments. [Full rules](docs/EXPENSES.md).
+
+<img src="docs/screenshots/en-expenses.png" width="380" alt="Shrinking red bars as income covers living expenses">
+
+
 ## Features
 
 - Flip-clock, smooth-slide and static numbers; 0–4 decimals, grouping, currency symbols and custom templates.
 - A new ox-and-clock icon with a soft blue, ivory and apricot palette. Three themes and three number fonts.
 - Simplified Chinese, Traditional Chinese, English, Japanese, Spanish and Korean, with system detection and saved language selection.
 - Clickable days off and extra shifts, weekly schedules, breaks and overnight shifts.
-- Up to 20 ordered goals. Monthly estimated income is allocated once, in list order.
+- Up to 20 ordered goals. Estimated income first covers enabled expenses, then goals in list order.
 - Pin, mini mode, privacy mode and system tray. Drag any non-button area of the main window.
 - Offline operation, no account and no telemetry. [MIT licensed](LICENSE).
 
@@ -42,9 +53,9 @@ First launch uses clearly labelled sample data. Open **First-time setup**, enter
 
 ## Estimates and data
 
-Salary is divided by this month's scheduled workdays, or an optional fixed 21.75-day basis. Breaks are excluded. Past scheduled days assume full attendance. No tax, bonus, overtime or actual attendance deductions are calculated. Overnight shifts belong to their starting date. Add holidays according to your own schedule. Currency selection changes symbols only.
+Salary is divided by this pay cycle's scheduled workdays, or an optional fixed 21.75-day basis. Breaks are excluded. Past scheduled days assume full attendance. No tax, bonus, overtime or actual attendance deductions are calculated. Overnight shifts belong to their starting date. Add holidays according to your own schedule. Currency selection changes symbols only.
 
-Goal progress uses monthly estimated income, not savings. For goals of 1,000 and 3,000, income of 1,500 allocates 1,000 and 500. Progress resets each month.
+Goal progress uses pay-cycle estimated income, not savings. For goals of 1,000 and 3,000, income of 1,500 allocates 1,000 and 500. Progress resets on your pay-cycle day. With expenses enabled, only the surplus after expenses funds goals.
 
 Settings stay in `%LOCALAPPDATA%\NiumaFlip\settings.json`, a legacy internal path retained for compatibility. Saves keep a `.bak`; settings are not encrypted. Privacy mode hides amounts on screen.
 

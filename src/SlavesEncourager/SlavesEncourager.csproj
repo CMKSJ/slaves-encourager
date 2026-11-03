@@ -15,7 +15,7 @@
     <Reference Include="System.Runtime.Serialization"/><Reference Include="System.Xml"/>
     <Reference Include="WindowsBase"/><Reference Include="PresentationCore"/><Reference Include="PresentationFramework"/>
     <Reference Include="System.Windows.Forms"/><Reference Include="System.Drawing"/>
-    <Compile Include="Engine.cs"/><Compile Include="FlipDisplay.cs"/><Compile Include="EditorControls.cs"/><Compile Include="HomeTextEditor.cs"/><Compile Include="Program.cs"/><Compile Include="Localization.cs"/><Compile Include="AssemblyInfo.cs"/>
+    <Compile Include="Engine.cs"/><Compile Include="FlipDisplay.cs"/><Compile Include="EditorControls.cs"/><Compile Include="HomeTextEditor.cs"/><Compile Include="ExpenseWindow.cs"/><Compile Include="IncomeConfirmation.cs"/><Compile Include="Program.cs"/><Compile Include="Localization.cs"/><Compile Include="AssemblyInfo.cs"/>
     <EmbeddedResource Include="Main.xaml"><LogicalName>Main.xaml</LogicalName></EmbeddedResource>
     <EmbeddedResource Include="Settings.xaml"><LogicalName>Settings.xaml</LogicalName></EmbeddedResource>
     <EmbeddedResource Include="..\..\assets\app.png"><LogicalName>AppIcon.png</LogicalName></EmbeddedResource>

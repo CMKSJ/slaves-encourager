@@ -24,6 +24,13 @@ namespace SlavesEncourager
         public double Fraction;
     }
 
+    public sealed class ExpenseProgress
+    {
+        public RewardGoal Item;
+        public decimal Covered, Remaining;
+        public double RemainingFraction;
+    }
+
     public enum DayOverride { Schedule, Rest, Work }
 
     public sealed class CalendarOverrides
@@ -72,6 +79,17 @@ namespace SlavesEncourager
         [DataMember] public bool Configured;
         [DataMember(EmitDefaultValue = false)] public string Language = "auto";
         [DataMember(EmitDefaultValue = false)] public Dictionary<string, string> HomeText;
+        [DataMember] public bool ExpensesEnabled;
+        [DataMember(EmitDefaultValue = false)] public List<RewardGoal> Expenses;
+        [DataMember(EmitDefaultValue = false)] public int? SettlementDay;
+        [DataMember(EmitDefaultValue = false)] public string OpeningAt;
+        [DataMember(EmitDefaultValue = false)] public decimal? OpeningIncome;
+        public int CycleDay { get { return SettlementDay ?? 1; } }
+
+        public List<RewardGoal> ExpenseItems
+        {
+            get { return Expenses ?? new List<RewardGoal> { new RewardGoal(L.T("expense.rent"), 3000m), new RewardGoal(L.T("expense.living"), 2000m), new RewardGoal(L.T("expense.essential"), 1000m) }; }
+        }
 
         public List<RewardGoal> GoalItems
         {
@@ -126,6 +144,11 @@ namespace SlavesEncourager
         public void Validate()
         {
             HomeCopy.Validate(HomeText);
+            if (CycleDay < 1 || CycleDay > 31) throw new ArgumentException(L.T("validation.settlement"));
+            DateTime opening;
+            if ((OpeningIncome.HasValue != !String.IsNullOrEmpty(OpeningAt)) ||
+                (OpeningIncome.HasValue && (OpeningIncome < 0m || OpeningIncome > 100000000m || !TryOpening(out opening))))
+                throw new ArgumentException(L.T("validation.opening"));
             if (MonthlySalary <= 0 || MonthlySalary > 100000000m) throw new ArgumentException(L.T("validation.salary"));
             TimeSpan start = Engine.Clock(Start), end = Engine.Clock(End);
             if (start == end) throw new ArgumentException(L.T("validation.shift"));
@@ -155,6 +178,12 @@ namespace SlavesEncourager
                 if (goal == null || String.IsNullOrWhiteSpace(goal.Name) || goal.Name.Length > 28) throw new ArgumentException(L.T("validation.goalName"));
                 if (goal.Amount <= 0 || goal.Amount > 100000000m) throw new ArgumentException(L.T("validation.goalAmount"));
             }
+            if (ExpenseItems.Count > 20) throw new ArgumentException(L.T("validation.expenseCount"));
+            foreach (RewardGoal expense in ExpenseItems)
+            {
+                if (expense == null || String.IsNullOrWhiteSpace(expense.Name) || expense.Name.Length > 28) throw new ArgumentException(L.T("validation.expenseName"));
+                if (expense.Amount <= 0 || expense.Amount > 100000000m) throw new ArgumentException(L.T("validation.expenseAmount"));
+            }
             if (String.IsNullOrEmpty(Pattern) || Pattern.Length > 48 || !Pattern.Contains("{amount}") || Pattern.Count(c => c == '{') > 3)
                 throw new ArgumentException(L.T("validation.pattern"));
             if (Pattern.IndexOf("{amount}", StringComparison.Ordinal) != Pattern.LastIndexOf("{amount}", StringComparison.Ordinal))
@@ -173,6 +202,15 @@ namespace SlavesEncourager
                 result.Add(day);
             }
             return result;
+        }
+
+        public bool TryOpening(out DateTime value)
+        { return DateTime.TryParseExact(OpeningAt, "yyyy-MM-dd'T'HH:mm:ss.fffffff", CultureInfo.InvariantCulture, DateTimeStyles.None, out value); }
+
+        public void ConfirmIncome(DateTime now, decimal amount)
+        {
+            OpeningAt = now.ToString("yyyy-MM-dd'T'HH:mm:ss.fffffff", CultureInfo.InvariantCulture);
+            OpeningIncome = amount;
         }
 
         public static HashSet<DateTime> ParseDates(string value)
@@ -206,12 +244,15 @@ namespace SlavesEncourager
         public string StatusKey, CountdownKey;
         public TimeSpan Countdown;
         public DateTime WorkDate;
+        public DateTime PeriodStart, PeriodEnd;
     }
 
     public static class Engine
     {
         public static List<GoalProgress> Goals(decimal income, Settings settings)
         {
+            decimal cycleIncome = Math.Max(0m, income);
+            income = RewardIncome(income, settings);
             decimal before = 0m;
             var result = new List<GoalProgress>();
             foreach (RewardGoal goal in settings.GoalItems)
@@ -219,7 +260,28 @@ namespace SlavesEncourager
                 decimal allocated = Math.Max(0m, Math.Min(goal.Amount, income - before));
                 before += goal.Amount;
                 result.Add(new GoalProgress { Goal = goal, Allocated = allocated,
-                    Fraction = (double)(allocated / goal.Amount), RemainingToReach = Math.Max(0m, before - income) });
+                    Fraction = (double)(allocated / goal.Amount), RemainingToReach = Math.Max(0m, before + ExpenseTotal(settings) - cycleIncome) });
+            }
+            return result;
+        }
+
+        // 同一份周期收入先覆盖必要开支，再进入奖励 / Cover expenses before rewards using each cycle's income once.
+        public static decimal ExpenseTotal(Settings settings)
+        { return settings.ExpensesEnabled ? settings.ExpenseItems.Sum(item => item.Amount) : 0m; }
+        public static decimal RewardIncome(decimal income, Settings settings)
+        { return Math.Max(0m, income - ExpenseTotal(settings)); }
+        public static List<ExpenseProgress> ExpenseCoverage(decimal income, Settings settings)
+        {
+            var result = new List<ExpenseProgress>();
+            if (!settings.ExpensesEnabled) return result;
+            decimal available = Math.Max(0m, income);
+            foreach (RewardGoal expense in settings.ExpenseItems)
+            {
+                decimal covered = Math.Min(available, expense.Amount);
+                available -= covered;
+                decimal remaining = expense.Amount - covered;
+                result.Add(new ExpenseProgress { Item = expense, Covered = covered, Remaining = remaining,
+                    RemainingFraction = (double)(remaining / expense.Amount) });
             }
             return result;
         }
@@ -271,8 +333,32 @@ namespace SlavesEncourager
 
         public static int MonthDays(DateTime date, Settings settings)
         {
-            DateTime first = new DateTime(date.Year, date.Month, 1);
-            return Enumerable.Range(0, DateTime.DaysInMonth(date.Year, date.Month)).Count(i => IsWorkday(first.AddDays(i), settings));
+            Interval period = PayPeriod(date, settings);
+            return Enumerable.Range(0, (period.End - period.Start).Days).Count(i => IsWorkday(period.Start.AddDays(i), settings));
+        }
+
+        static DateTime Settlement(DateTime month, int day)
+        { return new DateTime(month.Year, month.Month, Math.Min(day, DateTime.DaysInMonth(month.Year, month.Month))); }
+
+        public static Interval PayPeriod(DateTime date, Settings settings)
+        {
+            DateTime month = new DateTime(date.Year, date.Month, 1);
+            if (date.Date < Settlement(month, settings.CycleDay)) month = month.AddMonths(-1);
+            return new Interval(Settlement(month, settings.CycleDay), Settlement(month.AddMonths(1), settings.CycleDay));
+        }
+
+        // 夜班按开班日归属周期；重置发生在结算日零点 / Night shifts belong to their start date; cycles reset at midnight.
+        static decimal PeriodIncome(DateTime now, Settings settings)
+        {
+            Interval period = PayPeriod(now, settings);
+            decimal daily = DayPay(now, settings), income = 0m;
+            for (DateTime day = period.Start; day <= now.Date; day = day.AddDays(1))
+            {
+                if (!IsWorkday(day, settings)) continue;
+                var segments = Segments(day, settings);
+                income += daily * (decimal)(Elapsed(now, segments) / segments.Sum(s => s.Seconds));
+            }
+            return income;
         }
 
         public static decimal DayPay(DateTime date, Settings settings)
@@ -316,14 +402,13 @@ namespace SlavesEncourager
                     }
                 }
             }
-            // 本月估算：过去排班按满勤，当前班次按时间 / Prior scheduled shifts assume full attendance.
-            DateTime first = new DateTime(workDate.Year, workDate.Month, 1);
-            for (DateTime day = first; day <= workDate; day = day.AddDays(1))
-            {
-                if (!IsWorkday(day, settings)) continue;
-                double completed = Elapsed(now, Segments(day, settings));
-                snapshot.Month += DayPay(day, settings) * (decimal)(completed / total);
-            }
+            Interval period = PayPeriod(now, settings);
+            snapshot.PeriodStart = period.Start; snapshot.PeriodEnd = period.End;
+            snapshot.MonthDays = MonthDays(now, settings);
+            snapshot.Month = PeriodIncome(now, settings);
+            DateTime anchor;
+            if (settings.OpeningIncome.HasValue && settings.TryOpening(out anchor) && now >= anchor && anchor >= period.Start && anchor < period.End)
+                snapshot.Month = settings.OpeningIncome.Value + Math.Max(0m, snapshot.Month - PeriodIncome(anchor, settings));
             return snapshot;
         }
 

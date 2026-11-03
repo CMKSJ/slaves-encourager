@@ -1,7 +1,11 @@
 # 版本记录 / Changelog
 
-## Unreleased
+## 1.4.0 — 2026-11-04
 
+- Add optional living expenses, hidden by default; customize up to 20 recurring items, shrink red uncovered bars with income, and fund rewards from surplus only.
+- Add a configurable 1–31 pay-cycle reset day, month-end clamping and shared income/expense/goal rollover.
+- Confirm or edit prior earnings on first setup, mid-cycle opt-in and reset-day changes; support starting from zero, later correction and an opening balance that expires next cycle.
+- Expand all six locales, documentation and sample rendering; fix the overlong Spanish default goal.
 - Add an 18-second README GIF showing real flip-digit animation and all six languages, with a close-up of the earnings card.
 - Add reproducible sample-only WPF capture and GIF encoding scripts; existing v1.3.1 release assets remain unchanged.
 

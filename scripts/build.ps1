@@ -31,7 +31,7 @@ $references += @('WindowsBase.dll','PresentationCore.dll','PresentationFramework
 $sourceRoot = Join-Path $projectRoot 'src/SlavesEncourager'
 $resources = @('/resource:src/SlavesEncourager/Main.xaml,Main.xaml','/resource:src/SlavesEncourager/Settings.xaml,Settings.xaml','/resource:assets/app.png,AppIcon.png','/resource:locales/catalog.tsv,Locales.tsv')
 $arguments = @('/nologo','/utf8output','/codepage:65001','/warn:4','/warnaserror+','/optimize+','/target:winexe','/platform:anycpu','/win32icon:assets/app.ico','/win32manifest:src/SlavesEncourager/app.manifest','/out:dist/SlavesEncourager.exe')
-$sources = @('Engine.cs','FlipDisplay.cs','EditorControls.cs','HomeTextEditor.cs','Localization.cs','Program.cs','AssemblyInfo.cs') | ForEach-Object { Join-Path $sourceRoot $_ }
+$sources = @('Engine.cs','FlipDisplay.cs','EditorControls.cs','HomeTextEditor.cs','ExpenseWindow.cs','IncomeConfirmation.cs','Localization.cs','Program.cs','AssemblyInfo.cs') | ForEach-Object { Join-Path $sourceRoot $_ }
 & $compiler @arguments @references @resources @sources
 if ($LASTEXITCODE -ne 0) { throw 'Application build failed' }
 & $compiler /nologo /utf8output /codepage:65001 /warn:4 /warnaserror+ /target:exe /out:.build/EngineTests.exe @references /resource:locales/catalog.tsv,Locales.tsv (Join-Path $sourceRoot 'Engine.cs') (Join-Path $sourceRoot 'Localization.cs') (Join-Path $projectRoot 'tests/EngineTests.cs')

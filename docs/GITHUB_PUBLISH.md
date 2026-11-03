@@ -1,6 +1,6 @@
 # GitHub 发布 / Publishing
 
-产品：**Slaves Encourager / 牛马鼓励器 1.3.1**，MIT 许可证。
+产品：**Slaves Encourager / 牛马鼓励器 1.4.0**，MIT 许可证。1.4.0 发布附件与说明见下方；已发布状态以对应 Release 页面为准，旧版本附件保持原样。
 
 - 仓库：[thisemailrectrash-cpu/slaves-encourager](https://github.com/thisemailrectrash-cpu/slaves-encourager)
 - 下载：[Releases](https://github.com/thisemailrectrash-cpu/slaves-encourager/releases)
@@ -31,10 +31,10 @@ git push --dry-run origin main
 git push -u origin main
 ```
 
-在 GitHub 创建 `v1.3.1` Release，标题为 `Slaves Encourager 1.3.1`，正文使用 [发布说明](RELEASE_NOTES.md)。上传：
+在 GitHub 创建 `v1.4.0` Release，标题为 `Slaves Encourager 1.4.0`，正文使用 [发布说明](RELEASE_NOTES.md)。上传：
 
-- `SlavesEncourager-1.3.1-windows-portable.zip`
-- `SlavesEncourager-1.3.1-source.zip`
+- `SlavesEncourager-1.4.0-windows-portable.zip`
+- `SlavesEncourager-1.4.0-source.zip`
 - `SHA256SUMS.txt`
 
 检查公开仓库的 README、MIT 标识、源码结构、Actions 结果与 Release 附件，再通知用户。

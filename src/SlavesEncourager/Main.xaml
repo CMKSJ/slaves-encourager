@@ -34,6 +34,7 @@
      <TextBlock Tag="app.name" Text="{DynamicResource app.name}" FontSize="13" FontWeight="SemiBold" VerticalAlignment="Center"/>
     </StackPanel>
     <StackPanel Grid.Column="1" Orientation="Horizontal">
+     <Button x:Name="ExpensesButton" Tag="main.expenses" Content="{DynamicResource main.expenses}" Visibility="Collapsed" Padding="8,5" Margin="0,0,5,0"/>
      <Button x:Name="PinButton" Content="{DynamicResource main.pin}" ToolTip="{DynamicResource main.pinTip}" Padding="8,5" Margin="0,0,5,0"/>
      <Button x:Name="MinimizeButton" Content="—" ToolTip="{DynamicResource main.hideTip}" BorderThickness="0" Padding="8,5"/>
      <Button x:Name="CloseButton" Content="×" ToolTip="{DynamicResource main.exitTip}" BorderThickness="0" Padding="8,5"/>

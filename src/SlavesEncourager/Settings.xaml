@@ -42,6 +42,12 @@
    <TabItem Header="{DynamicResource tab.salary}"><ScrollViewer VerticalScrollBarVisibility="Auto"><StackPanel>
     <TextBlock Text="{DynamicResource salary.amount}"/><TextBox x:Name="SalaryText" MaxLength="16"/>
     <TextBlock Text="{DynamicResource salary.basis}"/><ComboBox x:Name="BasisBox"><ComboBoxItem Content="{DynamicResource basis.actual}" Tag="actual"/><ComboBoxItem Content="{DynamicResource basis.fixed}" Tag="fixed"/></ComboBox>
+    <TextBlock Text="{DynamicResource salary.settlement}"/><ComboBox x:Name="SettlementBox"/>
+    <TextBlock Text="{DynamicResource salary.cycleHelp}" TextWrapping="Wrap" Foreground="{DynamicResource Muted}" FontSize="10" Margin="0,-6,0,14"/>
+    <Button x:Name="AdjustIncomeButton" Content="{DynamicResource income.adjust}" HorizontalAlignment="Left" Margin="0,0,0,5"/>
+    <TextBlock x:Name="IncomeAdjustmentHint" Text="{DynamicResource income.adjustHint}" Visibility="Collapsed" TextWrapping="Wrap" Foreground="{DynamicResource Muted}" Margin="0,0,0,12"/>
+    <CheckBox x:Name="ExpensesEnabledBox" Content="{DynamicResource expense.enable}" Margin="0,0,0,5"/>
+    <Button x:Name="OpenExpensesButton" Content="{DynamicResource expense.edit}" HorizontalAlignment="Left" Margin="0,0,0,14" IsEnabled="False"/>
     <Grid><Grid.ColumnDefinitions><ColumnDefinition/><ColumnDefinition Width="16"/><ColumnDefinition/></Grid.ColumnDefinitions>
      <StackPanel><TextBlock Text="{DynamicResource salary.start}"/><TextBox x:Name="StartText" MaxLength="5"/></StackPanel>
      <StackPanel Grid.Column="2"><TextBlock Text="{DynamicResource salary.end}"/><TextBox x:Name="EndText" MaxLength="5"/></StackPanel>
@@ -68,6 +74,11 @@
     <TextBlock Text="{DynamicResource help.tray}" Margin="0,0,0,12"/>
     <TextBlock Text="{DynamicResource help.demo}" TextWrapping="Wrap" Margin="0,0,0,12"/>
     <TextBlock Text="{DynamicResource help.local}" Foreground="{DynamicResource Muted}" TextWrapping="Wrap"/>
+   </StackPanel></ScrollViewer></TabItem>
+   <TabItem x:Name="ExpensesTab" Header="{DynamicResource expense.title}" Visibility="Collapsed"><ScrollViewer VerticalScrollBarVisibility="Auto"><StackPanel>
+    <Grid Margin="0,0,0,12"><TextBlock Text="{DynamicResource expense.listTitle}" FontSize="16" VerticalAlignment="Center"/><Button x:Name="AddExpenseButton" Content="{DynamicResource expense.add}" HorizontalAlignment="Right"/></Grid>
+    <TextBlock Text="{DynamicResource expense.editorHelp}" Foreground="{DynamicResource Muted}" TextWrapping="Wrap" FontSize="11" Margin="0,0,0,12"/>
+    <StackPanel x:Name="ExpensesHost"/>
    </StackPanel></ScrollViewer></TabItem>
   </TabControl>
   <TextBlock x:Name="ErrorText" Grid.Row="3" Foreground="#F28E7D" TextWrapping="Wrap" FontSize="11" Margin="0,10,0,0"/>

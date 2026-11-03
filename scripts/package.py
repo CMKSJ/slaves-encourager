@@ -5,7 +5,7 @@ from pathlib import Path
 from zipfile import ZipFile, ZIP_DEFLATED
 
 ROOT = Path(__file__).resolve().parents[1]
-VERSION = "1.3.1"
+VERSION = "1.4.0"
 ROOT_FILES = ["README.md", "README.en.md", "README.zh-Hant.md", "README.ja.md", "README.es.md", "README.ko.md",
               "LICENSE", "CONTRIBUTING.md", "THIRD_PARTY_NOTICES.md", "CHANGELOG.md", "AGENTS.md", "Dockerfile.windows", ".gitignore", ".gitattributes"]
 SOURCE_DIRS = ["src", "locales", "assets", "scripts", "tests", "docs", ".github"]

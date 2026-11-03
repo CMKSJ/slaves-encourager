@@ -22,6 +22,15 @@ Convierte tu tiempo en pequeñas recompensas: reloj de ingresos, cuenta atrás h
 
 <img src="docs/screenshots/es-main.png" width="380" alt="Interfaz en español">
 
+## Ciclos salariales y gastos (1.4.0)
+
+Elige el día de inicio del 1 al 31 (por defecto, 1). El día 15 abarca del 15 al 14 siguiente; en meses cortos se usa el último día. Ingresos, gastos y metas se reinician a medianoche.
+
+Los gastos están ocultos inicialmente. Actívalos en la configuración salarial y personaliza hasta 20 nombres, importes y prioridades. Las barras rojas muestran lo pendiente y bajan al aumentar el ingreso. Primero se cubren gastos y después recompensas. Desactivar conserva la lista guardada.
+
+Al configurar por primera vez, activar gastos a mitad del ciclo o cambiar el día, se confirma lo acumulado antes de guardar. Puedes corregirlo o empezar desde 0; solo se suma lo ganado después. Puedes corregirlo más tarde desde los ajustes salariales; el importe inicial caduca al siguiente ciclo. Son asignaciones estimadas, no pagos. [Reglas completas](docs/EXPENSES.md).
+
+
 ## Uso
 
 Requiere Windows 10/11 y .NET Framework 4.8. Extrae el ZIP y abre `SlavesEncourager.exe`. Funciona sin cuenta ni conexión y no envía telemetría.
@@ -32,9 +41,9 @@ Elige animación de solapas, deslizamiento o cifras estáticas, decimales, separ
 
 ## Cálculos y datos
 
-El sueldo se reparte entre los días programados del mes o sobre una base fija de 21,75 días. Los descansos se excluyen; los turnos pasados se consideran completos. No calcula impuestos, primas, horas extra ni asistencia real. Marca los festivos según tu horario. Los turnos nocturnos pertenecen a la fecha de inicio. La moneda solo cambia el símbolo.
+El sueldo se reparte entre los días programados del ciclo salarial o sobre una base fija de 21,75 días. Los descansos se excluyen; los turnos pasados se consideran completos. No calcula impuestos, primas, horas extra ni asistencia real. Marca los festivos según tu horario. Los turnos nocturnos pertenecen a la fecha de inicio. La moneda solo cambia el símbolo.
 
-El ingreso mensual estimado se reparte entre las metas por orden, sin duplicarlo, y el progreso se reinicia cada mes. No representa ahorros reales.
+El ingreso estimado del ciclo se reparte entre las metas por orden, sin duplicarlo, y el progreso se reinicia al empezar cada ciclo salarial. No representa ahorros reales.
 
 Los ajustes se guardan en `%LOCALAPPDATA%\NiumaFlip\settings.json`, una ruta interna conservada por compatibilidad. No están cifrados; cada guardado conserva una copia `.bak`.
 

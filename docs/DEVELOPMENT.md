@@ -2,10 +2,12 @@
 
 ## Architecture
 
-- `Engine.cs`: decimal money calculations, work intervals, calendar overrides, sequential goal allocations and compatible JSON settings.
+- `Engine.cs`: decimal money calculations, work intervals, calendar overrides, pay-period boundaries, confirmed opening balances, expense-first allocation, sequential goal allocations and compatible JSON settings.
 - `Localization.cs`: embedded UTF-8 TSV catalog, locale resolution, formatted strings and WPF dynamic resources.
 - `Program.cs`: application lifecycle, tray, live language preview, mode state and deterministic sample rendering.
 - `EditorControls.cs`: clickable monthly calendar and ordered goal editor.
+- `ExpenseWindow.cs`: opt-in read-only living-expense dashboard with shrinking red remaining bars.
+- `IncomeConfirmation.cs`: modal, editable estimate confirmation before the settings draft is committed.
 - `FlipDisplay.cs`: changed-digit animations and system animation preference.
 - `Main.xaml` / `Settings.xaml`: resource-driven interface; user-entered data remains separate from translations.
 
@@ -45,3 +47,13 @@ This renders all themes, main/mini/privacy modes and all settings tabs for each 
 ## Editable home copy
 
 See [Home text](HOME_TEXT.md). `HomeCopy` resolves per-language overrides in `Settings.HomeText`. It validates the editable-key allowlist, 300-character limit and exact numeric placeholders. Overrides apply only to main-window resources and runtime captions; the translation catalog, settings dialogs and income calculations remain independent. `HomeTextEditor` edits a serialized copy; the controller applies it only after atomic persistence succeeds.
+
+## Pay cycles and living expenses
+
+See [rules and examples](EXPENSES.md). Missing `SettlementDay` means 1; missing `ExpensesEnabled` means false. `OpeningIncome` is nullable so zero is distinguishable from an absent baseline. Its paired `OpeningAt` uses local wall-clock ISO text with seven fractional-second digits, matching the engine's local schedule model. Only the current period uses an anchor; later periods ignore it. No timer state, transactions or payment confirmations are persisted.
+
+`Snapshot.Month` and `MonthDays` retain their historical field names for callers, but now refer to the pay cycle. `Today` remains the current shift's earnings; correcting period income does not change it. `PeriodIncome` uses scheduled shift-start dates. At settlement midnight, a prior-cycle overnight shift is excluded from the new period even if the daily card still shows that shift. Changing schedule/salary recalculates future increments; reconfirm the baseline when a historical correction is needed.
+
+Settings drafts own their expense rows. Confirming income modifies only the draft, and the main controller applies it after atomic save succeeds. Turning off expenses discards hidden unsaved row edits and retains the prior saved list. Stored names are never translated; starter names use the active locale before first save.
+
+`-VisualCheck` also exercises actual nested modal save/edit/cancel flows on sample settings in each language, asserts expense opt-in visibility, and renders partial/complete/empty/private expense states and income confirmation.
