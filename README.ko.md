@@ -12,6 +12,9 @@
 
 <p align="center"><a href="https://github.com/thisemailrectrash-cpu/slaves-encourager/releases/latest"><strong>Windows 버전 다운로드</strong></a></p>
 
+<p align="center"><img src="docs/demo.gif" width="900" alt="수입 숫자 플립 효과와 6개 언어 전환 데모"></p>
+<p align="center"><sub>실제 앱 화면 · 예시 데이터 · 6개 언어 전환</sub></p>
+
 고정된 홈 문구를 두 번 클릭하거나 버튼을 우클릭해 편집하세요 (`Ctrl+E`). 저장·취소·개별 문구 또는 현재 언어 복원을 지원하며 언어별로 저장됩니다. [설명](docs/HOME_TEXT.md).
 
 열심히 보낸 시간을 작은 보상으로 바꿔 보세요. Windows용 수입 시계, 퇴근 카운트다운, 근무 달력과 목표 목록입니다.

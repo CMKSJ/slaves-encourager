@@ -12,6 +12,9 @@
 
 <p align="center"><a href="https://github.com/thisemailrectrash-cpu/slaves-encourager/releases/latest"><strong>下载 Windows 便携版</strong></a></p>
 
+<p align="center"><img src="docs/demo.gif" width="900" alt="赚钱数字翻页和六语言切换演示"></p>
+<p align="center"><sub>真实应用界面 · 内置示例数据 · 六语言切换</sub></p>
+
 主页固定文字支持直接修改：双击文字，或右键按钮选择「编辑主页文字」（`Ctrl+E`）。支持保存、取消、恢复单项和恢复当前语言，修改按语言独立保存。详见[文字编辑说明](docs/HOME_TEXT.md)。
 
 把工作时间变成看得见的小奖励。一个支持翻页数字、收入估算、下班倒计时、排班日历和多个目标的 Windows 桌面悬窗。

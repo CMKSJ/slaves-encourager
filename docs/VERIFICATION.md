@@ -18,6 +18,7 @@ Verified locally on **2026-11-04** for version **1.3.1**.
 | Source icon | PNG, RGBA, 1254 × 1254, alpha range 0–255 |
 | Windows icon | 16, 24, 32, 48, 64, 128 and 256 pixels |
 | README links and screenshots | PASS |
+| README animation | PASS: 1000 × 660, 360 frames, 20 fps, 18 seconds, infinite loop; 401,621 bytes; full decode and six-language visual review |
 | Source archive scope | PASS: no settings, private machine paths, binaries, backups or old packages |
 | ZIP contents and CRC | PASS; packaged bytes matched source files |
 | Public repository and first remote Windows CI | PASS: initial commit `f1bf4a5`, [run 41684486237](https://github.com/thisemailrectrash-cpu/slaves-encourager/actions/runs/41684486237); later results shown by the live badge |

@@ -19,7 +19,7 @@ Target: .NET Framework 4.8, AnyCPU, WPF. Runtime compatibility is intended for W
 
 `scripts/create-icon.ps1` generates seven PNG-compressed ICO frames from the checked-in PNG with Windows System.Drawing. `assets/app.ico` is also checked in so the project opens with an icon before building.
 
-Python 3 is used for source validation and packaging, using the standard library only. The Windows app itself does not require Python. Visual previews can optionally be combined into a GIF with an existing image tool; that is not a build dependency.
+Python 3 is used for source validation and packaging, using the standard library only. The Windows app itself does not require Python. The optional [README animation](DEMO.md) uses real WPF controls through `scripts/render-demo.ps1` and an existing FFmpeg executable; FFmpeg is not a build dependency.
 
 ## Language behavior
 

@@ -12,6 +12,9 @@
 
 <p align="center"><a href="https://github.com/thisemailrectrash-cpu/slaves-encourager/releases/latest"><strong>下載 Windows 便攜版</strong></a></p>
 
+<p align="center"><img src="docs/demo.gif" width="900" alt="收入數字翻頁及六語言切換示範"></p>
+<p align="center"><sub>實際應用程式畫面 · 內建範例資料 · 六語言切換</sub></p>
+
 主頁固定文字可直接修改：按兩下文字，或以右鍵點按鈕選擇「編輯主頁文字」（`Ctrl+E`）。支援儲存、取消、還原單項與目前語言，各語言分別保存。詳見[文字編輯說明](docs/HOME_TEXT.md)。
 
 把工作時間變成看得見的小獎勵。支援翻頁數字、收入估算、下班倒數、排班日曆與多個目標的 Windows 桌面工具。

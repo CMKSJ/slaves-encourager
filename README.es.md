@@ -12,6 +12,9 @@
 
 <p align="center"><a href="https://github.com/thisemailrectrash-cpu/slaves-encourager/releases/latest"><strong>Descargar para Windows</strong></a></p>
 
+<p align="center"><img src="docs/demo.gif" width="900" alt="Demostración de cifras animadas y cambio entre seis idiomas"></p>
+<p align="center"><sub>Interfaz real · Datos de ejemplo · Seis idiomas</sub></p>
+
 Edita los textos fijos con doble clic, o con clic derecho en un botón (`Ctrl+E`). Guarda, cancela o restaura un texto o el idioma actual. Los cambios se guardan por idioma. [Guía](docs/HOME_TEXT.md).
 
 Convierte tu tiempo en pequeñas recompensas: reloj de ingresos, cuenta atrás hasta la salida, calendario laboral y metas para Windows.

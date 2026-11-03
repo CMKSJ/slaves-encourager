@@ -12,6 +12,9 @@
 
 <p align="center"><a href="https://github.com/thisemailrectrash-cpu/slaves-encourager/releases/latest"><strong>Download for Windows</strong></a></p>
 
+<p align="center"><img src="docs/demo.gif" width="900" alt="Live flip-digit earnings and six-language switching demo"></p>
+<p align="center"><sub>Real app interface · Built-in sample data · Six languages</sub></p>
+
 Edit any fixed home caption: double-click text, or right-click a button and choose **Edit home text** (`Ctrl+E`). Save, cancel, reset one entry or reset the current language. Edits persist independently per language. See [Home text](docs/HOME_TEXT.md).
 
 A local-first Windows earnings clock: see your time turn into small rewards.

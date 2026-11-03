@@ -12,6 +12,9 @@
 
 <p align="center"><a href="https://github.com/thisemailrectrash-cpu/slaves-encourager/releases/latest"><strong>Windows版をダウンロード</strong></a></p>
 
+<p align="center"><img src="docs/demo.gif" width="900" alt="収入のフリップ表示と6言語切り替えのデモ"></p>
+<p align="center"><sub>実際のアプリ画面 · サンプルデータ · 6言語切り替え</sub></p>
+
 ホームの固定文字をダブルクリック、またはボタンを右クリックして編集できます（`Ctrl+E`）。保存・キャンセル・項目や現在の言語のリセットに対応。変更は言語ごとに保存されます。[説明](docs/HOME_TEXT.md)。
 
 がんばる時間を、見えるごほうびに。Windows用の収入時計、退勤カウントダウン、勤務カレンダー、目標リストです。

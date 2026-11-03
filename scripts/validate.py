@@ -46,9 +46,12 @@ def validate():
             # 网络徽章保留远程地址，仅核对本地资源 / Keep remote badges external and check local resources.
             if "://" not in target and not target.startswith("#"):
                 assert (readme.parent / target).exists(), f"Missing local resource: {target}"
+    demo = (ROOT / "docs/demo.gif").read_bytes()
+    assert demo[:6] == b"GIF89a" and struct.unpack_from("<HH", demo, 6) == (1000, 660), "Invalid README animation canvas"
+    assert b"NETSCAPE2.0\x03\x01\x00\x00\x00" in demo, "README animation must loop"
     license_text = (ROOT / "LICENSE").read_text(encoding="utf-8")
     assert "MIT License" in license_text and "Permission is hereby granted" in license_text
-    summary = {"languages": LANGUAGES, "translation_keys": len(keys), "referenced_keys": len(referenced), "xml": "PASS", "translation_tokens": "PASS", "icon_sizes": icon_sizes, "readme_links": "PASS", "license": "MIT"}
+    summary = {"languages": LANGUAGES, "translation_keys": len(keys), "referenced_keys": len(referenced), "xml": "PASS", "translation_tokens": "PASS", "icon_sizes": icon_sizes, "readme_links": "PASS", "readme_animation": {"width": 1000, "height": 660, "loop": "infinite", "bytes": len(demo)}, "license": "MIT"}
     output = ROOT / ".build"
     output.mkdir(exist_ok=True)
     (output / "static-validation.json").write_text(json.dumps(summary, indent=2), encoding="utf-8")

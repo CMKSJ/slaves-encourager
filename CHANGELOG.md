@@ -1,5 +1,10 @@
 # 版本记录 / Changelog
 
+## Unreleased
+
+- Add an 18-second README GIF showing real flip-digit animation and all six languages, with a close-up of the earnings card.
+- Add reproducible sample-only WPF capture and GIF encoding scripts; existing v1.3.1 release assets remain unchanged.
+
 ## 1.3.1 — 2026-11-04
 
 - Centered live CI, MIT and release badges; six-language README navigation and localized download links.
