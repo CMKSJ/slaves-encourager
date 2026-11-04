@@ -1,3 +1,25 @@
+# 牛马鼓励器 / Slaves Encourager
+
+<p align="center">
+  <a href="https://github.com/thisemailrectrash-cpu/slaves-encourager/actions/workflows/windows.yml"><img src="https://github.com/thisemailrectrash-cpu/slaves-encourager/actions/workflows/windows.yml/badge.svg?branch=main" alt="CI"></a>
+  <a href="LICENSE"><img src="https://img.shields.io/badge/code-MIT-blue" alt="Code: MIT"></a>
+  <a href="https://github.com/thisemailrectrash-cpu/slaves-encourager/releases/latest"><img src="https://img.shields.io/github/v/release/thisemailrectrash-cpu/slaves-encourager?label=release" alt="Latest release"></a>
+</p>
+
+<p align="center"><strong>简体中文</strong> · <a href="README.zh-Hant.md">繁體中文</a> · <a href="README.en.md">English</a> · <a href="README.ja.md">日本語</a> · <a href="README.es.md">Español</a> · <a href="README.ko.md">한국어</a></p>
+
+<p align="center"><a href="https://github.com/thisemailrectrash-cpu/slaves-encourager/releases/latest"><strong>下载 Windows 便携版</strong></a></p>
+
+<p align="center"><img src="docs/demo.gif" width="900" alt="赚钱数字翻页和六语言切换演示"></p>
+<p align="center"><sub>真实应用界面 · 内置示例数据 · 六语言切换</sub></p>
+
+主页固定文字支持直接修改：双击文字，或右键按钮选择「编辑主页文字」（`Ctrl+E`）。支持保存、取消、恢复单项和恢复当前语言，修改按语言独立保存。详见[文字编辑说明](docs/HOME_TEXT.md)。
+
+把工作时间变成看得见的小奖励。一个支持翻页数字、收入估算、下班倒计时、排班日历和多个目标的 Windows 桌面悬窗。
+
+
+<img src="docs/screenshots/zh-Hans-main.png" width="370" alt="雾蓝暖杏主题的主窗口"> <img src="docs/screenshots/en-main.png" width="370" alt="English interface">
+
 # 1.5.0-beta.4 · 美股监控与持仓 · 公开预发布版
 
 **macOS 版**：现已加入 Apple 芯片和 Intel 原生项目，功能对齐 Windows beta.4；原生构建附件见同一 Release。[安装、功能对照与首次打开说明](docs/MACOS.md)。
@@ -21,28 +43,6 @@
 <img src="docs/screenshots/zh-Hans-stock.png" width="650" alt="Local beta simulated holdings preview">
 
 <p align="center"><img src="assets/app.png" width="96" alt="Slaves Encourager"></p>
-
-# 牛马鼓励器 / Slaves Encourager
-
-<p align="center">
-  <a href="https://github.com/thisemailrectrash-cpu/slaves-encourager/actions/workflows/windows.yml"><img src="https://github.com/thisemailrectrash-cpu/slaves-encourager/actions/workflows/windows.yml/badge.svg?branch=main" alt="CI"></a>
-  <a href="LICENSE"><img src="https://img.shields.io/badge/code-MIT-blue" alt="Code: MIT"></a>
-  <a href="https://github.com/thisemailrectrash-cpu/slaves-encourager/releases/latest"><img src="https://img.shields.io/github/v/release/thisemailrectrash-cpu/slaves-encourager?label=release" alt="Latest release"></a>
-</p>
-
-<p align="center"><strong>简体中文</strong> · <a href="README.zh-Hant.md">繁體中文</a> · <a href="README.en.md">English</a> · <a href="README.ja.md">日本語</a> · <a href="README.es.md">Español</a> · <a href="README.ko.md">한국어</a></p>
-
-<p align="center"><a href="https://github.com/thisemailrectrash-cpu/slaves-encourager/releases/latest"><strong>下载 Windows 便携版</strong></a></p>
-
-<p align="center"><img src="docs/demo.gif" width="900" alt="赚钱数字翻页和六语言切换演示"></p>
-<p align="center"><sub>真实应用界面 · 内置示例数据 · 六语言切换</sub></p>
-
-主页固定文字支持直接修改：双击文字，或右键按钮选择「编辑主页文字」（`Ctrl+E`）。支持保存、取消、恢复单项和恢复当前语言，修改按语言独立保存。详见[文字编辑说明](docs/HOME_TEXT.md)。
-
-把工作时间变成看得见的小奖励。一个支持翻页数字、收入估算、下班倒计时、排班日历和多个目标的 Windows 桌面悬窗。
-
-
-<img src="docs/screenshots/zh-Hans-main.png" width="370" alt="雾蓝暖杏主题的主窗口"> <img src="docs/screenshots/en-main.png" width="370" alt="English interface">
 
 ## 工资周期与生活开支（1.4.0）
 
