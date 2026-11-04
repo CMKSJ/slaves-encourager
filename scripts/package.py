@@ -15,7 +15,7 @@ def source_files():
     files = [ROOT / name for name in ROOT_FILES]
     for directory in SOURCE_DIRS:
         files.extend(path for path in (ROOT / directory).rglob("*") if path.is_file()
-                     and "__pycache__" not in path.parts and path.suffix not in {".pyc", ".zip", ".bak", ".tmp", ".exe", ".pdb"})
+                     and not {"__pycache__", "bin", "obj"}.intersection(path.parts) and path.suffix not in {".pyc", ".zip", ".bak", ".tmp", ".exe", ".pdb"})
     for path in files:
         assert path.is_file(), path
         assert path.name != "settings.json" and "test-data" not in path.parts, path

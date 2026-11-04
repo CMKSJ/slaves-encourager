@@ -41,6 +41,11 @@ python scripts/validate.py
 python scripts/package.py
 ```
 
-An explicit live provider probe uses `.build/StockTests.exe --public-quote-probe`; normal behavior tests are offline. Screenshots and OCR samples are synthetic. Logs and test data remain in ignored `.build/`; packages include only allowlisted project files and synthetic examples.
+An explicit live provider probe uses `.build/StockTests.exe --public-quote-probe`; normal behavior tests are offline. Screenshots and OCR samples are synthetic. Build logs remain in ignored `.build/`; shared behavior tests write synthetic data under a dedicated temporary directory outside application bundles. Packages include only allowlisted project files and synthetic examples.
 
 The native OCR helper was tested in the normal Windows user context, since the developer sandbox denies the WinRT storage broker. No policy was changed. Windows 10, ARM, multiple DPI/monitor setups, missing OCR packs, prolonged quote refresh and actual individual broker workflows remain review items. Source rules and detailed user steps: [STOCK_BETA.md](STOCK_BETA.md).
+
+
+macOS edition: native Apple Silicon/Intel workflow runs the same 151+79 checks plus Mac draft/path, six-language actual UI prompt/settings/import checks, Apple Vision synthetic OCR and bundle/signature checks. See [MACOS.md](MACOS.md); completed native status is recorded in GitHub Actions and the macOS Release addendum. No Developer ID notarization is claimed.
+
+macOS packaging also verifies the signed app after tests, after ZIP extraction and on a mounted read-only DMG, then launches from that DMG. Test data must never modify signed bundle contents. Native UI smoke uses software rendering on virtual runners; real GPU and physical multi-monitor combinations remain outside this automated check. Menu-bar translation updates retain the native menu instance, and smoke startup is one-shot across hide/restore.

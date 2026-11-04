@@ -295,7 +295,10 @@ namespace SlavesEncourager
         static readonly DateTimeOffset Epoch = new DateTimeOffset(1970, 1, 1, 0, 0, 0, TimeSpan.Zero);
         public YahooQuoteProvider()
         {
+#if !NET8_0_OR_GREATER
+            // 旧框架需要显式 TLS；现代 HttpClient 使用系统协商 / Legacy Framework needs explicit TLS; modern HttpClient uses OS negotiation.
             ServicePointManager.SecurityProtocol |= SecurityProtocolType.Tls12;
+#endif
             client = new HttpClient(new HttpClientHandler { AllowAutoRedirect = false }) { Timeout = TimeSpan.FromSeconds(12), MaxResponseContentBufferSize = 2000000 };
             client.DefaultRequestHeaders.UserAgent.ParseAdd("SlavesEncourager-LocalBeta/0.1");
         }

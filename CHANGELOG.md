@@ -1,5 +1,12 @@
 # 版本记录 / Changelog
 
+## 1.5.0-beta.4 macOS edition
+
+- Apple Silicon and Intel app bundles with self-contained .NET 10 and Avalonia 11.3.22; compile shared Windows financial, localization and stock domain sources.
+- Earnings animations/formats, schedules/calendar, payroll/opening-income confirmation, multiple goals, optional expenses, privacy/mini/pin/demo and editable home text.
+- Dedicated Stocks tab, first-use prompt, isolated drafts and four import paths; Apple Vision replaces Windows OCR locally.
+- Native two-architecture CI validates shared behavior, six-language UI and OCR, then verifies ad-hoc signatures and produces DMG/ZIP attachments for the existing beta.4 prerelease. No Developer ID notarization.
+
 ## 1.5.0-beta.4 — Public prerelease
 
 - Public prerelease authorized on 2026-11-04; stable 1.4.0 remains available.

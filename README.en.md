@@ -1,5 +1,7 @@
 # 1.5.0-beta.4 · US stocks and holdings · Public prerelease
 
+**macOS edition**: native Apple Silicon and Intel projects match Windows beta.4 features; native build assets are on the same Release. [Install, parity and first launch](docs/MACOS.md).
+
 Stocks are hidden by default. First-time setup asks whether to enable them: Yes opens the dedicated Stocks tab; Not now opens salary setup. Add, edit, remove or import stocks there, then Save & apply to show the home module. The window grows automatically; home has no scrolling and scales its body on short screens. Turning the setting off pauses quote requests and keeps saved data.
 
 New: **add symbols directly**, such as `AAPL, MSFT, NVDA`, to watch prices, percentage changes and quote times without entering shares. Switch to holding mode for share-based PnL. Batch add, edit and remove; watch entries never count as owned positions. [Guide](docs/STOCK_BETA.md).

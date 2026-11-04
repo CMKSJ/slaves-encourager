@@ -101,7 +101,8 @@ public static class StockTests
             Check(HoldingImport.GuessColumn(new List<string> { "代码", "持仓数量", "平均成本", "币种" }, "quantity") == 1, "Chinese header aliases supported");
             Check(HoldingImport.GuessColumn(new List<string> { "Cost Basis", "Market Value" }, "cost") == -1, "Total cost and market value are never mistaken for per-share cost");
             Check(StockMath.NormalizeSymbol("NASDAQ:aapl") == "AAPL" && !StockMath.ValidSymbol("AAPL261120C00200000"), "US prefixes supported and option codes rejected");
-            var directory = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "test-data", "stock-" + Guid.NewGuid().ToString("N")); Directory.CreateDirectory(directory);
+            // 测试数据不进入已签名程序目录 / Test data must stay outside the signed application directory.
+            var directory = Path.Combine(Path.GetTempPath(), "SlavesEncourager-tests", "stock-" + Guid.NewGuid().ToString("N")); Directory.CreateDirectory(directory);
             string workbook = Path.Combine(directory, "sample.xlsx"), stateFile = Path.Combine(directory, "portfolio.json");
             Xlsx(workbook, "worksheets/sheet1.xml", false, false);
             Check(HoldingImport.Map(HoldingImport.ReadXlsx(workbook), 0, 0, 1, 2, 3)[0].AverageCost == 150m, "XLSX inline strings and numeric cells import");

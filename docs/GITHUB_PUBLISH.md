@@ -9,3 +9,6 @@
 - 扩展仍由用户手动加载，不自动安装或上架。MIT 仅覆盖本项目代码，不授予第三方行情再分发权。真实券商页面和扩展实际交互仍待进一步验证。
 
 The user authorized public beta.4 publication on 2026-11-04. Use a separate beta branch/tag, dry-run remote operations first, verify all three uploaded asset hashes, and preserve stable releases. No real holdings or market-response data may be uploaded.
+
+
+macOS publication authorized: append Apple Silicon/Intel DMG and ZIP, macOS source ZIP and SHA256SUMS-macos.txt to the existing beta.4 prerelease only after native CI succeeds. Preserve old Windows asset IDs/digests, stable main/latest and the existing tag. Record exact macOS source commit and link it in the release body; API writes require a read-only dry-run first.

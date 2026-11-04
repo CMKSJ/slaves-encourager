@@ -11,3 +11,8 @@ The project's license is [MIT](LICENSE). Retain its copyright and permission not
 ## Stock beta data
 
 Yahoo Finance is an optional experimental remote data source, not a bundled library or guaranteed official API. Yahoo/provider terms govern data; the MIT license covers project code, not market-data redistribution. No actual quote payload is included in public examples. Windows.Media.Ocr is an installed Windows component; no OCR language packs are bundled or installed. The browser extension has no external scripts or libraries. See docs/STOCK_BETA.md.
+
+
+## macOS dependencies
+
+The macOS edition bundles the .NET runtime (MIT), Avalonia 11.3.22 (MIT), and its transitive SkiaSharp/Skia and HarfBuzzSharp/HarfBuzz native dependencies under their upstream licenses (MIT/BSD/Unicode as applicable). The Mac package includes third-party license texts collected from the resolved NuGet packages and .NET runtime. [Avalonia](https://github.com/AvaloniaUI/Avalonia), [.NET](https://github.com/dotnet/runtime), [SkiaSharp](https://github.com/mono/SkiaSharp), [HarfBuzz](https://github.com/harfbuzz/harfbuzz). Apple AppKit/Vision are operating-system frameworks, not redistributed. Fonts use existing platform fonts.
