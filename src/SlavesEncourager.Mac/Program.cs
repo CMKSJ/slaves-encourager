@@ -248,19 +248,22 @@ public sealed class MainWindow : Window
     public void RestoreWindow() { Show(); WindowState = WindowState.Normal; Activate(); }
     void UpdateMenuBar()
     {
+        NativeMenuItem Item(string key, Action action)
+        { var item = new NativeMenuItem(L.T(key)); item.Click += (_, _) => action(); return item; }
         if (MenuBarIcon == null)
         {
-            MenuBarIcon = new TrayIcon { Icon = Icon, IsVisible = true };
+            var menu = new NativeMenu();
+            menu.Items.Add(Item("tray.show", RestoreWindow));
+            menu.Items.Add(Item("tray.mini", () => { RestoreWindow(); mini = !mini; Build(); }));
+            menu.Items.Add(Item("settings.open", async () => { RestoreWindow(); await OpenSettings(); }));
+            menu.Items.Add(new NativeMenuItemSeparator()); menu.Items.Add(Item("tray.quit", Close));
+            MenuBarIcon = new TrayIcon { Icon = Icon, Menu = menu, IsVisible = true };
             TrayIcon.SetIcons(Application.Current, new TrayIcons { MenuBarIcon });
         }
         MenuBarIcon.ToolTipText = L.T("app.name");
-        var menu = new NativeMenu();
-        NativeMenuItem Item(string key, Action action)
-        { var item = new NativeMenuItem(L.T(key)); item.Click += (_, _) => action(); return item; }
-        menu.Items.Add(Item("tray.show", RestoreWindow));
-        menu.Items.Add(Item("tray.mini", () => { RestoreWindow(); mini = !mini; Build(); }));
-        menu.Items.Add(Item("settings.open", async () => { RestoreWindow(); await OpenSettings(); }));
-        menu.Items.Add(new NativeMenuItemSeparator()); menu.Items.Add(Item("tray.quit", Close)); MenuBarIcon.Menu = menu;
+        // 保持原生菜单对象稳定，只更新文案 / Keep the native menu identity stable; update captions only.
+        var keys = new[] { "tray.show", "tray.mini", "settings.open", "", "tray.quit" };
+        for (int i = 0; i < keys.Length; i++) if (keys[i].Length > 0) ((NativeMenuItem)MenuBarIcon.Menu.Items[i]).Header = L.T(keys[i]);
     }
     void Fit()
     {
