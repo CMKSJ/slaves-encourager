@@ -1,3 +1,15 @@
+# 1.5.0-beta.4 · 미국 주식 모니터링과 보유 종목 · 공개 미리 보기
+
+주식 기능은 기본 숨김입니다. 최초 설정에서 켤지 물으며 켜면 전용 주식 탭, 나중에를 선택하면 급여 설정으로 이동합니다. 주식 탭에서 추가·편집·제거·가져오기를 하고 저장하면 홈 맨 아래에 표시됩니다. 창 높이가 늘어나며 작은 화면은 본문을 축소해 스크롤 없이 보여 줍니다. 끄면 시세 요청을 일시 중지하고 저장 데이터는 유지합니다.
+
+추가: `AAPL, MSFT, NVDA`처럼 **코드만으로 관심 종목을 추가**해 가격, 등락률, 시세 시간을 확인하세요. 수량을 입력하면 보유 손익 모드로 전환할 수 있습니다. 일괄 추가, 편집, 제거를 지원하며 관찰 종목은 보유 손익에 포함하지 않습니다. [설명](docs/STOCK_BETA.md).
+
+**[1.5.0-beta.4 미리 보기 다운로드](https://github.com/thisemailrectrash-cpu/slaves-encourager/releases/tag/v1.5.0-beta.4)**. 주식 기능은 실험 단계이며 실제 증권사 페이지와 확장 프로그램 조작은 추가 검증이 필요합니다. 확장 프로그램은 스토어에 등록되지 않았습니다. [안정 버전 1.4.0](https://github.com/thisemailrectrash-cpu/slaves-encourager/releases/tag/v1.4.0)은 유지되며 아래 일반 다운로드 링크는 안정 버전으로 연결됩니다.
+
+CSV/Excel, 표 붙여넣기, Windows 로컬 OCR, 브라우저 확장 네 가지 방식을 지원합니다. 고정 보유량을 확인한 뒤 Yahoo 실험 시세를 선택해 켤 수 있습니다. 최근 거래일 추정 손익은 급여, 생활비, 목표와 별도로 표시합니다. 증권 계좌 연결이나 주문은 없습니다. `browser-extension` 폴더를 수동으로 로드하세요.
+
+[사용 단계, 계산, 제한 및 검토 항목](docs/STOCK_BETA.md). 로컬 베타 EXE/ZIP을 사용하고 먼저 가상 예시로 테스트하세요.
+
 <p align="center"><img src="assets/app.png" width="96" alt="Slaves Encourager"></p>
 
 # 직장인 응원 / Slaves Encourager
@@ -33,7 +45,7 @@
 
 ## 사용 방법
 
-Windows 10/11 및 .NET Framework 4.8이 필요합니다. ZIP을 풀고 `SlavesEncourager.exe`를 실행하세요. 계정과 인터넷이 필요 없으며 원격 측정 정보를 보내지 않습니다.
+Windows 10/11 및 .NET Framework 4.8이 필요합니다. ZIP을 풀고 `SlavesEncourager.exe`를 실행하세요. 급여는 오프라인으로 작동하며 시세 연결은 선택 사항입니다. 증권 계좌 로그인과 원격 측정은 없습니다.
 
 처음에는 데모 데이터가 표시됩니다. «처음 사용 설정»에서 월급과 근무 시간을 입력하고 달력에서 휴일과 추가 근무를 지정한 다음 저장하세요. 목표는 최대 20개까지 추가하고 순서를 바꿀 수 있습니다. 설정 오른쪽 위에서 6개 언어를 선택할 수 있으며 저장하면 유지됩니다. 취소하면 원래 언어로 돌아갑니다.
 
@@ -45,7 +57,7 @@ Windows 10/11 및 .NET Framework 4.8이 필요합니다. ZIP을 풀고 `SlavesEn
 
 목표에는 이번 주기 추정 수입을 목록 순서대로 한 번씩 배분합니다. 급여 주기 시작일에 초기화되며 실제 저축 잔액이 아닙니다.
 
-설정은 호환성을 위해 `%LOCALAPPDATA%\NiumaFlip\settings.json`에 저장합니다. 암호화되지 않으며 저장 시 `.bak` 사본을 남깁니다.
+설정은 안정 버전과 분리하여 `%LOCALAPPDATA%\SlavesEncouragerStockBeta\settings.json`에 저장합니다. 암호화되지 않으며 저장 시 `.bak` 사본을 남깁니다.
 
 ## 개발 및 라이선스
 

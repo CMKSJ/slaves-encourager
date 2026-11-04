@@ -1,5 +1,35 @@
 # 版本记录 / Changelog
 
+## 1.5.0-beta.4 — Public prerelease
+
+- Public prerelease authorized on 2026-11-04; stable 1.4.0 remains available.
+- Dedicated Stocks settings tab with manual entry, editing/removal and holding import; stock edits stay drafts until settings save.
+- First-use prompt: Enable opens Stocks, Not now opens salary setup, Cancel exits; configured users are not prompted repeatedly.
+- Retain default-hidden bottom home card, no-scroll height fitting and independent quote consent.
+
+
+## 1.5.0-beta.3 — Local only, review pending
+
+- Hide stocks by default; opt in from first-use salary settings and keep the module last on home.
+- Grow home naturally when enabled; fit shorter screens without home scrolling or clipped bottom actions.
+- Pause/cancel quote requests when the feature is hidden while retaining holdings and prior consent.
+
+
+## 1.5.0-beta.2 — Local only, review pending
+
+- Direct symbol entry and batch watchlists without shares, plus edit/remove and watch-to-holding conversion.
+- Price/change monitoring, watch coverage and no fabricated holding PnL for unowned stocks.
+- Preserve watch entries on holding imports, backward-compatible saved positions and six-language manual editor.
+
+
+## 1.5.0-beta.1 — Local only, review pending
+
+- Four reviewed import routes: CSV/XLSX, clipboard text/HTML, local geometric OCR and user-triggered MV3 holdings export.
+- US/USD fixed-snapshot estimated trading-day PnL with opt-in Yahoo experimental quotes, bounded refresh/cancellation, timestamp and coverage checks.
+- Separate motivation card, privacy masking, isolated beta settings, six locales and detailed stock guide.
+- No brokerage credentials/orders, source upload, beta Release or automatic browser extension installation.
+
+
 ## 1.4.0 — 2026-11-04
 
 - Add optional living expenses, hidden by default; customize up to 20 recurring items, shrink red uncovered bars with income, and fund rewards from surplus only.

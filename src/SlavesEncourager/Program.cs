@@ -119,6 +119,7 @@ namespace SlavesEncourager
                 theme == "forest" ? new[] { "#242337", "#302D46", "#3C3755", "#504969", "#F5F0FC", "#B7ACC9", "#D5BDEB", "#302441", "#45405C", "#3A354F" } :
                 new[] { "#F1F4FA", "#FFFFFF", "#E7EDF8", "#D6DFEE", "#27364D", "#74839A", "#526FA8", "#FFFFFF", "#DEE7F4", "#D2DFF0" };
             for (int i = 0; i < names.Length; i++) resources[names[i]] = new SolidColorBrush((Color)ColorConverter.ConvertFromString(colors[i]));
+            resources["StockGain"] = new SolidColorBrush((Color)ColorConverter.ConvertFromString(theme == "forest" ? "#A2D5CD" : "#34786F"));
             resources["ExpenseRed"] = new SolidColorBrush((Color)ColorConverter.ConvertFromString(theme == "forest" ? "#F298AA" : "#BD465D"));
             resources["ExpenseTrack"] = new SolidColorBrush((Color)ColorConverter.ConvertFromString(theme == "forest" ? "#533747" : "#F1DEE4"));
         }
@@ -134,6 +135,8 @@ namespace SlavesEncourager
         readonly DispatcherTimer timer = new DispatcherTimer();
         Forms.NotifyIcon tray;
         ExpenseWindow expenseWindow;
+        StockWindow stockWindow;
+        readonly StockService stocks;
         bool demo, privacy, mini;
         int selectedGoal = -1;
         readonly Stopwatch demoWatch = Stopwatch.StartNew();
@@ -161,8 +164,11 @@ namespace SlavesEncourager
             InstallCopyEditor();
             Find<Image>("BrandIcon").Source = Program.LoadIcon();
             Palette.Apply(Window.Resources, settings.Theme);
+            stocks = new StockService(PortfolioState.DefaultPath, preview, new YahooQuoteProvider(), settings.StocksEnabled);
+            stocks.Changed += delegate { Refresh(false); };
+            Find<Button>("StockButton").Click += delegate { OpenStocks(); };
             Window.Topmost = settings.Topmost;
-            Window.Height = Math.Min(Window.Height, SystemParameters.WorkArea.Height - 12);
+            Window.Loaded += delegate { FitHomeWindow(); };
             Find<Grid>("FlipHost").Children.Add(display);
             Window.PreviewMouseLeftButtonDown += delegate(object sender, MouseButtonEventArgs e)
             {
@@ -208,10 +214,11 @@ namespace SlavesEncourager
                 { privacy = !privacy; display.Reset(); Refresh(false); e.Handled = true; }
                 if (e.Key == Key.Escape && mini) { ToggleMini(); e.Handled = true; }
             };
-            Window.Closed += delegate { timer.Stop(); if (tray != null) tray.Dispose(); };
+            Window.Closed += delegate { timer.Stop(); stocks.Dispose(); if (tray != null) tray.Dispose(); };
             if (!previewOnly) CreateTray();
             timer.Interval = TimeSpan.FromSeconds(1);
             timer.Tick += delegate { Refresh(true); }; timer.Start(); Refresh(false);
+            if (!preview) Window.Dispatcher.BeginInvoke(DispatcherPriority.ApplicationIdle, new Action(async delegate { await stocks.RefreshAsync(); }));
         }
 
         void CreateTray()
@@ -277,10 +284,22 @@ namespace SlavesEncourager
             Find<StackPanel>("DetailPanel").Visibility = mini ? Visibility.Collapsed : Visibility.Visible;
             Find<Grid>("RatePanel").Visibility = mini ? Visibility.Collapsed : Visibility.Visible;
             Window.Width = mini ? (L.Code.StartsWith("zh") ? 470 : 540) : 548;
-            Window.Height = mini ? 310 : Math.Min(790, SystemParameters.WorkArea.Height - 12);
+            FitHomeWindow();
             Window.Top = Math.Max(SystemParameters.WorkArea.Top, Math.Min(Window.Top, SystemParameters.WorkArea.Bottom - Window.Height));
             Window.Left = Math.Max(SystemParameters.WorkArea.Left, Math.Min(Window.Left, SystemParameters.WorkArea.Right - Window.Width));
-            Refresh(false);
+            Refresh(false); FitHomeWindow();
+        }
+
+        void FitHomeWindow()
+        {
+            // 先按自然高度拉长，屏幕不足时整体缩放正文，无需滚动 / Grow to natural height, then scale the body to fit short screens without scrolling.
+            var body = Find<StackPanel>("HomeContent"); body.Width = Window.Width - 58;
+            var header = Find<Grid>("DragBar"); var actions = Find<Grid>("HomeActions");
+            header.Measure(new Size(Window.Width - 14, Double.PositiveInfinity)); actions.Measure(new Size(Window.Width - 14, Double.PositiveInfinity));
+            body.Measure(new Size(body.Width, Double.PositiveInfinity));
+            double desired = mini ? 310 : Math.Max(790, Math.Ceiling(body.DesiredSize.Height + header.DesiredSize.Height + actions.DesiredSize.Height + 20));
+            Window.Height = Math.Min(desired, SystemParameters.WorkArea.Height - 12);
+            if (!Double.IsNaN(Window.Top)) Window.Top = Math.Max(SystemParameters.WorkArea.Top, Math.Min(Window.Top, SystemParameters.WorkArea.Bottom - Window.Height));
         }
 
         bool Persist(Settings candidate)
@@ -339,6 +358,21 @@ namespace SlavesEncourager
             Caption("PinButton", Window.Topmost ? "main.pinned" : "main.pin");
             Caption("SettingsButton", settings.Configured ? "settings.open" : "main.firstUse");
             Caption("ExpensesButton", "main.expenses");
+            Visibility stockVisibility = settings.StocksEnabled && !mini ? Visibility.Visible : Visibility.Collapsed;
+            if (Find<Border>("StockCard").Visibility != stockVisibility) { Find<Border>("StockCard").Visibility = stockVisibility; FitHomeWindow(); }
+            if (!settings.StocksEnabled && stockWindow != null) stockWindow.Window.Close();
+            var stockSummary = StockMath.Summary(stocks.State.Positions, stocks.Quotes, DateTimeOffset.UtcNow);
+            bool onlyWatching = stockSummary.Total == 0 && stockSummary.WatchTotal > 0;
+            if (!privacy && onlyWatching) Home("StockPnlText", "main.watchCount", stockSummary.WatchTotal);
+            else Text("StockPnlText", privacy ? "••••••" : stockSummary.DayPnl.HasValue ? StockUi.Dollars(stockSummary.DayPnl.Value) : "—");
+            Find<TextBlock>("StockPnlText").SetResourceReference(TextBlock.ForegroundProperty, privacy || !stockSummary.DayPnl.HasValue || stockSummary.DayPnl == 0m ? "Ink" : stockSummary.DayPnl > 0m ? "StockGain" : "ExpenseRed");
+            Caption("StockButton", "main.stockOpen");
+            if (privacy) Home("StockHintText", "main.stockHidden");
+            else if (onlyWatching) Home("StockHintText", "main.watchCoverage", stockSummary.WatchCovered, stockSummary.WatchTotal);
+            else if (stockSummary.TradingDate == null) Home("StockHintText", stocks.State.Positions.Count == 0 ? "main.stockEmpty" : "main.stockPartial");
+            else if (stockSummary.Simulated) Text("StockHintText", L.T("stock.simulated") + " · " + stockSummary.TradingDate + " ET");
+            else Home("StockHintText", "main.stockDetail", stockSummary.TradingDate);
+            if (stockWindow != null) stockWindow.Update();
             Find<Button>("ExpensesButton").Visibility = settings.ExpensesEnabled ? Visibility.Visible : Visibility.Collapsed;
             if (expenseWindow != null)
             {
@@ -364,6 +398,17 @@ namespace SlavesEncourager
             Refresh(false);
         }
 
+        void OpenStocks()
+        {
+            if (!settings.StocksEnabled) return;
+            if (stockWindow == null)
+            {
+                var opened = new StockWindow(Window, stocks, delegate { return settings; }, delegate { return privacy; });
+                stockWindow = opened; opened.Window.Closed += delegate { if (stockWindow == opened) stockWindow = null; }; opened.Window.Show();
+            }
+            stockWindow.Window.Activate();
+        }
+
         void OpenExpenses()
         {
             if (!settings.ExpensesEnabled) return;
@@ -377,23 +422,54 @@ namespace SlavesEncourager
             expenseWindow.Window.Activate();
         }
 
+        SettingsEditor PrepareSettings(int tab)
+        {
+            Settings initial = settings.Copy();
+            if (!settings.Configured && tab < 0)
+            {
+                var welcome = new StockWelcomeWindow(Window);
+                welcome.Window.ShowDialog(); bool? choice = welcome.Choice;
+                if (!choice.HasValue) return null;
+                initial.StocksEnabled = choice.Value; tab = choice.Value ? 5 : 1;
+            }
+            var editor = new SettingsEditor(initial, Window, stocks.State);
+            if (tab >= 0) ((TabControl)editor.Window.FindName("SettingsTabs")).SelectedIndex = tab;
+            return editor;
+        }
+
         void OpenSettings(int tab = -1)
         {
-            var editor = new SettingsEditor(settings, Window);
-            if (tab >= 0) ((TabControl)editor.Window.FindName("SettingsTabs")).SelectedIndex = tab;
+            var editor = PrepareSettings(tab);
+            if (editor == null) return;
+            editor.PortfolioSaveReady = delegate { return !stocks.Busy; };
             editor.LanguageChanged += delegate(string choice) { ApplyLanguage(choice); };
             if (editor.Show() != true) { ApplyLanguage(settings.Language); return; }
             Settings candidate = editor.Result;
             candidate.Configured = true;
+            if (editor.PortfolioResult != null && stocks.Busy) { MessageBox.Show(Window, L.T("stock.busy"), L.T("app.name")); ApplyLanguage(settings.Language); return; }
             if (!Persist(candidate)) { ApplyLanguage(settings.Language); return; }
-            settings = candidate; demo = false; loadNotice = ""; selectedGoal = -1;
+            if (editor.PortfolioResult != null)
+            {
+                try { stocks.Save(editor.PortfolioResult); }
+                catch (Exception ex)
+                {
+                    if (!(ex is IOException || ex is UnauthorizedAccessException || ex is ArgumentException)) throw;
+                    Persist(settings); MessageBox.Show(Window, L.T("stock.saveFailed"), L.T("app.name")); ApplyLanguage(settings.Language); return;
+                }
+            }
+            settings = candidate; stocks.SetFeatureEnabled(settings.StocksEnabled);
+            if (settings.StocksEnabled) Window.Dispatcher.BeginInvoke(DispatcherPriority.ApplicationIdle, new Action(async delegate { await stocks.RefreshAsync(); }));
+            demo = false; loadNotice = ""; selectedGoal = -1;
             Window.Topmost = settings.Topmost;
             Palette.Apply(Window.Resources, settings.Theme); ApplyLanguage(settings.Language);
         }
 
         void ApplyLanguage(string choice)
         {
+            bool reopenStocks = stockWindow != null;
+            if (reopenStocks) stockWindow.Window.Close();
             L.Use(choice); L.Apply(Window.Resources); HomeCopy.Apply(settings, Window.Resources);
+            if (reopenStocks) OpenStocks();
             if (mini) Window.Width = L.Code.StartsWith("zh") ? 470 : 540;
             if (tray != null)
             {
@@ -401,14 +477,26 @@ namespace SlavesEncourager
                 string[] keys = { "tray.show", "tray.mini", "settings.open", "", "tray.quit" };
                 for (int i = 0; i < keys.Length; i++) if (keys[i].Length > 0) tray.ContextMenuStrip.Items[i].Text = L.T(keys[i]);
             }
-            display.Reset(); Refresh(false);
+            display.Reset(); Refresh(false); FitHomeWindow();
         }
 
         public void Preview(string directory)
         {
             timer.Stop();
+            VerifyStockWelcome(directory);
+            VerifyStockSaveWait();
             if (Find<Button>("ExpensesButton").Visibility != Visibility.Collapsed) throw new InvalidOperationException("Expenses must default to hidden");
             VerifySetupConfirmation();
+            VerifyStockImport();
+            VerifyManualStocks();
+            stocks.Demo();
+            VerifyHomeFit(directory);
+            var stockPreview = new StockWindow(Window, stocks, delegate { return settings; }, delegate { return privacy; });
+            stockPreview.Window.Show(); Program.Render(stockPreview.Window, Path.Combine(directory, "preview-stock.png"));
+            privacy = true; stockPreview.Update(true); Program.Render(stockPreview.Window, Path.Combine(directory, "preview-stock-private.png")); privacy = false; stockPreview.Window.Close();
+            var stockImport = new StockImportWindow(Window, new PortfolioState()); stockImport.Window.Show();
+            stockImport.Sample("Symbol,Quantity,AverageCost,Currency\nAAPL,10,150,USD\nMSFT,5,300,USD");
+            Program.Render(stockImport.Window, Path.Combine(directory, "preview-stock-import.png")); stockImport.Window.Close();
             settings.Goals = new List<RewardGoal> { new RewardGoal(L.T("sample.coffee"), 150m), new RewardGoal(L.T("goal.default"), 3000m), new RewardGoal(L.T("sample.headphones"), 1600m) };
             foreach (var theme in new[] { "midnight", "forest", "paper" })
             {
@@ -450,6 +538,13 @@ namespace SlavesEncourager
             expensesPreview.Update(settings, 3750m, true, true, false); Program.Render(expensesPreview.Window, Path.Combine(directory, "preview-expenses-private.png"));
             var emptyExpenses = settings.Copy(); emptyExpenses.Expenses = new List<RewardGoal>();
             expensesPreview.Update(emptyExpenses, 3750m, false, true, false); Program.Render(expensesPreview.Window, Path.Combine(directory, "preview-expenses-empty.png")); expensesPreview.Window.Close();
+            var manualPreview = new StockManualWindow(Window, new PortfolioState(), null);
+            manualPreview.Codes.Text = "AAPL, MSFT, NVDA"; manualPreview.Window.Show();
+            Program.Render(manualPreview.Window, Path.Combine(directory, "preview-watch-add.png")); manualPreview.Window.Close();
+            var monitorService = new StockService(PortfolioState.DefaultPath, true, new YahooQuoteProvider()); monitorService.Demo();
+            var monitorState = StockMath.Manual(new PortfolioState(), "AAPL, MSFT", true, null, null, null); monitorService.State.Positions = monitorState.Positions;
+            var monitorPreview = new StockWindow(Window, monitorService, delegate { return settings; }, delegate { return false; });
+            monitorPreview.Window.Show(); Program.Render(monitorPreview.Window, Path.Combine(directory, "preview-watch-monitor.png")); monitorPreview.Window.Close(); monitorService.Dispose();
             var openingPreview = new IncomeConfirmation(settings, Window, demoStart);
             openingPreview.Window.Show(); Program.Render(openingPreview.Window, Path.Combine(directory, "preview-income-confirmation.png")); openingPreview.Window.Close();
             settings = beforeExpenses; Refresh(false);
@@ -478,8 +573,77 @@ namespace SlavesEncourager
             };
             animationTimer.Start(); Dispatcher.PushFrame(frame);
             if (failure != null) throw failure;
-            var report = "XAML + themes + mini/privacy + expense opt-in + setup confirmation/edit/cancel + all settings rendering PASS\n";
+            var report = "XAML + home fit + setup confirmation + first-use stock prompt yes/no/cancel routing + isolated stock-tab draft + stock import/monitor rendering + all settings PASS\n";
             File.WriteAllText(Path.Combine(directory, "render-result.txt"), report, new UTF8Encoding(false));
+        }
+
+        void VerifyHomeFit(string directory)
+        {
+            if (settings.StocksEnabled || Find<Border>("StockCard").Visibility != Visibility.Collapsed) throw new InvalidOperationException("Stocks must be hidden by default");
+            if (!Object.ReferenceEquals(Find<StackPanel>("HomeContent").Children.Cast<UIElement>().Last(), Find<Border>("StockCard"))) throw new InvalidOperationException("Stocks must be the last home content");
+            double hiddenHeight = Window.Height;
+            settings.StocksEnabled = true; stocks.SetFeatureEnabled(true); Refresh(false); FitHomeWindow(); Window.UpdateLayout();
+            if (Window.Height + 0.5 < hiddenHeight) throw new InvalidOperationException("Enabling stocks must not shorten home");
+            if (SystemParameters.WorkArea.Height - 12 > hiddenHeight + 250 && Window.Height <= hiddenHeight + 0.5) throw new InvalidOperationException("Stocks must grow the home window when screen space permits");
+            CheckHomeBounds(); Program.Render(Window, Path.Combine(directory, "preview-home-stock-bottom.png"));
+            ToggleMini();
+            if (Find<Border>("StockCard").Visibility != Visibility.Collapsed) throw new InvalidOperationException("Mini mode must hide the bottom stock module");
+            ToggleMini();
+            Window.Height = Math.Min(600, SystemParameters.WorkArea.Height - 12); Window.UpdateLayout(); CheckHomeBounds();
+            Program.Render(Window, Path.Combine(directory, "preview-home-short-screen.png"));
+            settings.StocksEnabled = false; stocks.SetFeatureEnabled(false); Refresh(false); FitHomeWindow();
+        }
+
+        void VerifyStockWelcome(string directory)
+        {
+            // 走真实首次入口；弹窗和设置取消都不写入配置 / Exercise the real first-use route; cancelled dialogs never persist configuration.
+            foreach (int choice in new[] { -1, 0, 1 })
+            {
+                Window.Dispatcher.BeginInvoke(DispatcherPriority.ApplicationIdle, new Action(delegate
+                {
+                    Window welcome = Application.Current.Windows.Cast<Window>().Single(w => w.Owner == Window && w.Title == L.T("stock.welcomeTitle"));
+                    if (choice == 1) Program.Render(welcome, Path.Combine(directory, "preview-stock-welcome.png"));
+                    var buttons = ((DockPanel)welcome.Content).Children.OfType<WrapPanel>().Single().Children.OfType<Button>();
+                    string key = choice < 0 ? "action.cancel" : choice == 0 ? "stock.welcomeNo" : "stock.welcomeYes";
+                    buttons.Single(b => (string)b.Content == L.T(key)).RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
+                }));
+                SettingsEditor editor = PrepareSettings(-1);
+                if (choice < 0)
+                { if (editor != null) throw new InvalidOperationException("Cancelling welcome must not open settings"); }
+                else
+                {
+                    var tabs = (TabControl)editor.Window.FindName("SettingsTabs");
+                    if (tabs.SelectedIndex != (choice == 1 ? 5 : 1) || ((CheckBox)editor.Window.FindName("StocksEnabledBox")).IsChecked != (choice == 1)) throw new InvalidOperationException("Welcome choice routed to wrong tab");
+                    if (choice == 1)
+                    {
+                        editor.StockPanel.Stage(StockMath.Manual(new PortfolioState(), "AAPL, MSFT", true, null, null, null));
+                        editor.Window.Show(); Program.Render(editor.Window, Path.Combine(directory, "preview-settings-stocks.png"));
+                    }
+                    editor.Window.Close();
+                }
+                if (settings.StocksEnabled || stocks.State.Positions.Count != 0) throw new InvalidOperationException("Welcome/settings cancellation mutated saved data");
+            }
+        }
+        void CheckHomeBounds()
+        {
+            Border card = Find<Border>("StockCard");
+            Rect bounds = card.TransformToAncestor(Window).TransformBounds(new Rect(new Point(), card.RenderSize));
+            double actions = Find<Grid>("HomeActions").TransformToAncestor(Window).Transform(new Point()).Y;
+            if (card.Visibility != Visibility.Visible || bounds.Height <= 0 || bounds.Bottom > actions + 0.5 || bounds.Top < 0) throw new InvalidOperationException("Bottom stock card is clipped or overlaps actions");
+        }
+
+        void VerifyStockSaveWait()
+        {
+            var editor = new SettingsEditor(new Settings { Configured = true, StocksEnabled = true }, Window);
+            editor.StockPanel.Stage(StockMath.Manual(new PortfolioState(), "AAPL", true, null, null, null));
+            editor.PortfolioSaveReady = delegate { return false; };
+            editor.Window.Dispatcher.BeginInvoke(DispatcherPriority.ApplicationIdle, new Action(delegate
+            {
+                var save = (Button)editor.Window.FindName("SaveButton"); save.RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
+                if (!editor.Window.IsVisible || editor.Result != null || editor.StockPanel.Draft.Positions.Count != 1) throw new InvalidOperationException("Busy quote save discarded stock settings draft");
+                editor.PortfolioSaveReady = delegate { return true; }; save.RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
+            }));
+            if (editor.Show() != true || editor.PortfolioResult == null || editor.PortfolioResult.Positions.Count != 1) throw new InvalidOperationException("Stock draft could not save after refresh completed");
         }
 
         void VerifySetupConfirmation()
@@ -490,6 +654,8 @@ namespace SlavesEncourager
                 var initial = new Settings();
                 var editor = new SettingsEditor(initial, Window);
                 ((CheckBox)editor.Window.FindName("ExpensesEnabledBox")).IsChecked = true;
+                ((CheckBox)editor.Window.FindName("StocksEnabledBox")).IsChecked = true;
+                editor.StockPanel.Stage(StockMath.Manual(new PortfolioState(), "AAPL", true, null, null, null));
                 ((ComboBox)editor.Window.FindName("SettlementBox")).SelectedIndex = 14;
                 editor.Window.Dispatcher.BeginInvoke(DispatcherPriority.ApplicationIdle, new Action(delegate
                 {
@@ -505,9 +671,57 @@ namespace SlavesEncourager
                     ((Button)editor.Window.FindName("SaveButton")).RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
                 }));
                 bool? saved = editor.Show();
-                if (cancel ? saved == true || editor.Result != null : saved != true || editor.Result.OpeningIncome != 123.45m || editor.Result.CycleDay != 15 || !editor.Result.ExpensesEnabled)
+                if (cancel ? saved == true || editor.Result != null : saved != true || editor.Result.OpeningIncome != 123.45m || editor.Result.CycleDay != 15 || !editor.Result.ExpensesEnabled || !editor.Result.StocksEnabled)
                     throw new InvalidOperationException("Setup confirmation/cancel failed");
-                if (initial.OpeningIncome != null || initial.ExpensesEnabled || initial.CycleDay != 1) throw new InvalidOperationException("Setup mutated original settings");
+                if (initial.OpeningIncome != null || initial.ExpensesEnabled || initial.StocksEnabled || initial.CycleDay != 1) throw new InvalidOperationException("Setup mutated original settings");
+                if (cancel ? editor.PortfolioResult != null : editor.PortfolioResult == null || !editor.PortfolioResult.Positions.Single().WatchOnly) throw new InvalidOperationException("Stock tab draft save/cancel isolation failed");
+            }
+        }
+
+        void VerifyManualStocks()
+        {
+            foreach (bool cancel in new[] { true, false })
+            {
+                var original = new PortfolioState(); var editor = new StockManualWindow(Window, original, null);
+                editor.Codes.Text = " aapl, NASDAQ:MSFT, BRK.B ";
+                if (editor.Shares.IsEnabled || editor.Watch.IsChecked != true) throw new InvalidOperationException("Watch-only must default to no share entry");
+                editor.Window.Dispatcher.BeginInvoke(DispatcherPriority.ApplicationIdle, new Action(delegate
+                { if (cancel) editor.Window.Close(); else editor.Save.RaiseEvent(new RoutedEventArgs(Button.ClickEvent)); }));
+                bool? saved = editor.Window.ShowDialog();
+                if (cancel ? saved == true || editor.Result != null : saved != true || editor.Result.Positions.Count != 3 || editor.Result.Positions.Any(p => !p.WatchOnly || p.Quantity != 0m) || editor.Result.Online)
+                    throw new InvalidOperationException("Manual watch add/cancel failed");
+                if (original.Positions.Count != 0) throw new InvalidOperationException("Manual editor mutated original state");
+            }
+            var state = StockMath.Manual(new PortfolioState(), "AAPL", true, null, null, null);
+            var holding = new StockManualWindow(Window, state, "AAPL"); holding.Watch.IsChecked = false; holding.Shares.Text = "2.5"; holding.Cost.Text = "150";
+            holding.Window.Dispatcher.BeginInvoke(DispatcherPriority.ApplicationIdle, new Action(delegate { holding.Save.RaiseEvent(new RoutedEventArgs(Button.ClickEvent)); }));
+            if (holding.Window.ShowDialog() != true || holding.Result.Positions.Single().WatchOnly || holding.Result.Positions.Single().Quantity != 2.5m || !state.Positions.Single().WatchOnly)
+                throw new InvalidOperationException("Watch-to-holding conversion/cancel isolation failed");
+        }
+
+        void VerifyStockImport()
+        {
+            // 测试窗口确认、取消和变更后重核对；不访问账户或网络 / Test confirm/cancel/review invalidation without accounts or network.
+            foreach (bool cancel in new[] { true, false })
+            {
+                var initial = StockMath.Manual(new PortfolioState(), "NVDA", true, null, null, null); var editor = new StockImportWindow(Window, initial);
+                editor.Sample("Symbol,Quantity,Currency\nAAPL,10,USD");
+                var root = (Grid)editor.Window.Content;
+                var actions = root.Children.OfType<WrapPanel>().Single(p => Grid.GetRow(p) == 9);
+                Button confirm = actions.Children.OfType<Button>().Single(b => (string)b.Content == L.T("stock.confirmSnapshot"));
+                if (!confirm.IsEnabled) throw new InvalidOperationException("Valid stock preview did not enable confirmation");
+                root.Children.OfType<TextBox>().Single().Text = "Symbol,Quantity,Currency\nAAPL,999,USD";
+                if (confirm.IsEnabled) throw new InvalidOperationException("Edited raw holdings must require a new preview");
+                editor.Sample("Symbol,Quantity,Currency\nAAPL,10,USD");
+                ((StackPanel)root.Children.Cast<UIElement>().Single(p => Grid.GetRow(p) == 8)).Children.OfType<CheckBox>().Single().IsChecked = true;
+                editor.Window.Dispatcher.BeginInvoke(DispatcherPriority.ApplicationIdle, new Action(delegate
+                {
+                    actions.Children.OfType<Button>().Single(b => (string)b.Content == L.T(cancel ? "action.cancel" : "stock.confirmSnapshot")).RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
+                }));
+                bool? saved = editor.Window.ShowDialog();
+                if (cancel ? saved == true || editor.Result != null : saved != true || !editor.Result.Online || editor.Result.Positions.Count != 2 || editor.Result.Positions[0].Quantity != 10m || !editor.Result.Positions.Any(p => p.Symbol == "NVDA" && p.WatchOnly))
+                    throw new InvalidOperationException("Stock import save/cancel failed");
+                if (initial.Online || initial.Positions.Count != 1 || !initial.Positions.Single().WatchOnly) throw new InvalidOperationException("Stock import mutated prior snapshot");
             }
         }
     }
@@ -516,6 +730,9 @@ namespace SlavesEncourager
     {
         public Window Window { get; private set; }
         public Settings Result { get; private set; }
+        public PortfolioState PortfolioResult { get; private set; }
+        public Func<bool> PortfolioSaveReady;
+        public readonly StockSettingsPanel StockPanel;
         readonly Settings original;
         readonly FlipDisplay preview = new FlipDisplay();
         readonly DispatcherTimer timer = new DispatcherTimer();
@@ -538,7 +755,7 @@ namespace SlavesEncourager
             combo.SelectedItem = combo.Items.Cast<ComboBoxItem>().FirstOrDefault(i => (string)i.Tag == tag);
         }
 
-        public SettingsEditor(Settings settings, Window owner)
+        public SettingsEditor(Settings settings, Window owner, PortfolioState portfolio = null)
         {
             original = settings.Copy(); Window = Program.LoadWindow("Settings.xaml"); Window.Owner = owner;
             foreach (object key in owner.Resources.Keys)
@@ -553,6 +770,12 @@ namespace SlavesEncourager
             Find<ComboBox>("SettlementBox").SelectionChanged += delegate { validationError = ""; };
             Find<Button>("AdjustIncomeButton").Click += delegate { confirmIncome = true; Find<TextBlock>("IncomeAdjustmentHint").Visibility = Visibility.Visible; };
             Find<CheckBox>("ExpensesEnabledBox").IsChecked = settings.ExpensesEnabled;
+            Find<CheckBox>("StocksEnabledBox").IsChecked = settings.StocksEnabled;
+            StockPanel = new StockSettingsPanel(Window, portfolio ?? new PortfolioState());
+            Find<StackPanel>("StockSettingsHost").Children.Add(StockPanel);
+            StockPanel.IsEnabled = settings.StocksEnabled;
+            Find<CheckBox>("StocksEnabledBox").Checked += delegate { StockPanel.IsEnabled = true; };
+            Find<CheckBox>("StocksEnabledBox").Unchecked += delegate { StockPanel.IsEnabled = false; };
             Put("StartText", settings.Start); Put("EndText", settings.End);
             Put("LunchStartText", settings.LunchStart); Put("LunchEndText", settings.LunchEnd);
             Find<CheckBox>("LunchBox").IsChecked = settings.LunchEnabled;
@@ -603,6 +826,7 @@ namespace SlavesEncourager
                 try
                 {
                     Settings candidate = Read(true); candidate.Validate();
+                    if (candidate.StocksEnabled && StockPanel.Changed && PortfolioSaveReady != null && !PortfolioSaveReady()) throw new ArgumentException(L.T("stock.busy"));
                     if (confirmIncome || !original.Configured || original.CycleDay != candidate.CycleDay || (!original.ExpensesEnabled && candidate.ExpensesEnabled))
                     {
                         if (original.CycleDay != candidate.CycleDay) { candidate.OpeningAt = null; candidate.OpeningIncome = null; }
@@ -611,6 +835,8 @@ namespace SlavesEncourager
                         if (confirmation.Window.ShowDialog() != true) return;
                         candidate.ConfirmIncome(now, confirmation.Amount);
                     }
+                    if (candidate.StocksEnabled && StockPanel.Changed && PortfolioSaveReady != null && !PortfolioSaveReady()) throw new ArgumentException(L.T("stock.busy"));
+                    PortfolioResult = candidate.StocksEnabled && StockPanel.Changed ? StockPanel.Draft : null;
                     Result = candidate; Window.DialogResult = true;
                 }
                 catch (Exception ex)
@@ -624,7 +850,7 @@ namespace SlavesEncourager
             {
                 if (!ready) return;
                 string choice = Selected("LanguageBox"); L.Use(choice); L.Apply(Window.Resources);
-                calendar.Refresh(); goals.RefreshLanguage(); expenses.RefreshLanguage(); validationError = "";
+                calendar.Refresh(); goals.RefreshLanguage(); expenses.RefreshLanguage(); StockPanel.RefreshLanguage(); validationError = "";
                 if (LanguageChanged != null) LanguageChanged(choice);
                 preview.Reset(); RefreshPreview(false);
             };
@@ -647,6 +873,7 @@ namespace SlavesEncourager
             Settings result = original.Copy();
             result.Language = Selected("LanguageBox");
             result.ExpensesEnabled = Find<CheckBox>("ExpensesEnabledBox").IsChecked == true;
+            result.StocksEnabled = Find<CheckBox>("StocksEnabledBox").IsChecked == true;
             result.Animation = Selected("AnimationBox"); result.Theme = Selected("ThemeBox"); result.Font = Selected("FontBox");
             result.Decimals = int.Parse(Selected("DecimalsBox"), CultureInfo.InvariantCulture);
             result.Currency = Selected("CurrencyBox"); result.Speed = int.Parse(Selected("SpeedBox"), CultureInfo.InvariantCulture);

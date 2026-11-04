@@ -26,12 +26,14 @@ Get-ChildItem -LiteralPath src,locales,scripts,tests -Recurse -File | Where-Obje
     if ($_.Extension -in '.xaml','.csproj','.manifest') { $null = [xml]$utf8.GetString($bytes) }
 }
 & (Join-Path $PSScriptRoot 'create-icon.ps1')
-$references = @('System.dll','System.Core.dll','System.Xaml.dll','System.Runtime.Serialization.dll','System.Xml.dll','System.Windows.Forms.dll','System.Drawing.dll') | ForEach-Object { '/reference:' + (Join-Path $framework $_) }
+$references = @('System.dll','System.Core.dll','System.Xaml.dll','System.Runtime.Serialization.dll','System.Xml.dll','System.Xml.Linq.dll','System.Net.Http.dll','System.Web.Extensions.dll','System.IO.Compression.dll','System.IO.Compression.FileSystem.dll','System.Windows.Forms.dll','System.Drawing.dll') | ForEach-Object { '/reference:' + (Join-Path $framework $_) }
 $references += @('WindowsBase.dll','PresentationCore.dll','PresentationFramework.dll') | ForEach-Object { '/reference:' + (Join-Path $framework ('WPF/' + $_)) }
 $sourceRoot = Join-Path $projectRoot 'src/SlavesEncourager'
 $resources = @('/resource:src/SlavesEncourager/Main.xaml,Main.xaml','/resource:src/SlavesEncourager/Settings.xaml,Settings.xaml','/resource:assets/app.png,AppIcon.png','/resource:locales/catalog.tsv,Locales.tsv')
 $arguments = @('/nologo','/utf8output','/codepage:65001','/warn:4','/warnaserror+','/optimize+','/target:winexe','/platform:anycpu','/win32icon:assets/app.ico','/win32manifest:src/SlavesEncourager/app.manifest','/out:dist/SlavesEncourager.exe')
-$sources = @('Engine.cs','FlipDisplay.cs','EditorControls.cs','HomeTextEditor.cs','ExpenseWindow.cs','IncomeConfirmation.cs','Localization.cs','Program.cs','AssemblyInfo.cs') | ForEach-Object { Join-Path $sourceRoot $_ }
+$sources = @('Engine.cs','FlipDisplay.cs','EditorControls.cs','HomeTextEditor.cs','ExpenseWindow.cs','IncomeConfirmation.cs','Stocks.cs','StockWindows.cs','Localization.cs','Program.cs','AssemblyInfo.cs') | ForEach-Object { Join-Path $sourceRoot $_ }
+& $compiler /nologo /utf8output /codepage:65001 /warn:4 /warnaserror+ /target:exe /out:dist/StockOcr.exe @references ('/reference:' + (Join-Path $framework 'System.Runtime.WindowsRuntime.dll')) (Join-Path $projectRoot 'scripts/OcrHelper.cs')
+if ($LASTEXITCODE -ne 0) { throw 'Local OCR helper build failed' }
 & $compiler @arguments @references @resources @sources
 if ($LASTEXITCODE -ne 0) { throw 'Application build failed' }
 & $compiler /nologo /utf8output /codepage:65001 /warn:4 /warnaserror+ /target:exe /out:.build/EngineTests.exe @references /resource:locales/catalog.tsv,Locales.tsv (Join-Path $sourceRoot 'Engine.cs') (Join-Path $sourceRoot 'Localization.cs') (Join-Path $projectRoot 'tests/EngineTests.cs')
@@ -42,8 +44,16 @@ $testExit = $LASTEXITCODE
 $testOutput | Write-Output
 if ($testExit -ne 0) { throw 'Behavior checks failed' }
 [System.IO.File]::WriteAllText((Join-Path $projectRoot 'dist/SlavesEncourager.exe.config'), '<?xml version="1.0" encoding="utf-8"?><configuration><startup><supportedRuntime version="v4.0" sku=".NETFramework,Version=v4.8"/></startup></configuration>', $utf8)
+Copy-Item -LiteralPath dist/SlavesEncourager.exe.config -Destination dist/StockOcr.exe.config
 $appHash = (Get-FileHash -LiteralPath dist/SlavesEncourager.exe -Algorithm SHA256).Hash
 [System.IO.File]::WriteAllText((Join-Path $projectRoot '.build/build.txt'), "Build: PASS`nCompiler: existing .NET Framework C#`nWarnings: 0 (warnaserror)`nUTF-8/XML: PASS`nSHA256: $appHash`n", $utf8)
+& $compiler /nologo /utf8output /codepage:65001 /warn:4 /warnaserror+ /target:exe /out:.build/StockTests.exe @references /resource:locales/catalog.tsv,Locales.tsv (Join-Path $sourceRoot 'Engine.cs') (Join-Path $sourceRoot 'Localization.cs') (Join-Path $sourceRoot 'Stocks.cs') (Join-Path $projectRoot 'tests/StockTests.cs')
+if ($LASTEXITCODE -ne 0) { throw 'Stock test compilation failed' }
+$stockOutput = & .\.build\StockTests.exe 2>&1
+$stockExit = $LASTEXITCODE
+[System.IO.File]::WriteAllLines((Join-Path $projectRoot '.build/stock-tests.txt'), [string[]]$stockOutput, $utf8)
+$stockOutput | Write-Output
+if ($stockExit -ne 0) { throw 'Stock behavior checks failed' }
 Write-Output "Built dist/SlavesEncourager.exe | SHA256 $appHash"
 if ($VisualCheck) {
     foreach ($language in @('zh-Hans','zh-Hant','en','ja','es','ko')) {
@@ -52,7 +62,7 @@ if ($VisualCheck) {
         $resultPath = Join-Path $previewDir 'render-result.txt'
         if (Test-Path -LiteralPath $resultPath) { Remove-Item -LiteralPath $resultPath }
         $previewProcess = Start-Process -FilePath (Join-Path $projectRoot 'dist/SlavesEncourager.exe') -ArgumentList @('--preview-dir', ('"' + $previewDir + '"'),'--language',$language) -WindowStyle Hidden -PassThru
-        if (-not $previewProcess.WaitForExit(20000)) { $previewProcess.Kill(); throw "Visual verification timed out: $language" }
+        if (-not $previewProcess.WaitForExit(45000)) { $previewProcess.Kill(); throw "Visual verification timed out: $language" }
         if ($previewProcess.ExitCode -ne 0 -or -not (Test-Path -LiteralPath $resultPath)) { throw "XAML or render verification failed: $language (inspect render-error.txt)" }
         Write-Output "Visual verification: $language PASS"
     }

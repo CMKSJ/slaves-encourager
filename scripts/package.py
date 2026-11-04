@@ -5,10 +5,10 @@ from pathlib import Path
 from zipfile import ZipFile, ZIP_DEFLATED
 
 ROOT = Path(__file__).resolve().parents[1]
-VERSION = "1.4.0"
+VERSION = "1.5.0-beta.4"
 ROOT_FILES = ["README.md", "README.en.md", "README.zh-Hant.md", "README.ja.md", "README.es.md", "README.ko.md",
               "LICENSE", "CONTRIBUTING.md", "THIRD_PARTY_NOTICES.md", "CHANGELOG.md", "AGENTS.md", "Dockerfile.windows", ".gitignore", ".gitattributes"]
-SOURCE_DIRS = ["src", "locales", "assets", "scripts", "tests", "docs", ".github"]
+SOURCE_DIRS = ["src", "locales", "assets", "scripts", "tests", "docs", ".github", "browser-extension", "examples"]
 
 
 def source_files():
@@ -40,11 +40,11 @@ def main():
     output = ROOT / "dist"
     output.mkdir(exist_ok=True)
     files = source_files()
-    for name in ("SlavesEncourager.exe", "SlavesEncourager.exe.config"):
+    for name in ("SlavesEncourager.exe", "SlavesEncourager.exe.config", "StockOcr.exe", "StockOcr.exe.config"):
         assert (output / name).is_file(), "Build the application first"
-    portable_entries = [(output / name, name) for name in ("SlavesEncourager.exe", "SlavesEncourager.exe.config")]
+    portable_entries = [(output / name, name) for name in ("SlavesEncourager.exe", "SlavesEncourager.exe.config", "StockOcr.exe", "StockOcr.exe.config")]
     portable_entries.extend((file, file.relative_to(ROOT).as_posix()) for file in files
-                            if file.suffix == ".md" or file.name == "LICENSE" or file.relative_to(ROOT).parts[0] in {"assets", "docs"})
+                            if file.suffix == ".md" or file.name == "LICENSE" or file.relative_to(ROOT).parts[0] in {"assets", "docs", "browser-extension", "examples"})
     source_entries = [(file, file.relative_to(ROOT).as_posix()) for file in files]
     results = [archive(output / f"SlavesEncourager-{VERSION}-windows-portable.zip", portable_entries),
                archive(output / f"SlavesEncourager-{VERSION}-source.zip", source_entries)]
