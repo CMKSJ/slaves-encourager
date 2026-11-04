@@ -34,7 +34,7 @@ public static class Program
                 Console.WriteLine("NATIVE VISION OCR TABLE CHECK PASS"); return 0;
             }
             var builder = AppBuilder.Configure<MacApp>().UsePlatformDetect().LogToTrace();
-            if (args.Contains("--ui-smoke") && OperatingSystem.IsMacOS()) builder.With(new AvaloniaNativePlatformOptions { RenderingMode = new[] { AvaloniaNativeRenderingMode.Software } });
+            if ((args.Contains("--ui-smoke") || args.Contains("--launch-check")) && OperatingSystem.IsMacOS()) builder.With(new AvaloniaNativePlatformOptions { RenderingMode = new[] { AvaloniaNativeRenderingMode.Software } });
             return builder.StartWithClassicDesktopLifetime(args);
         }
         catch (Exception e) { Console.Error.WriteLine(e); return 1; }

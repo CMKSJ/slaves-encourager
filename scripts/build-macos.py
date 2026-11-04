@@ -64,7 +64,9 @@ def main():
     output = ROOT / "dist/macos" / args.runtime
     assert not output.exists(), "Use a fresh build directory; never overwrite a published bundle"
     output.mkdir(parents=True)
-    app = output / "Slaves Encourager.app"
+    payload = output / "payload"
+    payload.mkdir()
+    app = payload / "Slaves Encourager.app"
     contents = app / "Contents"
     binary = contents / "MacOS"
     resources = contents / "Resources"
@@ -112,11 +114,8 @@ def main():
     run("codesign", "--verify", "--deep", "--strict", "--verbose=2", str(app))
     run(str(executable), "--self-test")
     run(str(executable), "--launch-check", timeout=45)
+    run("codesign", "--verify", "--deep", "--strict", "--verbose=4", str(app))
     # DMG 与 ZIP 都保留完整 bundle 和执行权限 / Both formats preserve the whole bundle and execute permissions.
-    payload = output / "payload"
-    payload.mkdir()
-    run("ditto", str(app), str(payload / app.name))
-    run("codesign", "--verify", "--deep", "--strict", str(payload / app.name))
     (payload / "Applications").symlink_to("/Applications")
     shutil.copyfile(ROOT / "docs/MACOS.md", payload / "README-macOS.md")
     shutil.copytree(ROOT / "browser-extension", payload / "browser-extension")
@@ -126,6 +125,17 @@ def main():
     run("hdiutil", "create", "-volname", "Slaves Encourager", "-srcfolder", str(payload), "-ov", "-format", "UDZO", str(output / (stem + ".dmg")))
     run("hdiutil", "verify", str(output / (stem + ".dmg")))
     run("ditto", "-c", "-k", "--sequesterRsrc", "--keepParent", str(app), str(output / (stem + ".zip")))
+    restored = output / "zip-roundtrip"
+    run("ditto", "-x", "-k", str(output / (stem + ".zip")), str(restored))
+    run("codesign", "--verify", "--deep", "--strict", "--verbose=4", str(restored / app.name))
+    mount = output / "dmg-mounted"
+    mount.mkdir()
+    run("hdiutil", "attach", "-readonly", "-nobrowse", "-mountpoint", str(mount), str(output / (stem + ".dmg")))
+    try:
+        run("codesign", "--verify", "--deep", "--strict", "--verbose=4", str(mount / app.name))
+        run(str(mount / app.name / "Contents/MacOS/SlavesEncourager.Mac"), "--launch-check", timeout=45)
+    finally:
+        run("hdiutil", "detach", str(mount))
     artifacts = [output / (stem + extension) for extension in (".dmg", ".zip")]
     manifest = [{"name": p.name, "bytes": p.stat().st_size, "sha256": hashlib.sha256(p.read_bytes()).hexdigest()} for p in artifacts]
     (output / "manifest.json").write_text(json.dumps(manifest, indent=2) + "\n", encoding="utf-8")
