@@ -103,13 +103,15 @@ def main():
     shutil.copyfile(ROOT / "THIRD_PARTY_NOTICES.md", resources / "THIRD_PARTY_NOTICES.md")
     entitlements = output / "entitlements.plist"
     entitlements.write_bytes(plistlib.dumps({"com.apple.security.cs.allow-jit": True}))
-    # 对所有 Mach-O 先签名，再封装签名；不是 Developer ID 公证 / Sign Mach-O first, then the bundle; not Developer ID notarization.
-    for path in binary.iterdir():
-        if path.is_file() and (path.suffix == ".dylib" or path.name in {"StockOcr", "SlavesEncourager.Mac", "createdump"}):
+    # 先逐文件签名，再签主程序与 bundle；不是 Developer ID 公证 / Sign files, then apphost/bundle; not Developer ID notarization.
+    for path in sorted(binary.rglob("*")):
+        if path.is_file() and path != executable:
             run("codesign", "--force", "--sign", "-", "--entitlements", str(entitlements), str(path))
+    run("codesign", "--force", "--sign", "-", "--entitlements", str(entitlements), str(executable))
     run("codesign", "--force", "--sign", "-", "--entitlements", str(entitlements), str(app))
     run("codesign", "--verify", "--deep", "--strict", "--verbose=2", str(app))
     run(str(executable), "--self-test")
+    run(str(executable), "--launch-check", timeout=45)
     # DMG 与 ZIP 都保留完整 bundle 和执行权限 / Both formats preserve the whole bundle and execute permissions.
     payload = output / "payload"
     payload.mkdir()

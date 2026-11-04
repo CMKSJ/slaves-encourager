@@ -33,7 +33,9 @@ public static class Program
                 if (positions.Count != 2 || positions[0].Symbol != "AAPL" || positions[0].Quantity != 10m || positions[0].AverageCost != 150m || positions[1].Symbol != "MSFT" || positions[1].Quantity != 5m || positions[1].AverageCost != 300m) throw new InvalidDataException("OCR quantities/costs did not match synthetic fixture");
                 Console.WriteLine("NATIVE VISION OCR TABLE CHECK PASS"); return 0;
             }
-            return AppBuilder.Configure<MacApp>().UsePlatformDetect().LogToTrace().StartWithClassicDesktopLifetime(args);
+            var builder = AppBuilder.Configure<MacApp>().UsePlatformDetect().LogToTrace();
+            if (args.Contains("--ui-smoke") && OperatingSystem.IsMacOS()) builder.With(new AvaloniaNativePlatformOptions { RenderingMode = new[] { AvaloniaNativeRenderingMode.Software } });
+            return builder.StartWithClassicDesktopLifetime(args);
         }
         catch (Exception e) { Console.Error.WriteLine(e); return 1; }
     }
@@ -46,7 +48,7 @@ public sealed class MacApp : Application
     {
         if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
         {
-            var main = new MainWindow(Program.Args.Contains("--ui-smoke"));
+            var main = new MainWindow(Program.Args.Contains("--ui-smoke") || Program.Args.Contains("--launch-check"));
             desktop.MainWindow = main;
             if (Program.Args.Contains("--ui-smoke"))
                 main.Opened += async (_, _) =>
@@ -54,6 +56,7 @@ public sealed class MacApp : Application
                     try { await MacChecks.Ui(main); desktop.Shutdown(0); }
                     catch (Exception e) { Console.Error.WriteLine(e); desktop.Shutdown(1); }
                 };
+            if (Program.Args.Contains("--launch-check")) main.Opened += async (_, _) => { await Task.Delay(500); Console.WriteLine("SIGNED MAC APP LAUNCH PASS"); desktop.Shutdown(0); };
         }
         base.OnFrameworkInitializationCompleted();
     }
@@ -213,7 +216,7 @@ public sealed class MainWindow : Window
         headButtons.Children.Add(Ui.LiteralButton("—", () => WindowState = WindowState.Minimized));
         headButtons.Children.Add(Ui.LiteralButton("×", Close)); Grid.SetColumn(headButtons, 1); head.Children.Add(headButtons); root.Children.Add(head);
         var body = new StackPanel { Width = 490, Spacing = 12 };
-        if (!mini) { body.Children.Add(Home("main.kicker", 10)); body.Children.Add(Home("main.headline", 27)); body.Children.Add(Home(Settings.Configured ? "main.subtitle" : "main.setupHint", 11)); }
+        if (!mini) { body.Children.Add(Ui.Row(Home("main.kicker", 10), Ui.Text(DateTime.Now.ToString("MM.dd / ddd", L.Culture), 10))); body.Children.Add(Home("main.headline", 27)); body.Children.Add(Home(Settings.Configured ? "main.subtitle" : "main.setupHint", 11)); }
         amount = new FlipNumber(); status = Home("main.live", 10); rate = Home("main.live", 11);
         body.Children.Add(Ui.Card(Ui.Stack(Home("main.today"), status, amount, rate)));
         if (!mini)
@@ -298,7 +301,10 @@ public sealed class MainWindow : Window
         void Update()
         {
             body.Children.Clear(); body.Children.Add(Ui.Label("expense.explanation"));
-            foreach (var x in Engine.ExpenseCoverage(Snapshot.Month, Settings)) body.Children.Add(Ui.Card(Ui.Stack(Ui.Text(x.Item.Name),
+            var coverage = Engine.ExpenseCoverage(Snapshot.Month, Settings);
+            body.Children.Add(Ui.Text(privacy ? L.T("expense.hidden") : L.T("expense.summary", Engine.Money(coverage.Sum(x => x.Remaining), Settings), Engine.Money(Engine.ExpenseTotal(Settings), Settings))));
+            body.Children.Add(Ui.Text(privacy ? "••••" : L.T("expense.rewardBalance") + "  " + Engine.Money(Engine.RewardIncome(Snapshot.Month, Settings), Settings)));
+            foreach (var x in coverage) body.Children.Add(Ui.Card(Ui.Stack(Ui.Text(x.Item.Name),
                 Ui.Text(privacy ? L.T("expense.hidden") : L.T("expense.remainingValue", Engine.Money(x.Remaining, Settings))), Ui.Progress(privacy ? 0 : x.RemainingFraction, true))));
         }
         Update(); var t = new DispatcherTimer { Interval = TimeSpan.FromSeconds(1) }; t.Tick += (_, _) => Update(); t.Start();

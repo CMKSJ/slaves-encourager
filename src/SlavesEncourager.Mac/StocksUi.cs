@@ -28,6 +28,7 @@ public sealed class StockPanel : StackPanel
     readonly ListBox list = new() { Height = 185 };
     readonly TextBlock summary = Ui.Text("");
     readonly Func<bool> redact;
+    string signature;
     public StockPanel(Window owner, StockDraft draft, Func<bool> redact = null)
     {
         this.owner = owner; this.draft = draft; this.redact = redact; Spacing = 10;
@@ -37,7 +38,9 @@ public sealed class StockPanel : StackPanel
                 try { var selected = Selected(); var next = draft.State.Copy(); next.Positions.RemoveAll(p => p.Symbol == selected.Symbol); draft.Stage(next); }
                 catch (ArgumentException e) { _ = Ui.Alert(owner, e.Message); }
             }), Ui.AsyncButton("stock.import", async () => { var next = await StockImport.Open(owner, draft.State); if (next != null) draft.Stage(next); })));
-        Children.Add(summary); Children.Add(list); draft.Updated += Refresh; DetachedFromVisualTree += (_, _) => draft.Updated -= Refresh; Refresh();
+        Children.Add(summary); Children.Add(list);
+        AttachedToVisualTree += (_, _) => { draft.Updated += Refresh; Refresh(); };
+        DetachedFromVisualTree += (_, _) => draft.Updated -= Refresh; Refresh();
     }
     StockPosition Selected()
     { if (list.SelectedIndex < 0 || list.SelectedIndex >= draft.State.Positions.Count) throw new ArgumentException(L.T("watch.select")); return draft.State.Positions[list.SelectedIndex]; }
@@ -46,8 +49,10 @@ public sealed class StockPanel : StackPanel
     public void Refresh()
     {
         summary.Text = L.T("stock.tabSummary", draft.State.Positions.Count(p => p.WatchOnly), draft.State.Positions.Count(p => !p.WatchOnly));
-        list.ItemsSource = draft.State.Positions.Select(p => p.Symbol + "   ·   " + L.T(p.WatchOnly ? "watch.watching" : "watch.holding") +
+        var rows = draft.State.Positions.Select(p => p.Symbol + "   ·   " + L.T(p.WatchOnly ? "watch.watching" : "watch.holding") +
             (p.WatchOnly ? "" : redact?.Invoke() == true ? "   ••••" : "   " + p.Quantity.ToString(CultureInfo.InvariantCulture) + "   @ " + p.AverageCost?.ToString(CultureInfo.InvariantCulture))).ToArray();
+        string next = string.Join("\n", rows); if (signature == next) return; signature = next;
+        int selected = list.SelectedIndex; list.ItemsSource = rows; list.SelectedIndex = Math.Min(selected, rows.Length - 1);
     }
 }
 
