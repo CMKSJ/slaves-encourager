@@ -30,6 +30,8 @@ public static class MacChecks
     {
         var index = Array.IndexOf(Program.Args, "--output"); string output = index >= 0 ? Program.Args[index + 1] : ".build/macos-preview";
         Directory.CreateDirectory(output);
+        Check(main.MenuBarIcon?.Menu?.Items.Count == 5, "native menu bar has restore/mini/settings/quit");
+        main.Hide(); main.RestoreWindow(); Check(main.IsVisible, "hidden window can be restored");
         foreach (var language in L.Languages)
         {
             main.Settings.Language = language; L.Use(language); main.Build(); await Task.Delay(150);

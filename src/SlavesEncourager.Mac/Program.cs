@@ -50,9 +50,12 @@ public sealed class MacApp : Application
         {
             var main = new MainWindow(Program.Args.Contains("--ui-smoke") || Program.Args.Contains("--launch-check"));
             desktop.MainWindow = main;
+            bool smokeStarted = false;
             if (Program.Args.Contains("--ui-smoke"))
                 main.Opened += async (_, _) =>
                 {
+                    if (smokeStarted) return;
+                    smokeStarted = true;
                     try { await MacChecks.Ui(main); desktop.Shutdown(0); }
                     catch (Exception e) { Console.Error.WriteLine(e); desktop.Shutdown(1); }
                 };
@@ -161,6 +164,7 @@ public sealed class MainWindow : Window
     bool privacy, mini, demo;
     int goalIndex;
     readonly DispatcherTimer timer = new() { Interval = TimeSpan.FromMilliseconds(120) };
+    public TrayIcon MenuBarIcon { get; private set; }
     FlipNumber amount;
     TextBlock status, rate, countdown, month, hourly, hours, stockPnl, stockHint;
     StackPanel goalHost;
@@ -189,7 +193,7 @@ public sealed class MainWindow : Window
             if (e.Key == Key.P && e.KeyModifiers.HasFlag(KeyModifiers.Shift)) { privacy = !privacy; Build(); e.Handled = true; }
             if (e.Key == Key.E) { await CopyEditor.Open(this, Settings, SaveSettings); e.Handled = true; }
         };
-        timer.Tick += (_, _) => Tick(); timer.Start(); Closed += (_, _) => { timer.Stop(); Stocks.Dispose(); };
+        timer.Tick += (_, _) => Tick(); timer.Start(); Closed += (_, _) => { timer.Stop(); Stocks.Dispose(); MenuBarIcon?.Dispose(); };
         Build(); Opened += async (_, _) => { Fit(); if (!Samples) await Stocks.RefreshAsync(); };
     }
     public void SaveSettings(Settings candidate)
@@ -207,13 +211,14 @@ public sealed class MainWindow : Window
     public void Build()
     {
         Ui.Theme(Settings.Theme); Background = Ui.Bg; Foreground = Ui.Ink; Topmost = Settings.Topmost;
+        UpdateMenuBar();
         var root = new Grid { RowDefinitions = new RowDefinitions("Auto,*,Auto"), Margin = new Thickness(22) };
         var head = new Grid { ColumnDefinitions = new ColumnDefinitions("*,Auto") };
         head.Children.Add(Home("app.name", 14));
         var headButtons = Ui.Row();
         if (Settings.ExpensesEnabled) headButtons.Children.Add(HomeButton("main.expenses", async () => await Expenses()));
         headButtons.Children.Add(HomeButton("main.pin", () => { var d = Settings.Copy(); d.Topmost = !d.Topmost; SaveSettings(d); }));
-        headButtons.Children.Add(Ui.LiteralButton("—", () => WindowState = WindowState.Minimized));
+        headButtons.Children.Add(Ui.LiteralButton("—", () => { if (MenuBarIcon != null) Hide(); else WindowState = WindowState.Minimized; }));
         headButtons.Children.Add(Ui.LiteralButton("×", Close)); Grid.SetColumn(headButtons, 1); head.Children.Add(headButtons); root.Children.Add(head);
         var body = new StackPanel { Width = 490, Spacing = 12 };
         if (!mini) { body.Children.Add(Ui.Row(Home("main.kicker", 10), Ui.Text(DateTime.Now.ToString("MM.dd / ddd", L.Culture), 10))); body.Children.Add(Home("main.headline", 27)); body.Children.Add(Home(Settings.Configured ? "main.subtitle" : "main.setupHint", 11)); }
@@ -239,6 +244,23 @@ public sealed class MainWindow : Window
         Grid.SetRow(actions, 2); actions.Margin = new Thickness(0, 12, 0, 0); root.Children.Add(actions);
         Content = new Border { Child = root, CornerRadius = new CornerRadius(20), BorderBrush = Ui.Stroke, BorderThickness = new Thickness(1) };
         Fit(); Tick();
+    }
+    public void RestoreWindow() { Show(); WindowState = WindowState.Normal; Activate(); }
+    void UpdateMenuBar()
+    {
+        if (MenuBarIcon == null)
+        {
+            MenuBarIcon = new TrayIcon { Icon = Icon, IsVisible = true };
+            TrayIcon.SetIcons(Application.Current, new TrayIcons { MenuBarIcon });
+        }
+        MenuBarIcon.ToolTipText = L.T("app.name");
+        var menu = new NativeMenu();
+        NativeMenuItem Item(string key, Action action)
+        { var item = new NativeMenuItem(L.T(key)); item.Click += (_, _) => action(); return item; }
+        menu.Items.Add(Item("tray.show", RestoreWindow));
+        menu.Items.Add(Item("tray.mini", () => { RestoreWindow(); mini = !mini; Build(); }));
+        menu.Items.Add(Item("settings.open", async () => { RestoreWindow(); await OpenSettings(); }));
+        menu.Items.Add(new NativeMenuItemSeparator()); menu.Items.Add(Item("tray.quit", Close)); MenuBarIcon.Menu = menu;
     }
     void Fit()
     {
