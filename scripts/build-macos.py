@@ -115,7 +115,8 @@ def main():
     # DMG 与 ZIP 都保留完整 bundle 和执行权限 / Both formats preserve the whole bundle and execute permissions.
     payload = output / "payload"
     payload.mkdir()
-    shutil.copytree(app, payload / app.name, symlinks=True)
+    run("ditto", str(app), str(payload / app.name))
+    run("codesign", "--verify", "--deep", "--strict", str(payload / app.name))
     (payload / "Applications").symlink_to("/Applications")
     shutil.copyfile(ROOT / "docs/MACOS.md", payload / "README-macOS.md")
     shutil.copytree(ROOT / "browser-extension", payload / "browser-extension")
@@ -123,6 +124,7 @@ def main():
     shutil.copyfile(ROOT / "THIRD_PARTY_NOTICES.md", payload / "THIRD_PARTY_NOTICES.md")
     stem = f"SlavesEncourager-{VERSION}-macos-" + ("apple-silicon" if args.runtime == "osx-arm64" else "intel")
     run("hdiutil", "create", "-volname", "Slaves Encourager", "-srcfolder", str(payload), "-ov", "-format", "UDZO", str(output / (stem + ".dmg")))
+    run("hdiutil", "verify", str(output / (stem + ".dmg")))
     run("ditto", "-c", "-k", "--sequesterRsrc", "--keepParent", str(app), str(output / (stem + ".zip")))
     artifacts = [output / (stem + extension) for extension in (".dmg", ".zip")]
     manifest = [{"name": p.name, "bytes": p.stat().st_size, "sha256": hashlib.sha256(p.read_bytes()).hexdigest()} for p in artifacts]
