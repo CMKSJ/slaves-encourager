@@ -1,35 +1,46 @@
-# Verification / 验证记录
+# Local stock beta verification / 本地股票测试验证
 
-Verified locally on **2026-11-04** for version **1.4.0**. Publication targets `v1.4.0`; consult the matching Release and Actions pages for remote publication/build status. Existing v1.3.1 Release assets remain unchanged.
+Date: **2026-11-04**, Asia/Shanghai. Version: **1.5.0-beta.4**, public prerelease; experimental workflows remain under review. Stable [v1.4.0](https://github.com/thisemailrectrash-cpu/slaves-encourager/releases/tag/v1.4.0) was published separately; beta publication was authorized on 2026-11-04.
 
 | Check | Result |
 | --- | --- |
-| Native compilation | PASS, warnings treated as errors, zero warnings |
-| Behavior and localization | 151 passed, 0 failed |
-| Expense allocation | PASS: default off, partial/complete coverage, surplus-only rewards, no duplicate income, goal time includes pending costs |
-| Expense persistence | PASS: order, empty list, disabled behavior, draft copy isolation and limits |
-| Payroll boundaries | PASS: day 15, midnight rollover, day 31 clamping, leap February, year change, actual-day reconciliation and overnight attribution |
-| Opening earnings | PASS: edited and zero baseline, future increments, restart recovery, next-cycle expiry, JSON validation and old-setting defaults |
-| Real modal UI flows | PASS in all six languages: first-use opt-in, day selection, edited amount, confirm/save, cancel and original-settings isolation; sample drafts only |
-| Language catalog | 243 complete keys × 6 languages; placeholder parity and localized default settings valid |
-| WPF/XML and six-language rendering | PASS: themes, mini/privacy, all settings tabs, home editor, expense opt-in, partial/complete/empty/private expenses and income confirmation |
-| Spanish default goal | PASS: shortened to fit the 28-character limit; no saved user names changed |
-| Home text | Existing save/load, language isolation, reset, cancel and placeholder checks pass; expense button caption is editable |
-| README animation | Existing 1000 × 660, 360-frame, 20-fps, 18-second looping sample GIF preserved; no real user data |
-| Icons | PNG 1254 × 1254; ICO 16/24/32/48/64/128/256 |
-| Static checks | UTF-8 without BOM, XML, translations, README links, GIF structure and MIT license PASS |
-| Packages | Source/portable ZIP CRC and byte comparison PASS; SHA256SUMS.txt generated |
-| Remote CI / Release | Local checks below passed; remote status is recorded on the matching commit in [Actions](https://github.com/thisemailrectrash-cpu/slaves-encourager/actions) and [v1.4.0 Release](https://github.com/thisemailrectrash-cpu/slaves-encourager/releases/tag/v1.4.0) |
+| Existing Framework compilation | PASS, warnings as errors, zero warnings; no system packages installed |
+| Salary/expense/locale regression checks | 151 PASS |
+| Stock import, quote math, watchlist, visibility, consent/cancellation | 79 PASS |
+| Extension synthetic DOM, minimization and permissions | 11 PASS |
+| CSV/TSV/HTML/extension JSON | PASS: explicit mapping, optional cost, invalid-row blocking, duplicate rejection and culture ambiguity |
+| XLSX | PASS: inline/shared strings, numeric cells, formula rejection, unsafe relationship rejection |
+| Real local OCR helper | PASS on synthetic screenshot: Symbol/Quantity/AverageCost/Currency plus AAPL 10/150 and MSFT 5/300 reconstructed into rows |
+| OCR isolation | Uses native WinRT reflection, no image upload or PowerShell execution-policy changes; installed Windows OCR required |
+| Public quote probe | PASS, AAPL only: quote trading day and preceding trading-day baseline verified; no actual quote response packaged |
+| Correct prior close | PASS: multi-day chartPreviousClose is ignored in favor of the preceding daily bar |
+| Quote quality | PASS: missing/future/stale data, active-session delay, NY DST, weekend dating, missing symbols and simulated/live mixing |
+| Network consent and stop | PASS: no provider call while offline, confirmed opt-in, cooldown, persisted stop and active-request cancellation |
+| Default-hidden stocks | PASS: old settings default off, save/cancel isolation, stock-tab checkbox, saved-online portfolio cannot fetch while module is hidden |
+| No-scroll home layout | PASS: last content position, automatic height growth with available screen space, mini collapse, fully visible stock card above actions at 600-DIP height |
+| Six-language real WPF renders | PASS: stock dashboard, private dashboard, import preview plus baseline themes, settings and expenses |
+| Manual watchlist | PASS: batch normalization, no invented shares/PnL, conversion, edit order, duplicates/limits, JSON and older holdings compatibility |
+| Import/watch coexistence | PASS in real modal flow: imports preserve other watch entries |
+| First-use routing in six languages | PASS: Enable → Stocks tab; Not now → salary; Cancel → no settings; original preferences and portfolio unchanged |
+| Stock-tab drafts | PASS: save during quote refresh keeps the dialog/draft open and succeeds on retry; local draft staging, save/cancel isolation, independent watch/holding editor and no quote requests before application |
+| Six-language modal flows | PASS: manual batch add/cancel, watch-to-holding conversion, import confirm/cancel, retained watches, online consent and original-snapshot isolation; existing setup flows also pass |
+| Desktop import UI visual review | PASS for Chinese/English and long Spanish labels; real table columns render at readable widths |
+| User brokerage access | NOT RUN: no account login, real holdings, clipboard or brokerage page read |
+| Extension actual install/click-through | NOT RUN: extension not installed or enabled automatically; provided locally for user review |
+| Real brokerage-specific layout coverage | NOT VERIFIED; generic readable tables supported, not an all-broker compatibility claim |
+| Privacy | Amounts, share counts and PnL masked; symbol/time remain visible by design |
+| Stable isolation | Beta settings path differs; no stable settings migration/write, PnL does not affect salary/expenses/goals |
+| Public beta CI / Release | Publication authorized on 2026-11-04; see GitHub tag/CI for remote status |
 
-All screenshots and modal tests use built-in sample settings. User settings were not modified. Visual review includes Chinese, English, Japanese, Korean and long Spanish labels. Scrollable expense lists deliberately retain all rows, including completed ones.
-
-Windows containers were unavailable on this development host. The documented existing .NET Framework compiler fallback was used, with no host packages installed. Independent Windows 10, ARM, multi-monitor, DPI matrix and long-duration tray testing have not been performed. Automated modal checks do not replace broad manual interaction testing.
+Developer checks:
 
 ```powershell
 ./scripts/build.ps1 -Native -VisualCheck
+node tests/extension.test.js
 python scripts/validate.py
 python scripts/package.py
-git diff --check
 ```
 
-Build and test logs are generated in `.build/`; portable/source archives and checksums are generated in `dist/`. Rules and examples: [EXPENSES.md](EXPENSES.md).
+An explicit live provider probe uses `.build/StockTests.exe --public-quote-probe`; normal behavior tests are offline. Screenshots and OCR samples are synthetic. Logs and test data remain in ignored `.build/`; packages include only allowlisted project files and synthetic examples.
+
+The native OCR helper was tested in the normal Windows user context, since the developer sandbox denies the WinRT storage broker. No policy was changed. Windows 10, ARM, multiple DPI/monitor setups, missing OCR packs, prolonged quote refresh and actual individual broker workflows remain review items. Source rules and detailed user steps: [STOCK_BETA.md](STOCK_BETA.md).

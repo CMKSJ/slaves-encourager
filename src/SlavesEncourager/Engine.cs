@@ -80,6 +80,7 @@ namespace SlavesEncourager
         [DataMember(EmitDefaultValue = false)] public string Language = "auto";
         [DataMember(EmitDefaultValue = false)] public Dictionary<string, string> HomeText;
         [DataMember] public bool ExpensesEnabled;
+        [DataMember] public bool StocksEnabled;
         [DataMember(EmitDefaultValue = false)] public List<RewardGoal> Expenses;
         [DataMember(EmitDefaultValue = false)] public int? SettlementDay;
         [DataMember(EmitDefaultValue = false)] public string OpeningAt;
@@ -107,7 +108,7 @@ namespace SlavesEncourager
         }
 
         static DataContractJsonSerializer Serializer() { return new DataContractJsonSerializer(typeof(Settings)); }
-        public static string DefaultPath { get { return Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "NiumaFlip", "settings.json"); } }
+        public static string DefaultPath { get { return Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "SlavesEncouragerStockBeta", "settings.json"); } }
 
         public static Settings Load(string path, out string notice)
         {

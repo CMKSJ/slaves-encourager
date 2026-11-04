@@ -1,3 +1,15 @@
+# 1.5.0-beta.4 · Acciones y posiciones de EE. UU. · Versión preliminar pública
+
+Los valores están ocultos por defecto. La configuración inicial pregunta si activarlos: Sí abre la pestaña Valores; Ahora no abre el sueldo. Añade, edita, elimina o importa allí; al guardar aparecen al final del inicio. La ventana crece; en pantallas bajas se ajusta el contenido sin desplazamiento. Desactivar pausa las consultas y conserva los datos.
+
+Nuevo: **añade símbolos directamente**, como `AAPL, MSFT, NVDA`, para ver precios, cambios y horas sin introducir acciones. Cambia al modo posición para estimar el resultado. Añade varios, edita o elimina; la lista no cuenta como acciones propias. [Guía](docs/STOCK_BETA.md).
+
+**[Descargar la versión preliminar 1.5.0-beta.4](https://github.com/thisemailrectrash-cpu/slaves-encourager/releases/tag/v1.5.0-beta.4)**. Las funciones bursátiles son experimentales; falta validar páginas reales de brókeres y el uso de la extensión. No está en una tienda. [La estable 1.4.0](https://github.com/thisemailrectrash-cpu/slaves-encourager/releases/tag/v1.4.0) sigue disponible; los enlaces generales de abajo apuntan a la estable.
+
+Cuatro métodos: CSV/Excel, tablas pegadas, OCR local de Windows y extensión. Revisa y confirma la cartera fija antes de activar precios Yahoo experimentales. El resultado estimado de la última sesión queda separado del sueldo, gastos y metas. Sin conexión al bróker ni órdenes. Carga manualmente `browser-extension`.
+
+[Guía, cálculos, límites y revisión](docs/STOCK_BETA.md). Usa el EXE/ZIP local de la beta y prueba primero los ejemplos ficticios.
+
 <p align="center"><img src="assets/app.png" width="96" alt="Slaves Encourager"></p>
 
 # Ánimo Laboral / Slaves Encourager
@@ -33,7 +45,7 @@ Al configurar por primera vez, activar gastos a mitad del ciclo o cambiar el dí
 
 ## Uso
 
-Requiere Windows 10/11 y .NET Framework 4.8. Extrae el ZIP y abre `SlavesEncourager.exe`. Funciona sin cuenta ni conexión y no envía telemetría.
+Requiere Windows 10/11 y .NET Framework 4.8. Extrae el ZIP y abre `SlavesEncourager.exe`. El sueldo funciona sin conexión; las cotizaciones son opcionales. No inicia sesión en el bróker ni envía telemetría.
 
 El primer inicio muestra datos de ejemplo. Abre «Configuración inicial», introduce tu sueldo y horario, marca descansos o turnos extra en el calendario y guarda. Puedes añadir hasta 20 metas y cambiar su orden. El selector de idioma está arriba a la derecha; la selección se guarda y cancelar restaura el idioma anterior.
 
@@ -45,7 +57,7 @@ El sueldo se reparte entre los días programados del ciclo salarial o sobre una 
 
 El ingreso estimado del ciclo se reparte entre las metas por orden, sin duplicarlo, y el progreso se reinicia al empezar cada ciclo salarial. No representa ahorros reales.
 
-Los ajustes se guardan en `%LOCALAPPDATA%\NiumaFlip\settings.json`, una ruta interna conservada por compatibilidad. No están cifrados; cada guardado conserva una copia `.bak`.
+Los ajustes se guardan en `%LOCALAPPDATA%\SlavesEncouragerStockBeta\settings.json`, una ruta beta separada de la versión estable. No están cifrados; cada guardado conserva una copia `.bak`.
 
 ## Desarrollo y licencia
 

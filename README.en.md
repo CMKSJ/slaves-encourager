@@ -1,3 +1,23 @@
+# 1.5.0-beta.4 · US stocks and holdings · Public prerelease
+
+Stocks are hidden by default. First-time setup asks whether to enable them: Yes opens the dedicated Stocks tab; Not now opens salary setup. Add, edit, remove or import stocks there, then Save & apply to show the home module. The window grows automatically; home has no scrolling and scales its body on short screens. Turning the setting off pauses quote requests and keeps saved data.
+
+New: **add symbols directly**, such as `AAPL, MSFT, NVDA`, to watch prices, percentage changes and quote times without entering shares. Switch to holding mode for share-based PnL. Batch add, edit and remove; watch entries never count as owned positions. [Guide](docs/STOCK_BETA.md).
+
+**[Download the 1.5.0-beta.4 prerelease](https://github.com/thisemailrectrash-cpu/slaves-encourager/releases/tag/v1.5.0-beta.4)**. Stock features remain experimental; real broker layouts and extension click-through need further validation. The extension is not listed in a store. [Stable 1.4.0](https://github.com/thisemailrectrash-cpu/slaves-encourager/releases/tag/v1.4.0) remains available; the general download links below point to stable.
+
+Four routes—CSV/Excel, pasted holdings tables, local screenshot OCR and a browser extension—feed an explicit snapshot preview. Opt in to experimental Yahoo quotes for estimated latest trading-day PnL. No brokerage login or orders; PnL never changes salary, bills or goals. The extension must be loaded manually from `browser-extension`.
+
+[Detailed guide, limitations and review checklist](docs/STOCK_BETA.md). Run the local EXE or extract the local 1.5.0-beta.4 portable ZIP. Use synthetic samples first. The existing GIF demonstrates baseline salary features, not live market data.
+
+<img src="docs/screenshots/en-stock-welcome.png" width="390" alt="First-use stock choice"> <img src="docs/screenshots/en-settings-stocks.png" width="390" alt="Dedicated stock setup tab">
+
+<img src="docs/screenshots/en-home-stock-bottom.png" width="390" alt="Opt-in bottom stocks with automatically extended home">
+
+<img src="docs/screenshots/en-watch-monitor.png" width="650" alt="Symbol-only watchlist with simulated prices">
+
+<img src="docs/screenshots/en-stock.png" width="650" alt="Local beta simulated holdings preview">
+
 <p align="center"><img src="assets/app.png" width="96" alt="Slaves Encourager"></p>
 
 # Slaves Encourager
@@ -41,7 +61,7 @@ On first setup, enabling expenses mid-cycle or changing the reset day, saving as
 - Clickable days off and extra shifts, weekly schedules, breaks and overnight shifts.
 - Up to 20 ordered goals. Estimated income first covers enabled expenses, then goals in list order.
 - Pin, mini mode, privacy mode and system tray. Drag any non-button area of the main window.
-- Offline operation, no account and no telemetry. [MIT licensed](LICENSE).
+- Salary works offline; stock quotes require opt-in network access. No brokerage login or telemetry. [MIT licensed](LICENSE).
 
 ## Use
 
@@ -57,7 +77,7 @@ Salary is divided by this pay cycle's scheduled workdays, or an optional fixed 2
 
 Goal progress uses pay-cycle estimated income, not savings. For goals of 1,000 and 3,000, income of 1,500 allocates 1,000 and 500. Progress resets on your pay-cycle day. With expenses enabled, only the surplus after expenses funds goals.
 
-Settings stay in `%LOCALAPPDATA%\NiumaFlip\settings.json`, a legacy internal path retained for compatibility. Saves keep a `.bak`; settings are not encrypted. Privacy mode hides amounts on screen.
+Settings stay in `%LOCALAPPDATA%\SlavesEncouragerStockBeta\settings.json`, a separate beta path that leaves stable settings untouched. Saves keep a `.bak`; settings are not encrypted. Privacy mode hides amounts on screen.
 
 ## Build
 

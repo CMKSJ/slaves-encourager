@@ -7,3 +7,7 @@
 - GitHub workflow actions are referenced from their official repositories; their code is not copied into this source tree. [Checkout](https://github.com/actions/checkout) and [upload-artifact](https://github.com/actions/upload-artifact) keep their upstream licenses.
 
 The project's license is [MIT](LICENSE). Retain its copyright and permission notice when redistributing project code.
+
+## Stock beta data
+
+Yahoo Finance is an optional experimental remote data source, not a bundled library or guaranteed official API. Yahoo/provider terms govern data; the MIT license covers project code, not market-data redistribution. No actual quote payload is included in public examples. Windows.Media.Ocr is an installed Windows component; no OCR language packs are bundled or installed. The browser extension has no external scripts or libraries. See docs/STOCK_BETA.md.

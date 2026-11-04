@@ -40,8 +40,8 @@
      <Button x:Name="CloseButton" Content="×" ToolTip="{DynamicResource main.exitTip}" BorderThickness="0" Padding="8,5"/>
     </StackPanel>
    </Grid>
-   <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled" Padding="22,6,22,0">
-    <StackPanel>
+   <Viewbox x:Name="HomeFit" Grid.Row="1" Stretch="Uniform" StretchDirection="DownOnly" VerticalAlignment="Top" Margin="22,6,22,0">
+    <StackPanel x:Name="HomeContent" Width="490">
      <StackPanel x:Name="IntroPanel" Margin="0,0,0,16">
       <Grid Margin="0,0,0,12"><TextBlock Tag="main.kicker" Text="{DynamicResource main.kicker}" Style="{StaticResource Kicker}" FontFamily="Bahnschrift"/>
        <TextBlock x:Name="DateText" Text="11.04 / WED" HorizontalAlignment="Right" Style="{StaticResource Kicker}" FontFamily="Bahnschrift"/></Grid>
@@ -88,9 +88,13 @@
       </Border>
       <TextBlock x:Name="FootnoteText" Tag="main.footnote" Text="{DynamicResource main.footnote}" Foreground="{DynamicResource Muted}" FontSize="9" Margin="2,12,0,0"/>
      </StackPanel>
+     <Border x:Name="StockCard" Visibility="Collapsed" CornerRadius="13" Background="{DynamicResource Surface}" BorderBrush="{DynamicResource Stroke}" BorderThickness="1" Padding="14" Margin="0,12,0,0"><StackPanel>
+      <Grid><Grid.ColumnDefinitions><ColumnDefinition/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions><TextBlock Tag="main.stock" Text="{DynamicResource main.stock}" FontSize="12" VerticalAlignment="Center"/><Button x:Name="StockButton" Grid.Column="1" Tag="main.stockOpen" Content="{DynamicResource main.stockOpen}" Padding="10,5"/></Grid>
+      <TextBlock x:Name="StockPnlText" FontSize="29" FontWeight="SemiBold" Margin="0,8,0,5"/><TextBlock x:Name="StockHintText" FontSize="10" Foreground="{DynamicResource Muted}" TextWrapping="Wrap"/>
+     </StackPanel></Border>
     </StackPanel>
-   </ScrollViewer>
-     <Grid Grid.Row="2" Margin="22,12,22,18">
+   </Viewbox>
+     <Grid x:Name="HomeActions" Grid.Row="2" Margin="22,12,22,18">
       <Grid.ColumnDefinitions><ColumnDefinition Width="*"/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
       <StackPanel Orientation="Horizontal"><Button x:Name="PrivacyButton" Content="{DynamicResource mode.privacy}" ToolTip="{DynamicResource mode.privacyOnTip}" Margin="0,0,6,0"/><Button x:Name="MiniButton" Content="{DynamicResource mode.mini}" ToolTip="{DynamicResource mode.miniOnTip}"/></StackPanel>
       <StackPanel Grid.Column="1" Orientation="Horizontal"><Button x:Name="DemoButton" Content="{DynamicResource main.demo}" ToolTip="{DynamicResource main.demoTip}" Margin="0,0,6,0"/><Button x:Name="SettingsButton" Content="{DynamicResource main.firstUse}" Background="{DynamicResource Accent}" Foreground="{DynamicResource AccentInk}" BorderThickness="0" Padding="14,8"/></StackPanel>

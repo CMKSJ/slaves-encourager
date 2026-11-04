@@ -1,3 +1,23 @@
+# 1.5.0-beta.4 · 美股监控与持仓 · 公开预发布版
+
+股票默认隐藏。点击「第一次使用设置」先询问是否开启；选择开启直接进入独立「股票」标签页，暂不开启则进入工资设置。股票页可新增、编辑、移除或导入，保存后显示在主页最下方。窗口随之自动拉长；主页无滚动条，短屏幕自动缩放正文。关闭开关会暂停行情请求并保留已保存数据。
+
+新增：**按代码添加自选监控**，例如 `AAPL, MSFT, NVDA`，无需股数。显示价格、涨跌幅及行情时间；填写股数后可切为持仓估算盈亏。支持批量新增、编辑、移除；自选不计入持仓收益。[使用步骤](docs/STOCK_BETA.md)。
+
+**[下载 1.5.0-beta.4 预发布版](https://github.com/thisemailrectrash-cpu/slaves-encourager/releases/tag/v1.5.0-beta.4)**。股票功能仍属测试阶段，真实券商页面与扩展交互待进一步验证；扩展未上架商店。[稳定版 1.4.0](https://github.com/thisemailrectrash-cpu/slaves-encourager/releases/tag/v1.4.0) 保留，下方通用下载入口指向稳定版。
+
+此 beta 支持四种方式：CSV/Excel 文件、复制持仓页、截图 OCR、浏览器扩展。预览确认固定持仓后，可选择 Yahoo 实验行情自动刷新，显示最近交易日的估算盈亏，作为独立动力源。它不连接券商、不下单，不把股票波动计入工资、开支或奖励目标。
+
+**[详细使用、四种接入步骤、盈亏口径与待审核项](docs/STOCK_BETA.md)**。先运行本地 `dist/SlavesEncourager.exe`，或解压本地 `SlavesEncourager-1.5.0-beta.4-windows-portable.zip`。浏览器扩展需要用户手动加载 `browser-extension` 文件夹；本软件不会自动安装。
+
+<img src="docs/screenshots/zh-Hans-stock-welcome.png" width="390" alt="First-use stock choice"> <img src="docs/screenshots/zh-Hans-settings-stocks.png" width="390" alt="Dedicated stock setup tab">
+
+<img src="docs/screenshots/zh-Hans-home-stock-bottom.png" width="390" alt="Opt-in bottom stocks with automatically extended home">
+
+<img src="docs/screenshots/zh-Hans-watch-monitor.png" width="650" alt="Symbol-only watchlist with simulated prices">
+
+<img src="docs/screenshots/zh-Hans-stock.png" width="650" alt="Local beta simulated holdings preview">
+
 <p align="center"><img src="assets/app.png" width="96" alt="Slaves Encourager"></p>
 
 # 牛马鼓励器 / Slaves Encourager
@@ -43,7 +63,7 @@
 - 工作日、固定休息、跨午夜班次；直接点击日历设置休息和补班。
 - 最多 20 个目标，可编辑、删除、排序和切换查看；本期收入先覆盖已启用的生活开支，再按目标清单分配。
 - 置顶、迷你模式、隐私模式、托盘；主窗口任意非按钮区域都能拖动。
-- 本地运行，无需账户或联网，无遥测；源码采用 [MIT 许可证](LICENSE)。
+- 工资本地运行；股票行情需确认后联网，无券商登录或遥测；源码采用 [MIT 许可证](LICENSE)。
 
 ## 开始使用
 
@@ -57,7 +77,7 @@
 
 `Ctrl+M` 切换迷你模式，`Ctrl+Shift+P` 切换隐私模式，快捷键在窗口获得焦点时生效。「—」隐藏至托盘，双击托盘图标恢复；「×」退出。
 
-设置保存在 `%LOCALAPPDATA%\NiumaFlip\settings.json`。这是为兼容旧版本保留的内部目录名，产品界面已移除旧品牌后缀。旧版工资、日期、目标和格式会保留；保存时保留 `.bak`。设置未加密，隐私模式用于隐藏界面金额。
+设置保存在 `%LOCALAPPDATA%\SlavesEncouragerStockBeta\settings.json`。此测试版目录与正式版隔离，不读取或改写正式版设置；保存时保留 `.bak`。设置未加密，隐私模式用于隐藏界面金额。
 
 ## 计算口径
 
@@ -89,7 +109,7 @@ python scripts/package.py
 
 ```text
 src/SlavesEncourager/  桌面界面、计算、日历、目标和本地化
-locales/catalog.tsv   243 个键 × 6 种语言
+locales/catalog.tsv   355 个键 × 6 种语言
 assets/              PNG 原图和七档尺寸 ICO
 scripts/             构建、校验和白名单打包
 tests/               计算、兼容性和语言行为测试
