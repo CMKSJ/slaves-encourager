@@ -6,6 +6,10 @@
 
 # Working agreements / 工作约定
 
+- The user authorized a full macOS port and adding its artifacts to the existing beta.4 Release. Work on macos/1.5.0-beta.4, preserving the Windows release/tag/assets. See docs/MACOS.md. Compile shared domain source; never fork financial calculations silently.
+- macOS: src/SlavesEncourager.Mac, .NET 10 + Avalonia 11.3.22. Native CI on macos-15 and macos-15-intel must validate OCR, launch and signatures. Local .NET 8 compatibility builds may use the existing SDK; no host installs. Ad-hoc signing is not Developer ID notarization.
+- Packages must exclude nested bin/obj/__pycache__ and user configuration. Check architectures, execution permissions, signatures, six-language UI, OCR fixture and behavior tests before publishing.
+
 - Use UTF-8 without BOM. Keep source comments bilingual (Chinese/English).
 - Application source: `src/SlavesEncourager`; localization: `locales/catalog.tsv`; icon: `assets/app.png` and generated multi-size `app.ico`.
 - Keep all six translations complete; run `python scripts/validate.py` after editing strings. Never translate user-entered goal names or custom templates.

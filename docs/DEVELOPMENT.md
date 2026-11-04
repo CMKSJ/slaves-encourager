@@ -85,3 +85,6 @@ Home content uses a down-only `Viewbox`, not a `ScrollViewer`. Stocks are the la
 `StockSettingsPanel` clones the current portfolio and provides manual, edit/remove and import actions. Child editors stage into that clone. `SettingsEditor.PortfolioResult` is produced only on Save with stocks enabled; cancel and disabled-stock saves do not commit drafts. Main persists settings and the optional portfolio before enabling quotes; if portfolio saving fails, it attempts to restore prior settings and reports the failure. The dedicated tab and prompt are rendered and the actual yes/no/cancel routes run in all six sample languages.
 
 Portfolio-save readiness is checked before and after any opening-income modal confirmation. If quotes are still refreshing, settings stays open with its stock draft intact; retry after completion. The sample modal verification exercises that blocked-save/retry path in every language.
+
+
+macOS port: see [MACOS.md](MACOS.md). The Mac project links shared domain files without changing the WPF application. Compatibility adapters provide legacy JSON/timer/resource interfaces; no WPF assemblies ship on Mac. Source packaging excludes nested bin/obj to avoid leaking machine paths. Native GitHub CI is the macOS verification fallback; .NET 8 locally is compatibility-only, released bundles use .NET 10.

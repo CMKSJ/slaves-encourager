@@ -44,3 +44,6 @@ python scripts/package.py
 An explicit live provider probe uses `.build/StockTests.exe --public-quote-probe`; normal behavior tests are offline. Screenshots and OCR samples are synthetic. Logs and test data remain in ignored `.build/`; packages include only allowlisted project files and synthetic examples.
 
 The native OCR helper was tested in the normal Windows user context, since the developer sandbox denies the WinRT storage broker. No policy was changed. Windows 10, ARM, multiple DPI/monitor setups, missing OCR packs, prolonged quote refresh and actual individual broker workflows remain review items. Source rules and detailed user steps: [STOCK_BETA.md](STOCK_BETA.md).
+
+
+macOS edition: native Apple Silicon/Intel workflow runs the same 151+79 checks plus Mac draft/path, six-language actual UI prompt/settings/import checks, Apple Vision synthetic OCR and bundle/signature checks. See [MACOS.md](MACOS.md); completed native status is recorded in GitHub Actions and the macOS Release addendum. No Developer ID notarization is claimed.

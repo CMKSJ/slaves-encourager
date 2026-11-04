@@ -1,5 +1,7 @@
 # 1.5.0-beta.4 · Acciones y posiciones de EE. UU. · Versión preliminar pública
 
+**Versión macOS**: proyectos nativos para Apple Silicon e Intel con las funciones de Windows beta.4, en la misma Release. [Instalación y funciones](docs/MACOS.md).
+
 Los valores están ocultos por defecto. La configuración inicial pregunta si activarlos: Sí abre la pestaña Valores; Ahora no abre el sueldo. Añade, edita, elimina o importa allí; al guardar aparecen al final del inicio. La ventana crece; en pantallas bajas se ajusta el contenido sin desplazamiento. Desactivar pausa las consultas y conserva los datos.
 
 Nuevo: **añade símbolos directamente**, como `AAPL, MSFT, NVDA`, para ver precios, cambios y horas sin introducir acciones. Cambia al modo posición para estimar el resultado. Añade varios, edita o elimina; la lista no cuenta como acciones propias. [Guía](docs/STOCK_BETA.md).
