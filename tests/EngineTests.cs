@@ -71,7 +71,8 @@ public static class EngineTests
             s.LunchStart = "12:00"; s.LunchEnd = "13:00"; s.Weekdays = ""; Invalid(s.Validate, "Empty workweek rejected");
             Check(Engine.Duration(TimeSpan.FromSeconds(90061)) == "25:01:01", "Countdown does not wrap at 24 hours");
             Check(Engine.Duration(TimeSpan.FromMilliseconds(100)) == "00:00:01", "Countdown rounds up");
-            string path = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "test-data", Guid.NewGuid().ToString("N"), "settings.json");
+            // 测试数据不进入已签名程序目录 / Test data must stay outside the signed application directory.
+            string path = Path.Combine(Path.GetTempPath(), "SlavesEncourager-tests", Guid.NewGuid().ToString("N"), "settings.json");
             var saved = new Settings { Configured = true, GoalName = "周末出发" }; saved.Save(path);
             string notice; var loaded = Settings.Load(path, out notice);
             Check(loaded.GoalName == "周末出发" && loaded.Configured && notice == "", "Chinese settings JSON roundtrip");
