@@ -41,7 +41,7 @@ python3 scripts/build-macos.py --runtime osx-arm64
 # Intel 使用 --runtime osx-x64；必须在原生 Mac 上执行。
 ```
 
-`.github/workflows/macos.yml` 在 `macos-15`（Apple 芯片）与 `macos-15-intel` 构建。两端执行共享 151+79 项检查、Mac 草稿与路径检查、六语言实际弹窗/设置页/导入预览检查、Apple Vision 合成图 OCR、Mach-O ad-hoc 签名验证及打包。Windows CI 保留。开发主机只有 .NET 8 时可用 `-p:TargetFramework=net8.0` 兼容编译；发布包由 Mac runner 使用 .NET 10 构建。
+`.github/workflows/macos.yml` 在 `macos-15`（Apple 芯片）与 `macos-15-intel` 构建。两端执行共享 151+79 项检查、Mac 草稿与路径检查、六语言实际弹窗/设置页/导入预览检查、Apple Vision 合成图 OCR、ad-hoc 签名及打包。重新解压 ZIP、挂载只读 DMG 后还会验签并从 DMG 启动；合成测试数据只写临时目录。Windows CI 保留。开发主机只有 .NET 8 时可用 `-p:TargetFramework=net8.0` 兼容编译；发布包由 Mac runner 使用 .NET 10 构建。
 
 本工作区 Docker 引擎不可用，Linux/Windows 容器也不能验证 AppKit/Vision；使用现有本机 SDK 和 GitHub 原生 Mac runner，不安装用户主机系统组件。源码包排除嵌套 bin/obj、日志、真实配置、持仓与行情响应。
 
