@@ -63,6 +63,16 @@ public static class MacChecks
             importer.Close(); await importTask;
             await SaveFlow(main, language);
         }
+        var themeEditor = new SettingsWindow(main, main.Settings, main.Stocks.State, 0);
+        var themeTask = themeEditor.ShowDialog(main); await Task.Delay(60);
+        foreach (string theme in new[] { "forest", "paper", "midnight" })
+        {
+            themeEditor.PreviewTheme(theme); await Task.Delay(100);
+            var title = themeEditor.GetVisualDescendants().OfType<TextBlock>().First(t => t.Text == L.T("settings.headline"));
+            Check(title.Foreground.Equals(SlavesEncourager.Mac.Ui.Ink), "theme preview keeps text contrast " + theme);
+            Capture(themeEditor, Path.Combine(output, "theme-" + theme + "-settings.png"));
+        }
+        themeEditor.Close(); await themeTask;
         File.WriteAllText(Path.Combine(output, "ui-result.txt"), "Six-language mac UI + stock tab routing + cancel isolation + import preview PASS\n");
         Console.WriteLine("ALL MAC UI CHECKS PASS");
     }

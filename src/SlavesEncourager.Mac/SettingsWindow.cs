@@ -70,7 +70,11 @@ public sealed class SettingsWindow : Window
         ChoiceBox(appearance, "appearance.speed", draft.Speed.ToString(), ("220", "speed.fast"), ("420", "speed.normal"), ("650", "speed.slow"));
         foreach (var control in appearance.Children)
         {
-            if (control is ComboBox combo) combo.SelectionChanged += (_, _) => Preview();
+            if (control is ComboBox combo)
+            {
+                if (combo == choices["appearance.theme"]) combo.SelectionChanged += (_, _) => { try { Read(); Build(0); } catch (Exception e) { error.Text = e.Message; } };
+                else combo.SelectionChanged += (_, _) => Preview();
+            }
             if (control is TextBox text) text.TextChanged += (_, _) => Preview();
             if (control is CheckBox check) check.IsCheckedChanged += (_, _) => Preview();
         }
@@ -107,6 +111,7 @@ public sealed class SettingsWindow : Window
     }
     TabItem Tab(string key, Control content) => new() { Header = L.T(key), Content = new ScrollViewer { Content = content, Margin = new Thickness(0, 12, 0, 0), HorizontalScrollBarVisibility = Avalonia.Controls.Primitives.ScrollBarVisibility.Disabled } };
     string Code(string key) => ((Choice)choices[key].SelectedItem).Code;
+    public void PreviewTheme(string theme) => choices["appearance.theme"].SelectedItem = choices["appearance.theme"].ItemsSource.Cast<Choice>().Single(c => c.Code == theme);
     void Read()
     {
         if (goals == null || calendar == null || !inputs.ContainsKey("salary.amount")) return;
