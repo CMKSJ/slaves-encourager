@@ -88,3 +88,5 @@ Portfolio-save readiness is checked before and after any opening-income modal co
 
 
 macOS port: see [MACOS.md](MACOS.md). The Mac project links shared domain files without changing the WPF application. Compatibility adapters provide legacy JSON/timer/resource interfaces; no WPF assemblies ship on Mac. Source packaging excludes nested bin/obj to avoid leaking machine paths. Native GitHub CI is the macOS verification fallback; .NET 8 locally is compatibility-only, released bundles use .NET 10.
+
+The shared quote provider retains explicit ServicePointManager TLS only for legacy .NET Framework; NET8_0_OR_GREATER uses HttpClient OS negotiation. .NET 10 rejects the obsolete API, so this conditional avoids suppressing warnings and leaves the Windows Framework path unchanged.

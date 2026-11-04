@@ -25,9 +25,10 @@ public sealed class SettingsWindow : Window
     bool adjust;
     public TabControl Tabs;
     public Settings Result { get; private set; }
+    public Func<bool> PortfolioSaveReady;
     public SettingsWindow(MainWindow owner, Settings settings, PortfolioState portfolio, int tab)
     {
-        main = owner; original = owner.Settings.Copy(); draft = settings.Copy(); Stock = new StockDraft(portfolio);
+        main = owner; original = owner.Settings.Copy(); draft = settings.Copy(); Stock = new StockDraft(portfolio); PortfolioSaveReady = () => !main.Stocks.Busy;
         Width = 740; Height = 790; MinWidth = 620; MinHeight = 570; WindowStartupLocation = WindowStartupLocation.CenterOwner;
         Build(tab); Closed += (_, _) => { L.Use(main.Settings.Language); Ui.Theme(main.Settings.Theme); };
     }
@@ -124,12 +125,13 @@ public sealed class SettingsWindow : Window
         try
         {
             Read(); draft.Validate();
-            if (main.Stocks.Busy) throw new ArgumentException(L.T("stock.busy"));
+            if (!PortfolioSaveReady()) throw new ArgumentException(L.T("stock.busy"));
             if (adjust || !original.Configured || original.CycleDay != draft.CycleDay || (!original.ExpensesEnabled && draft.ExpensesEnabled))
             {
                 if (original.CycleDay != draft.CycleDay) { draft.OpeningAt = null; draft.OpeningIncome = null; }
                 var amount = await Ui.Income(this, draft); if (!amount.HasValue) return; draft.ConfirmIncome(DateTime.Now, amount.Value);
             }
+            if (!PortfolioSaveReady()) throw new ArgumentException(L.T("stock.busy"));
             main.Apply(draft.Copy(), draft.StocksEnabled && Stock.Changed ? Stock.State.Copy() : null); Result = draft.Copy(); Close();
         }
         catch (Exception e) { error.Text = e.Message; }

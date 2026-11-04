@@ -89,7 +89,7 @@ public static class Ui
     public static Button LiteralButton(string caption, Action action)
     {
         var b = new Button { Content = caption, Padding = new Thickness(12, 8), CornerRadius = new CornerRadius(8), Foreground = Ink, Background = Surface, BorderBrush = Stroke, BorderThickness = new Thickness(1) };
-        b.Click += (_, _) => action(); return b;
+        b.Click += (_, _) => { try { action(); } catch (Exception e) { _ = Alert(TopLevel.GetTopLevel(b) as Window, e.Message); } }; return b;
     }
     public static Button AsyncButton(string key, Func<Task> action)
     { var b = Button(key, () => { }); b.Click += async (_, _) => { b.IsEnabled = false; try { await action(); } catch (Exception e) { await Alert(TopLevel.GetTopLevel(b) as Window, e.Message); } finally { b.IsEnabled = true; } }; return b; }
@@ -114,6 +114,12 @@ public static class Ui
         var w = Window(L.T("app.name"), 540, 260);
         w.Content = DialogBody(Text(message), Button("action.cancel", () => w.Close()));
         if (owner != null) await w.ShowDialog(owner); else w.Show();
+    }
+    public static async Task<bool> Confirm(Window owner, string message)
+    {
+        var w = Window(L.T("app.name"), 540, 280);
+        w.Content = DialogBody(Text(message), Row(Button("action.cancel", w.Close), Button("action.save", () => w.Close(true))));
+        return await w.ShowDialog<bool>(owner);
     }
     public static async Task<bool?> StockPrompt(Window owner)
     {

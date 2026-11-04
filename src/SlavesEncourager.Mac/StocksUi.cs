@@ -207,7 +207,13 @@ public static class StockMonitor
     {
         var w = Ui.Window(L.T("stock.title"), 800, 740); var draft = new StockDraft(main.Stocks.State); var rows = Ui.Stack();
         var panel = new StockPanel(w, draft, () => main.Privacy); var message = Ui.Text("", 11);
-        draft.Updated += () => { try { main.Stocks.Save(draft.State); _ = main.Stocks.RefreshAsync(); } catch (Exception e) { _ = Ui.Alert(w, e.Message); } };
+        bool restoring = false;
+        draft.Updated += () =>
+        {
+            if (restoring) return;
+            try { main.Stocks.Save(draft.State); _ = main.Stocks.RefreshAsync(); }
+            catch (Exception e) { restoring = true; draft.Stage(main.Stocks.State); restoring = false; _ = Ui.Alert(w, e.Message); }
+        };
         var online = Ui.Check("stock.onlineConsent", main.Stocks.State.Online);
         online.IsCheckedChanged += (_, _) =>
         { try { if (online.IsChecked != true) main.Stocks.StopOnline(); else { var next = main.Stocks.State.Copy(); next.Online = true; main.Stocks.Save(next); _ = main.Stocks.RefreshAsync(); } } catch (Exception e) { _ = Ui.Alert(w, e.Message); } };
@@ -222,13 +228,17 @@ public static class StockMonitor
                 string change = main.Privacy ? "••••" : usable ? ((q.Price / q.PreviousClose - 1) * 100).ToString("+0.00;-0.00;0.00", CultureInfo.InvariantCulture) + "%" : "—";
                 string qty = main.Privacy ? "••••" : p.Quantity.ToString(CultureInfo.InvariantCulture);
                 string pnl = main.Privacy ? "••••" : usable ? "$" + (p.Quantity * (q.Price - q.PreviousClose)).ToString("N2", CultureInfo.InvariantCulture) : "—";
+                string cost = main.Privacy ? "••••" : p.AverageCost?.ToString("N2", CultureInfo.InvariantCulture) ?? "—";
+                string prior = main.Privacy ? "••••" : usable ? q.PreviousClose.ToString("N2", CultureInfo.InvariantCulture) : "—";
                 rows.Children.Add(Ui.Card(Ui.Stack(Ui.Text(p.Symbol + "   " + L.T(p.WatchOnly ? "watch.watching" : "watch.holding") + "   " + value + "   " + change, 16),
                     Ui.Text(p.WatchOnly ? L.T("watch.manualRule") : L.T("stock.quantity") + ": " + qty + "  ·  " + L.T("stock.dayPnlShort") + ": " + pnl, 11),
+                    Ui.Text(L.T("stock.previous") + ": " + prior + (p.WatchOnly ? "" : "  ·  " + L.T("stock.cost") + ": " + cost), 11),
                     Ui.Text(q == null ? L.T("stock.unavailable") : (q.Simulated ? L.T("stock.simulated") : L.T(price ? "stock.quoteEstimated" : "stock.stale")) + "  ·  " + StockMath.InNewYork(q.AsOfUtc).ToString("yyyy-MM-dd HH:mm") + " ET", 10))));
             }
         }
         var t = new DispatcherTimer { Interval = TimeSpan.FromSeconds(1) }; t.Tick += (_, _) => Update(); t.Start();
-        w.Content = Ui.DialogBody(Ui.Stack(Ui.Label("stock.footer", 11), panel, online, Ui.Row(Ui.AsyncButton("stock.refresh", main.Stocks.RefreshAsync), Ui.Button("stock.stop", () => { main.Stocks.StopOnline(); online.IsChecked = false; })), message, rows), Ui.Button("action.cancel", w.Close));
+        w.Content = Ui.DialogBody(Ui.Stack(Ui.Label("stock.footer", 11), panel, online, Ui.Row(Ui.AsyncButton("stock.refresh", main.Stocks.RefreshAsync), Ui.Button("stock.stop", () => { main.Stocks.StopOnline(); online.IsChecked = false; }),
+            Ui.AsyncButton("stock.clear", async () => { if (main.Stocks.Busy) throw new ArgumentException(L.T("stock.busy")); if (await Ui.Confirm(w, L.T("stock.clearConfirm"))) { draft.Stage(new PortfolioState()); online.IsChecked = false; } })), message, rows), Ui.Button("action.cancel", w.Close));
         w.Closed += (_, _) => t.Stop(); Update(); await w.ShowDialog(main);
     }
 }

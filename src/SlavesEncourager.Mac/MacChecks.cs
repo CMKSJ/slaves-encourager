@@ -3,6 +3,7 @@ using Avalonia.Controls;
 using Avalonia.Media.Imaging;
 using Avalonia.Threading;
 using Avalonia.Interactivity;
+using Avalonia.VisualTree;
 using System.Globalization;
 
 namespace SlavesEncourager.Mac;
@@ -58,9 +59,33 @@ public static class MacChecks
             importer.SetRawForCheck("Symbol,Quantity,AverageCost,Currency\nAAPL,10,150,USD\nMSFT,5,300,USD"); importer.Parse();
             Check(importer.PreviewCount == 2, "actual import preview " + language); importer.SetRawForCheck("changed"); Check(importer.PreviewCount == 0, "preview invalidates on edit " + language);
             importer.Close(); await importTask;
+            await SaveFlow(main, language);
         }
         File.WriteAllText(Path.Combine(output, "ui-result.txt"), "Six-language mac UI + stock tab routing + cancel isolation + import preview PASS\n");
         Console.WriteLine("ALL MAC UI CHECKS PASS");
+    }
+    static async Task SaveFlow(MainWindow main, string language)
+    {
+        var saved = main.Settings.Copy(); var portfolio = main.Stocks.State.Copy();
+        main.Settings = new Settings { Language = language, Configured = false };
+        var initial = main.Settings.Copy(); initial.StocksEnabled = true;
+        var editor = new SettingsWindow(main, initial, new PortfolioState(), 5);
+        editor.Stock.Stage(StockMath.Manual(editor.Stock.State, "AAPL", true, null, null, null));
+        var shown = editor.ShowDialog(main); await Task.Delay(50);
+        editor.PortfolioSaveReady = () => false; await editor.Save();
+        Check(editor.IsVisible && editor.Result == null && editor.Stock.State.Positions.Count == 1, "busy save retains draft " + language);
+        editor.PortfolioSaveReady = () => true;
+        var cancel = editor.Save(); await Task.Delay(50);
+        Check(editor.OwnedWindows.Count == 1, "first-use opening income dialog " + language);
+        editor.OwnedWindows[0].Close(); await cancel;
+        Check(editor.IsVisible && main.Settings.OpeningIncome == null && !main.Settings.Configured, "opening income cancel leaves settings untouched " + language);
+        var confirm = editor.Save(); await Task.Delay(50);
+        var income = editor.OwnedWindows.Single();
+        income.GetVisualDescendants().OfType<TextBox>().Single().Text = "123.45";
+        income.GetVisualDescendants().OfType<Button>().Single(b => (string)b.Content == L.T("income.confirm")).RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
+        await confirm; await shown;
+        Check(main.Settings.Configured && main.Settings.OpeningIncome == 123.45m && main.Settings.StocksEnabled && main.Stocks.State.Positions.Single().WatchOnly, "settings save commits confirmed income and stock draft " + language);
+        main.Settings = saved; main.Stocks.Save(portfolio); main.Stocks.Demo(); main.Build();
     }
     static void Capture(Window window, string path)
     {
