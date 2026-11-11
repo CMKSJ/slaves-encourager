@@ -11,7 +11,7 @@
 - `FlipDisplay.cs`: changed-digit animations and system animation preference.
 - `Main.xaml` / `Settings.xaml`: resource-driven interface; user-entered data remains separate from translations.
 
-Salary remains offline. The local stock beta makes only user-enabled public Yahoo symbol GET requests; holdings, screenshots and account credentials are never uploaded. No telemetry or brokerage/order connection exists. See STOCK_BETA.md.
+Salary remains offline: no network requests, telemetry or account connections exist.
 
 ## Build environment
 
@@ -57,36 +57,3 @@ See [rules and examples](EXPENSES.md). Missing `SettlementDay` means 1; missing 
 Settings drafts own their expense rows. Confirming income modifies only the draft, and the main controller applies it after atomic save succeeds. Turning off expenses discards hidden unsaved row edits and retains the prior saved list. Stored names are never translated; starter names use the active locale before first save.
 
 `-VisualCheck` also exercises actual nested modal save/edit/cancel flows on sample settings in each language, asserts expense opt-in visibility, and renders partial/complete/empty/private expense states and income confirmation.
-
-## Local stock beta
-
-`Stocks.cs` implements bounded table/XLSX imports, local snapshot persistence, New York trading dates, prior-session close selection and quote freshness/coverage. `StockWindows.cs` owns import review and the separate motivation dashboard. `StockOcr.exe` is built from `scripts/OcrHelper.cs` with the existing Framework WinRT projection library; it uses local Windows OCR metadata and reconstructs rows from word geometry. No SDK or PowerShell execution-policy change is needed. Missing OCR languages are reported, never installed.
-
-The user authorized publishing beta.4 on 2026-11-04. Publish audited source and synthetic samples on a separate beta branch/tag as a prerelease; preserve stable main and v1.4.0. Never publish actual holdings or market responses. Portfolio settings never use the stable directory. `StockService` requires online consent, limits refreshes to 5 min / manual 1 min, 3 concurrent requests and 12-second bounded HTTP reads, permits cancellation and refuses incomplete totals. The provider interface permits future approved sources without treating the current Yahoo endpoint as an official API.
-
-Build runs 151 baseline plus 79 stock behavior checks. `-VisualCheck` adds per-language real modal stock confirm/cancel and invalidation checks, dashboard/private/import renders. Run `node tests/extension.test.js` for synthetic DOM/permission checks. `StockTests.exe --public-quote-probe` explicitly opts into a public AAPL-only connectivity probe; normal tests never network.
-
-## Direct symbol watchlist (beta.2)
-
-`StockPosition.WatchOnly` defaults false for backward-compatible holding JSON. Watch entries require zero quantity and no cost; they never enter owned PnL totals. `StockMath.Manual` edits a deep copy, normalizes one/batch symbols, preserves edit order and validates the combined 50-item limit. Manual mode controls explicit online consent and confirmation. Imports replace owned rows while retaining nonconflicting watches.
-
-`PriceUsable` permits fresh price monitoring when a prior close is absent; `Usable` additionally requires a valid preceding close for percentage change/PnL. Watch coverage is independent of holding coverage. A pure watchlist displays counts instead of a fake zero-dollar profit. The manual editor, conversion, cancel isolation and retained-watch import are exercised by actual sample-only modal flows in every language.
-
-## Default-hidden home module (beta.3)
-
-`Settings.StocksEnabled` defaults false, including older JSON. The stock-tab checkbox is applied only after save. `StockService.FeatureEnabled` is an independent runtime gate; disabling it cancels in-flight requests without deleting positions or saved quote consent. Startup and periodic refreshes honor that gate.
-
-Home content uses a down-only `Viewbox`, not a `ScrollViewer`. Stocks are the last body child and are collapsed in mini mode. `FitHomeWindow` measures the natural body, title and action rows, grows to that height and clamps to the work area; the body scales down on shorter screens. Title/actions retain their size. Six-language sample checks assert natural growth on a roomy screen and bottom-card bounds at a 600-DIP height.
-
-## Dedicated Stocks tab and first-use route (beta.4)
-
-`PrepareSettings` asks through `StockWelcomeWindow` only for an unconfigured first-use entry. An explicit nullable `Choice` distinguishes Not now from Cancel, because WPF closing ShowDialog otherwise reports false. Yes selects Stocks (item index5), No selects salary (index1), Cancel creates no settings editor. Existing expense tab indices are preserved.
-
-`StockSettingsPanel` clones the current portfolio and provides manual, edit/remove and import actions. Child editors stage into that clone. `SettingsEditor.PortfolioResult` is produced only on Save with stocks enabled; cancel and disabled-stock saves do not commit drafts. Main persists settings and the optional portfolio before enabling quotes; if portfolio saving fails, it attempts to restore prior settings and reports the failure. The dedicated tab and prompt are rendered and the actual yes/no/cancel routes run in all six sample languages.
-
-Portfolio-save readiness is checked before and after any opening-income modal confirmation. If quotes are still refreshing, settings stays open with its stock draft intact; retry after completion. The sample modal verification exercises that blocked-save/retry path in every language.
-
-
-macOS port: see [MACOS.md](MACOS.md). The Mac project links shared domain files without changing the WPF application. Compatibility adapters provide legacy JSON/timer/resource interfaces; no WPF assemblies ship on Mac. Source packaging excludes nested bin/obj to avoid leaking machine paths. Native GitHub CI is the macOS verification fallback; .NET 8 locally is compatibility-only, released bundles use .NET 10.
-
-The shared quote provider retains explicit ServicePointManager TLS only for legacy .NET Framework; NET8_0_OR_GREATER uses HttpClient OS negotiation. .NET 10 rejects the obsolete API, so this conditional avoids suppressing warnings and leaves the Windows Framework path unchanged.

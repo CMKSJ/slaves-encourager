@@ -22,8 +22,6 @@
 
 # 1.5.0-beta.4 · 美股监控与持仓 · 公开预发布版
 
-**macOS 版**：现已加入 Apple 芯片和 Intel 原生项目，功能对齐 Windows beta.4；原生构建附件见同一 Release。[安装、功能对照与首次打开说明](docs/MACOS.md)。
-
 股票默认隐藏。点击「第一次使用设置」先询问是否开启；选择开启直接进入独立「股票」标签页，暂不开启则进入工资设置。股票页可新增、编辑、移除或导入，保存后显示在主页最下方。窗口随之自动拉长；主页无滚动条，短屏幕自动缩放正文。关闭开关会暂停行情请求并保留已保存数据。
 
 新增：**按代码添加自选监控**，例如 `AAPL, MSFT, NVDA`，无需股数。显示价格、涨跌幅及行情时间；填写股数后可切为持仓估算盈亏。支持批量新增、编辑、移除；自选不计入持仓收益。[使用步骤](docs/STOCK_BETA.md)。
@@ -119,6 +117,6 @@ docs/                开发、发布、图标说明和示例截图
 .github/workflows/   Windows CI
 ```
 
-[贡献指南](CONTRIBUTING.md) · [开发说明](docs/DEVELOPMENT.md) · [GitHub 发布准备](docs/GITHUB_PUBLISH.md) · [验证记录](docs/VERIFICATION.md) · [版本记录](CHANGELOG.md) · [图标来源](docs/ICON.md) · [第三方说明](THIRD_PARTY_NOTICES.md)
+[贡献指南](CONTRIBUTING.md) · [开发说明](docs/DEVELOPMENT.md) · [GitHub 发布准备](docs/GITHUB_PUBLISH.md) · [版本记录](CHANGELOG.md) · [图标来源](docs/ICON.md) · [第三方说明](THIRD_PARTY_NOTICES.md)
 
 本项目根据一个公开的 macOS 功能演示独立实现，不含原作者源码、图标或安装包；功能灵感来源见 [公开作品](https://www.douyin.com/note/7703818875581798641)。
