@@ -1,0 +1,42 @@
+/* 三套配色对照 Palette.Apply / Three palettes mirroring Palette.Apply. */
+:root, html[data-theme='midnight'] {
+  --bg: #F1F4FA;
+  --surface: #FFFFFF;
+  --surface-alt: #E7EDF8;
+  --stroke: #D6DFEE;
+  --ink: #27364D;
+  --muted: #74839A;
+  --accent: #526FA8;
+  --accent-ink: #FFFFFF;
+  --tile-top: #DEE7F4;
+  --tile-bottom: #D2DFF0;
+  --red: #BD465D;
+}
+
+html[data-theme='forest'] {
+  --bg: #242337;
+  --surface: #302D46;
+  --surface-alt: #3C3755;
+  --stroke: #504969;
+  --ink: #F5F0FC;
+  --muted: #B7ACC9;
+  --accent: #D5BDEB;
+  --accent-ink: #302441;
+  --tile-top: #45405C;
+  --tile-bottom: #3A354F;
+  --red: #F298AA;
+}
+
+html[data-theme='paper'] {
+  --bg: #F7F1E8;
+  --surface: #FFFCF7;
+  --surface-alt: #F0E5D6;
+  --stroke: #DED2C3;
+  --ink: #4B3A31;
+  --muted: #89796B;
+  --accent: #9B674B;
+  --accent-ink: #FFFFFF;
+  --tile-top: #EEE2D2;
+  --tile-bottom: #E7D8C6;
+  --red: #BD465D;
+}

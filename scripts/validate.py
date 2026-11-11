@@ -49,9 +49,24 @@ def validate():
     demo = (ROOT / "docs/demo.gif").read_bytes()
     assert demo[:6] == b"GIF89a" and struct.unpack_from("<HH", demo, 6) == (1000, 660), "Invalid README animation canvas"
     assert b"NETSCAPE2.0\x03\x01\x00\x00\x00" in demo, "README animation must loop"
+    # web 版目录清单单源：不得复制 tsv，键引用必须在目录内 / The web edition reads the catalog at build time: no tsv copies, referenced keys must exist.
+    web_keys = set()
+    if (ROOT / "web").is_dir():
+        assert not list((ROOT / "web").rglob("*.tsv")), "web/ must not contain catalog copies"
+        for file in (ROOT / "web/src").rglob("*.ts"):
+            if file.suffix not in {".ts", ".tsx"}:
+                continue
+            text = file.read_text(encoding="utf-8")
+            for pattern in (r"\bt\(\s*['\"]([\w.]+)['\"]", r"\bhome\(\s*['\"]([\w.]+)['\"]", r"\bhomeCopy\([^,]+,\s*'([\w.]+)'"):
+                web_keys.update(re.findall(pattern, text))
+        for file in (ROOT / "web/src").rglob("*.tsx"):
+            text = file.read_text(encoding="utf-8")
+            for pattern in (r"\bt\(\s*['\"]([\w.]+)['\"]", r"\bhome\(\s*['\"]([\w.]+)['\"]", r"\bhomeCopy\([^,]+,\s*'([\w.]+)'"):
+                web_keys.update(re.findall(pattern, text))
+        assert not (web_keys - keys), "Missing web keys: " + str(web_keys - keys)
     license_text = (ROOT / "LICENSE").read_text(encoding="utf-8")
     assert "MIT License" in license_text and "Permission is hereby granted" in license_text
-    summary = {"languages": LANGUAGES, "translation_keys": len(keys), "referenced_keys": len(referenced), "xml": "PASS", "translation_tokens": "PASS", "icon_sizes": icon_sizes, "readme_links": "PASS", "readme_animation": {"width": 1000, "height": 660, "loop": "infinite", "bytes": len(demo)}, "license": "MIT"}
+    summary = {"languages": LANGUAGES, "translation_keys": len(keys), "referenced_keys": len(referenced), "xml": "PASS", "translation_tokens": "PASS", "icon_sizes": icon_sizes, "readme_links": "PASS", "readme_animation": {"width": 1000, "height": 660, "loop": "infinite", "bytes": len(demo)}, "web_keys": len(web_keys), "license": "MIT"}
     output = ROOT / ".build"
     output.mkdir(exist_ok=True)
     (output / "static-validation.json").write_text(json.dumps(summary, indent=2), encoding="utf-8")

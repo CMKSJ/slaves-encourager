@@ -1,0 +1,54 @@
+/* 翻页数字：每位一格，变化时翻页/滑动 / Flip digits: one tile per character with flip/slide transitions. */
+.flip-number {
+  display: flex;
+  gap: 2px;
+  font-size: 52px;
+  line-height: 1.1;
+  font-weight: 600;
+  overflow: hidden;
+  flex-wrap: wrap;
+  font-family: Bahnschrift, 'DIN Alternate', 'Segoe UI', sans-serif;
+}
+.flip-number.flip-mono { font-family: ui-monospace, 'Cascadia Mono', Consolas, monospace; }
+.flip-number.flip-classic { font-family: Georgia, 'Times New Roman', serif; font-weight: 500; }
+
+.flip-tile {
+  display: inline-block;
+  min-width: 0.62em;
+  text-align: center;
+  perspective: 200px;
+}
+.flip-tile > span {
+  display: inline-block;
+  width: 100%;
+  background: linear-gradient(var(--tile-top) 48%, var(--tile-bottom) 52%);
+  border-radius: 6px;
+  padding: 2px 0;
+}
+.flip-static {
+  display: inline-block;
+  min-width: 0.35em;
+  text-align: center;
+}
+
+@keyframes flip-in {
+  0% { transform: rotateX(-88deg); opacity: 0.2; }
+  100% { transform: rotateX(0deg); opacity: 1; }
+}
+.flip-tile > span.flip-in {
+  animation: flip-in ease-out;
+  transform-origin: top center;
+  backface-visibility: hidden;
+}
+
+@keyframes flip-slide {
+  0% { transform: translateY(-0.75em); opacity: 0; }
+  100% { transform: translateY(0); opacity: 1; }
+}
+.flip-tile > span.flip-slide {
+  animation: flip-slide ease-out;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .flip-tile > span.flip-in, .flip-tile > span.flip-slide { animation: none; }
+}
