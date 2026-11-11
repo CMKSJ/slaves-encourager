@@ -1,9 +1,0 @@
-{
-  "manifest_version": 3,
-  "name": "Slaves Encourager Holdings · LOCAL BETA",
-  "description": "User-triggered export of loaded holdings tables. Local beta, review pending.",
-  "version": "0.1.0",
-  "permissions": ["activeTab", "scripting"],
-  "action": {"default_popup": "popup.html", "default_title": "Export holdings · BETA"},
-  "content_security_policy": {"extension_pages": "script-src 'self'; object-src 'none'"}
-}
