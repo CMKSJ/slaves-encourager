@@ -54,7 +54,7 @@ namespace SlavesEncourager
     [DataContract]
     public sealed class Settings
     {
-        [DataMember] public decimal MonthlySalary = 18000m;
+        [DataMember] public decimal MonthlySalary = 3000m;
         [DataMember] public string Start = "09:00";
         [DataMember] public string End = "18:00";
         [DataMember] public string LunchStart = "12:00";

@@ -6,7 +6,7 @@ import { t } from '../i18n/L';
 // 默认值对照 Engine.cs Settings 字段初始化 / Defaults mirror the Engine.cs field initializers.
 export function defaultSettings(): Settings {
   return {
-    MonthlySalary: 18000,
+    MonthlySalary: 3000,
     Start: '09:00',
     End: '18:00',
     LunchStart: '12:00',

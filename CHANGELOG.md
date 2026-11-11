@@ -5,6 +5,7 @@
 - Remove the entire 1.5.0 beta stock module (watchlists, holdings, imports, OCR, quote refresh and the browser extension) from code, tests, localization and docs; the app is fully offline again.
 - Retire the macOS/Avalonia port; git history keeps it. The Windows edition is unchanged apart from the stock removal.
 - Add the web edition (`web/`, beta): a Vite + Preact + TypeScript port with identical calculations and settings contract, six languages from the single-source catalog, localStorage persistence with `.bak` fallback, PWA offline install and a Capacitor Android APK path. Engine behavior is locked by 47 vitest checks mirroring EngineTests.cs. A committed `android/` shell builds a fully offline 6.5 MB debug APK with no permissions.
+- The default monthly salary for first-use sample data changes from 18,000 to 3,000 (saved settings are untouched).
 - Settings remain compatible: old files with stock fields still load (unknown members are ignored) and the settings directory name is unchanged.
 
 ## 1.5.0-beta.4 macOS edition
