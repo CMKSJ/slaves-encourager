@@ -47,6 +47,16 @@ El ingreso estimado del ciclo se reparte entre las metas por orden, sin duplicar
 
 Los ajustes se guardan en `%LOCALAPPDATA%\SlavesEncouragerStockBeta\settings.json`, una ruta beta separada de la versión estable. No están cifrados; cada guardado conserva una copia `.bak`.
 
+## Edición web (beta)
+
+`web/` traslada la app al navegador con los mismos cálculos, seis idiomas y esquema de ajustes; los datos se quedan en tu navegador. Instálala como PWA sin conexión o genera un APK Android con Capacitor.
+
+```bash
+cd web && npm install && npm run dev
+```
+
+Consulta [la guía web](docs/WEB.md).
+
 ## Desarrollo y licencia
 
 Se prefiere el contenedor Windows: `./scripts/build.ps1`. Como alternativa con el compilador ya instalado: `./scripts/build.ps1 -Native -VisualCheck`, seguido de `python scripts/validate.py` y `python scripts/package.py`.

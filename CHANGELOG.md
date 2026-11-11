@@ -1,9 +1,10 @@
 # 版本记录 / Changelog
 
-## 1.6.0 — Stocks and macOS removed
+## 1.6.0 — Stocks and macOS removed; web edition added
 
 - Remove the entire 1.5.0 beta stock module (watchlists, holdings, imports, OCR, quote refresh and the browser extension) from code, tests, localization and docs; the app is fully offline again.
 - Retire the macOS/Avalonia port; git history keeps it. The Windows edition is unchanged apart from the stock removal.
+- Add the web edition (`web/`, beta): a Vite + Preact + TypeScript port with identical calculations and settings contract, six languages from the single-source catalog, localStorage persistence with `.bak` fallback, PWA offline install and a Capacitor Android APK path. Engine behavior is locked by 47 vitest checks mirroring EngineTests.cs.
 - Settings remain compatible: old files with stock fields still load (unknown members are ignored) and the settings directory name is unchanged.
 
 ## 1.5.0-beta.4 macOS edition

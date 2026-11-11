@@ -69,7 +69,15 @@
 
 ## 从源码构建
 
-首选 Windows 容器（需 Windows Docker engine）：
+**网页版（beta）**：`web/` 是浏览器移植，计算口径、六语言与设置契约和桌面版一致，数据仅存于浏览器。可安装为 PWA 离线使用，也可用 Capacitor 打包安卓 APK。
+
+```bash
+cd web && npm install && npm run dev
+```
+
+详见[网页版说明](docs/WEB.md)。
+
+**Windows 桌面版**——首选 Windows 容器（需 Windows Docker engine）：
 
 ```powershell
 ./scripts/build.ps1
@@ -89,6 +97,7 @@ python scripts/package.py
 
 ```text
 src/SlavesEncourager/  桌面界面、计算、日历、目标和本地化
+web/                 网页版（Vite + Preact + TypeScript）
 locales/catalog.tsv   243 个键 × 6 种语言
 assets/              PNG 原图和七档尺寸 ICO
 scripts/             构建、校验和白名单打包
@@ -97,6 +106,6 @@ docs/                开发、发布、图标说明和示例截图
 .github/workflows/   Windows CI
 ```
 
-[贡献指南](CONTRIBUTING.md) · [开发说明](docs/DEVELOPMENT.md) · [GitHub 发布准备](docs/GITHUB_PUBLISH.md) · [版本记录](CHANGELOG.md) · [图标来源](docs/ICON.md) · [第三方说明](THIRD_PARTY_NOTICES.md)
+[贡献指南](CONTRIBUTING.md) · [开发说明](docs/DEVELOPMENT.md) · [网页版说明](docs/WEB.md) · [GitHub 发布准备](docs/GITHUB_PUBLISH.md) · [版本记录](CHANGELOG.md) · [图标来源](docs/ICON.md) · [第三方说明](THIRD_PARTY_NOTICES.md)
 
 本项目根据一个公开的 macOS 功能演示独立实现，不含原作者源码、图标或安装包；功能灵感来源见 [公开作品](https://www.douyin.com/note/7703818875581798641)。

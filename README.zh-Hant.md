@@ -47,6 +47,16 @@
 
 資料僅儲存在本機 `%LOCALAPPDATA%\SlavesEncouragerStockBeta\settings.json`（目錄名沿用歷史版本，不遷移現有檔案）。儲存時保留 `.bak`，設定未加密。
 
+## 網頁版（beta）
+
+`web/` 是瀏覽器移植，計算口徑、六語言與設定契約和桌面版一致，資料僅存於瀏覽器。可安裝為 PWA 離線使用，也可用 Capacitor 打包安卓 APK。
+
+```bash
+cd web && npm install && npm run dev
+```
+
+詳見[網頁版說明](docs/WEB.md)。
+
 ## 開發與授權
 
 首選 Windows 容器 `./scripts/build.ps1`；容器無法使用時，可用既有編譯器執行 `./scripts/build.ps1 -Native -VisualCheck`，再執行 `python scripts/validate.py` 及 `python scripts/package.py`。

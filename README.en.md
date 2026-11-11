@@ -59,6 +59,16 @@ Goal progress uses pay-cycle estimated income, not savings. For goals of 1,000 a
 
 Settings stay in `%LOCALAPPDATA%\SlavesEncouragerStockBeta\settings.json`, a separate beta path that leaves stable settings untouched. Saves keep a `.bak`; settings are not encrypted. Privacy mode hides amounts on screen.
 
+## Web edition (beta)
+
+`web/` ports the app to the browser with identical calculations, six languages and settings layout; data stays in your browser. Install it as an offline PWA or package an Android APK with Capacitor.
+
+```bash
+cd web && npm install && npm run dev
+```
+
+See [the web guide](docs/WEB.md).
+
 ## Build
 
 Prefer the Windows container workflow: `./scripts/build.ps1`. If unavailable, use the existing Windows compiler:

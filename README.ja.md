@@ -49,6 +49,16 @@ Windows 10/11と.NET Framework 4.8が必要です。ZIPを展開し、`SlavesEnc
 
 設定は安定版と分けるため`%LOCALAPPDATA%\SlavesEncouragerStockBeta\settings.json`に保存します。暗号化はされず、保存時に`.bak`を残します。
 
+## ウェブ版（beta）
+
+`web/` はブラウザ向け移植です。計��規則・6言語・設定互換はデスクトップ版と同じで、データはブラウザ内にのみ保存されます。PWA としてオフライン利用や、Capacitor による Android APK 化も可能です。
+
+```bash
+cd web && npm install && npm run dev
+```
+
+詳細は[ウェブ版ガイド](docs/WEB.md)。
+
 ## 開発
 
 Windowsコンテナーを優先します：`./scripts/build.ps1`。利用できない場合は既存のコンパイラーで`./scripts/build.ps1 -Native -VisualCheck`を実行し、`python scripts/validate.py`と`python scripts/package.py`で検証・作成できます。

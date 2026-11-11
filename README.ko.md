@@ -47,6 +47,16 @@ Windows 10/11 및 .NET Framework 4.8이 필요합니다. ZIP을 풀고 `SlavesEn
 
 설정은 안정 버전과 분리하여 `%LOCALAPPDATA%\SlavesEncouragerStockBeta\settings.json`에 저장합니다. 암호화되지 않으며 저장 시 `.bak` 사본을 남깁니다.
 
+## 웹 버전 (beta)
+
+`web/`은 브라우저 이식판입니다. 계산 규칙, 6개 언어, 설정 호환성이 데스크톱과 동일하고 데이터는 브라우저에만 저장됩니다. PWA로 오프라인 설치하거나 Capacitor로 안드로이드 APK를 만들 수 있습니다.
+
+```bash
+cd web && npm install && npm run dev
+```
+
+자세한 내용은 [웹 가이드](docs/WEB.md)를 참고하세요.
+
 ## 개발 및 라이선스
 
 Windows 컨테이너를 우선 사용합니다: `./scripts/build.ps1`. 사용할 수 없다면 기존 컴파일러로 `./scripts/build.ps1 -Native -VisualCheck`를 실행하고 `python scripts/validate.py`, `python scripts/package.py`로 검사 및 패키징하세요.

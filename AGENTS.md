@@ -16,3 +16,5 @@
 - README animation uses real WPF sample controls and the settings language event. Rebuild with scripts/render-demo.ps1 and an existing FFmpeg; see docs/DEMO.md. Never capture real salary/settings or replace published versioned assets for a documentation-only change.
 
 - Pay-cycle, opening-income and expense-first rules are specified in docs/EXPENSES.md. Preserve default-off visibility, cancel/save isolation, month-end clamping, no duplicate allocation and zero-baseline compatibility; update all six READMEs and meaningful boundary checks when these rules change.
+
+- Web edition (`web/`, Vite + Preact + TypeScript, see docs/WEB.md): the catalog stays single-source — read `../locales/catalog.tsv` through the vite virtual module, never copy it; `validate.py` rejects copies. Money uses JS numbers with explicit AwayFromZero rounding; if a golden assertion from EngineTests.cs fails, rescale to integer math before considering decimal.js (engine.ts only). Never silently fork the financial calculations from Engine.cs. Run `npm test` in `web/` after touching engine/i18n code; keep `node_modules`/`dist` out of the repository and packages.

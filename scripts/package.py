@@ -5,17 +5,17 @@ from pathlib import Path
 from zipfile import ZipFile, ZIP_DEFLATED
 
 ROOT = Path(__file__).resolve().parents[1]
-VERSION = "1.5.0-beta.4"
+VERSION = "1.6.0"
 ROOT_FILES = ["README.md", "README.en.md", "README.zh-Hant.md", "README.ja.md", "README.es.md", "README.ko.md",
               "LICENSE", "CONTRIBUTING.md", "THIRD_PARTY_NOTICES.md", "CHANGELOG.md", "AGENTS.md", "Dockerfile.windows", ".gitignore", ".gitattributes"]
-SOURCE_DIRS = ["src", "locales", "assets", "scripts", "tests", "docs", ".github"]
+SOURCE_DIRS = ["src", "locales", "assets", "scripts", "tests", "docs", ".github", "web"]
 
 
 def source_files():
     files = [ROOT / name for name in ROOT_FILES]
     for directory in SOURCE_DIRS:
         files.extend(path for path in (ROOT / directory).rglob("*") if path.is_file()
-                     and not {"__pycache__", "bin", "obj"}.intersection(path.parts) and path.suffix not in {".pyc", ".zip", ".bak", ".tmp", ".exe", ".pdb"})
+                     and not {"__pycache__", "bin", "obj", "node_modules", "dist", "dev-dist"}.intersection(path.parts) and path.suffix not in {".pyc", ".zip", ".bak", ".tmp", ".exe", ".pdb"})
     for path in files:
         assert path.is_file(), path
         assert path.name != "settings.json" and "test-data" not in path.parts, path
