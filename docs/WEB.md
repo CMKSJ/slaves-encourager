@@ -36,15 +36,24 @@ npm run icons      # 从 assets/app.png 重新生成 PWA 图标（产物已入�
 
 ## 安卓 APK / Android APK
 
-网页版可由 Capacitor 打包为安卓应用（实验性）：
+网页版由 Capacitor 打包为安卓应用（实验性，`android/` 工程已入库）：
 
 ```bash
 cd web
-npm run build
-npx cap add android        # 首次；android/ 目录已入库
-npx cap sync android
+npm run build              # 更新 web/dist
+npx cap sync android       # 拷贝产物进 android 工程
+# 然后在装有 JDK 21 与 Android SDK 的环境里（见下）：
 cd android && ./gradlew assembleDebug
-# 产物 android/app/build/outputs/apk/debug/app-debug.apk（debug 签名）
+# 产物 android/app/build/outputs/apk/debug/app-debug.apk（debug 签名，约 6.5MB）
 ```
 
-前置：JDK 17 与 Android SDK（platform-tools、platforms;android-34、build-tools;34.0.0）。图标由 `npx @capacitor/assets generate --android` 从 `assets/app.png` 生成。release 签名流程见 Capacitor 文档；keystore 不入库。
+构建环境实测（WSL Ubuntu，无需 Windows 侧安装）：
+
+- **JDK 21 必需**（Capacitor 8 的 `capacitor-android` 模块要求 Java 21 源级；JDK 17 会在 `invalid source release: 21` 处失败）。可从 Adoptium 镜像解压到用户目录，无需 root：
+  `wget https://mirrors.tuna.tsinghua.edu.cn/Adoptium/21/jdk/x64/linux/OpenJDK21U-jdk_x64_linux_hotspot_21.0.13_9.tar.gz`
+- **Android SDK**：`cmdline-tools` + `platform-tools` + `platforms;android-36` + `build-tools;36.0.0`。dl.google.com 直连慢时，`commandlinetools`、`platform-36_r02.zip`、`platform-tools-latest-linux.zip` 均可从 `mirrors.cloud.tencent.com/AndroidSDK/` 下载后解压到 `~/Android/Sdk/` 标准布局；`android/local.properties` 写 `sdk.dir=<SDK 路径>`（不入库）。
+- **gradle 发行版**：`android/gradle/wrapper/gradle-wrapper.properties` 已指向腾讯镜像；Maven 依赖可经 `~/.gradle/init.gradle` 配置阿里云镜像（主机本地配置，不入库）。
+- 图标由 `npx @capacitor/assets generate --android --assetPath <含 logo.png 的目录>` 生成；应用清单不含任何权限（完全离线）。
+- appId 为 `io.github.thisemailrectrashcpu.slavesencourager`（Android 包名段不允许连字符）。
+
+release 签名流程见 Capacitor 文档（`keytool` 生成 keystore 库外保存 + `signingConfig`）；keystore 不入库。
