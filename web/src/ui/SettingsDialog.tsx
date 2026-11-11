@@ -227,29 +227,30 @@ function AppearanceTab({ draft, touch }: { draft: Settings; touch: () => void })
   );
 }
 
-// 月薪输入保留原始草稿文本，避免 "3." 中间态被 Number() 规格化打断 / Keep the raw salary draft so intermediate states like "3." survive.
-function SalaryTab({ draft, touch, onAdjust, onOpenExpenses, onOpenCalendar }: {
+// 月薪输入保留原始草稿文本，避免 "3." 或删空的中间态被 Number() 规格化打断。
+// Keep the raw salary draft; the sentinel is null (not '') so an emptied field stays empty.
+export function SalaryTab({ draft, touch, onAdjust, onOpenExpenses, onOpenCalendar }: {
   draft: Settings;
   touch: () => void;
   onAdjust: () => void;
   onOpenExpenses: () => void;
   onOpenCalendar: () => void;
 }) {
-  const rawSalary = useRef('');
+  const rawSalary = useRef<string | null>(null);
   return (
     <div class="form-grid">
       <Field label={t('salary.amount')}>
         <input
-          value={rawSalary.current !== '' ? rawSalary.current : String(draft.MonthlySalary)}
+          value={rawSalary.current ?? String(draft.MonthlySalary)}
           inputMode="decimal"
           onInput={(e) => {
             const raw = e.currentTarget.value;
-            rawSalary.current = raw === String(draft.MonthlySalary) ? '' : raw;
+            rawSalary.current = raw === String(draft.MonthlySalary) ? null : raw;
             const parsed = Number(raw);
             if (raw.trim() !== '' && Number.isFinite(parsed)) draft.MonthlySalary = parsed;
             touch();
           }}
-          onBlur={() => { rawSalary.current = ''; touch(); }}
+          onBlur={() => { rawSalary.current = null; touch(); }}
         />
       </Field>
       <Field label={t('salary.basis')}>
