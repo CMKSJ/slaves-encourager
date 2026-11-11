@@ -1,15 +1,3 @@
-# 1.5.0-beta.4 · 美股監控與持倉 · 公開預覽版
-
-股票預設隱藏。首次設定先詢問是否開啟；開啟直接進入獨立「股票」頁，暫不開啟則進入薪資設定。股票頁可新增、編輯、移除與匯入，儲存後顯示於主頁最下方。視窗自動拉長；主頁不捲動，短螢幕縮放正文。關閉開關會暫停行情連線並保留資料。
-
-新增：**依代碼加入自選監控**，例如 `AAPL, MSFT, NVDA`，不必填股數。顯示價格、漲跌幅與行情時間；可切換持倉模式、批次新增、編輯或移除。自選不計入持倉收益。[步驟](docs/STOCK_BETA.md)。
-
-**[下載 1.5.0-beta.4 預覽版](https://github.com/thisemailrectrash-cpu/slaves-encourager/releases/tag/v1.5.0-beta.4)**。股票功能仍在測試，真實券商頁面與擴充互動待進一步驗證；擴充未上架商店。[穩定版 1.4.0](https://github.com/thisemailrectrash-cpu/slaves-encourager/releases/tag/v1.4.0) 保留，下方一般下載連結指向穩定版。
-
-支援 CSV/Excel、貼上持倉表、Windows 本機截圖 OCR 與瀏覽器擴充。先預覽並確認固定持倉，再選擇 Yahoo 實驗行情；估算最近交易日損益，獨立於薪資、開支與目標。不連接券商、不下單。擴充須手動載入 `browser-extension`。
-
-[詳細步驟、計算規則與待審核事項](docs/STOCK_BETA.md)。使用本機 beta EXE 或便攜 ZIP，先以虛構範例測試。
-
 <p align="center"><img src="assets/app.png" width="96" alt="Slaves Encourager"></p>
 
 # 牛馬鼓勵器
@@ -45,7 +33,7 @@
 
 ## 使用
 
-適用於 Windows 10/11，系統需有 .NET Framework 4.8。解壓縮後執行 `SlavesEncourager.exe`，不必安裝或登入券商。
+適用於 Windows 10/11，系統需有 .NET Framework 4.8。解壓縮後執行 `SlavesEncourager.exe`，無須安裝其他元件。
 
 首次顯示明確標記的範例，按「第一次使用設定」填寫月薪與排班。在「休息與補班」選擇操作後直接點選日期，再點一次可取消。可新增最多 20 個目標、調整順序及切換查看。設定右上角可切換六種語言，儲存後保留選擇；取消會恢復原語言。
 
@@ -57,7 +45,7 @@
 
 多個目標共用本期估算收入，按清單順序分配，不重複計入，並於薪資結算日重新計算；不是實際存款餘額。
 
-資料僅儲存在本機 `%LOCALAPPDATA%\SlavesEncouragerStockBeta\settings.json`，測試版目錄與正式版隔離。儲存時保留 `.bak`，設定未加密。
+資料僅儲存在本機 `%LOCALAPPDATA%\SlavesEncouragerStockBeta\settings.json`（目錄名沿用歷史版本，不遷移現有檔案）。儲存時保留 `.bak`，設定未加密。
 
 ## 開發與授權
 

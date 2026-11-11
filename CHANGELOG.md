@@ -1,5 +1,11 @@
 # 版本记录 / Changelog
 
+## 1.6.0 — Stocks and macOS removed
+
+- Remove the entire 1.5.0 beta stock module (watchlists, holdings, imports, OCR, quote refresh and the browser extension) from code, tests, localization and docs; the app is fully offline again.
+- Retire the macOS/Avalonia port; git history keeps it. The Windows edition is unchanged apart from the stock removal.
+- Settings remain compatible: old files with stock fields still load (unknown members are ignored) and the settings directory name is unchanged.
+
 ## 1.5.0-beta.4 macOS edition
 
 - Apple Silicon and Intel app bundles with self-contained .NET 10 and Avalonia 11.3.22; compile shared Windows financial, localization and stock domain sources.
