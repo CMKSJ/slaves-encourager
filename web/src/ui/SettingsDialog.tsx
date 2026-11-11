@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'preact/hooks';
+import { useEffect, useRef, useState } from 'preact/hooks';
 import type { Settings } from '../engine/types';
 import { ValidationError } from '../engine/types';
 import { calculate } from '../engine/engine';
@@ -227,6 +227,7 @@ function AppearanceTab({ draft, touch }: { draft: Settings; touch: () => void })
   );
 }
 
+// 月薪输入保留原始草稿文本，避免 "3." 中间态被 Number() 规格化打断 / Keep the raw salary draft so intermediate states like "3." survive.
 function SalaryTab({ draft, touch, onAdjust, onOpenExpenses, onOpenCalendar }: {
   draft: Settings;
   touch: () => void;
@@ -234,10 +235,22 @@ function SalaryTab({ draft, touch, onAdjust, onOpenExpenses, onOpenCalendar }: {
   onOpenExpenses: () => void;
   onOpenCalendar: () => void;
 }) {
+  const rawSalary = useRef('');
   return (
     <div class="form-grid">
       <Field label={t('salary.amount')}>
-        <input value={String(draft.MonthlySalary)} inputMode="decimal" onInput={(e) => { draft.MonthlySalary = Number(e.currentTarget.value); touch(); }} />
+        <input
+          value={rawSalary.current !== '' ? rawSalary.current : String(draft.MonthlySalary)}
+          inputMode="decimal"
+          onInput={(e) => {
+            const raw = e.currentTarget.value;
+            rawSalary.current = raw === String(draft.MonthlySalary) ? '' : raw;
+            const parsed = Number(raw);
+            if (raw.trim() !== '' && Number.isFinite(parsed)) draft.MonthlySalary = parsed;
+            touch();
+          }}
+          onBlur={() => { rawSalary.current = ''; touch(); }}
+        />
       </Field>
       <Field label={t('salary.basis')}>
         <select value={draft.Basis} onChange={(e) => { draft.Basis = e.currentTarget.value; touch(); }}>
