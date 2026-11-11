@@ -8,7 +8,9 @@
 
 - 完整移除 1.5.0 beta 的股票监控与持仓功能（自选、持仓导入、截图 OCR、行情刷新和浏览器扩展），应用恢复完全离线。
 - 同步移除 macOS 版本；git 历史保留全部源码。
-- 设置文件保持兼容：旧文件中的股票字段会被忽略，设置目录名不变。
+- 新增网页版与安卓版（beta）：同口径计算、六语言、设置契约互通，可安装为 PWA 离线使用；本页提供安卓 APK。
+- 修改月薪保存时会确认本期已累计收入，并按新月薪把本期此前收入重新估算。
+- 网页版包含三个后续修复：数字翻页/滑动动效、目标与开支列表输入不再被刷新重置、月薪输入可删空重输。
 
 下载 `SlavesEncourager-1.6.0-windows-portable.zip`，解压后运行 `SlavesEncourager.exe`。需要 Windows 10/11 和 .NET Framework 4.8。
 
@@ -16,7 +18,9 @@
 
 - Removes the entire 1.5.0 beta stock module (watchlists, holding imports, screenshot OCR, quote refresh and the browser extension); the app is fully offline again.
 - The macOS edition is retired with this release; git history retains it.
-- Settings stay compatible: stock fields in old files are ignored and the settings directory is unchanged.
+- Adds the web and Android editions (beta): identical calculations, six languages, interoperable settings; installable as an offline PWA. An Android APK is attached.
+- Saving after a salary edit now confirms this cycle's income so far, re-estimated on the new salary.
+- The web edition ships three follow-up fixes: visible flip/slide digit animations, goal/expense list inputs that survive the live refresh, and a salary field that can be cleared and retyped.
 
 Extract the Windows portable ZIP and run `SlavesEncourager.exe`. Requires Windows 10/11 and .NET Framework 4.8.
 
