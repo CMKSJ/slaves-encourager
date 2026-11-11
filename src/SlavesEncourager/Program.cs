@@ -429,6 +429,7 @@ namespace SlavesEncourager
             timer.Stop();
             if (Find<Button>("ExpensesButton").Visibility != Visibility.Collapsed) throw new InvalidOperationException("Expenses must default to hidden");
             VerifySetupConfirmation();
+            VerifySalaryConfirmation();
             VerifyHomeFit(directory);
             settings.Goals = new List<RewardGoal> { new RewardGoal(L.T("sample.coffee"), 150m), new RewardGoal(L.T("goal.default"), 3000m), new RewardGoal(L.T("sample.headphones"), 1600m) };
             foreach (var theme in new[] { "midnight", "forest", "paper" })
@@ -550,6 +551,29 @@ namespace SlavesEncourager
                 if (initial.OpeningIncome != null || initial.ExpensesEnabled || initial.CycleDay != 1) throw new InvalidOperationException("Setup mutated original settings");
             }
         }
+
+        void VerifySalaryConfirmation()
+        {
+            // 已配置用户改月薪保存时必须确认期初收入 / A configured user changing salary must confirm opening income on save.
+            var configured = new Settings { Configured = true, MonthlySalary = 21750m, Basis = "fixed", LunchEnd = "13:00" };
+            configured.ConfirmIncome(DateTime.Now.AddHours(-2), 40m);
+            var editor = new SettingsEditor(configured, Window);
+            ((TextBox)editor.Window.FindName("SalaryText")).Text = "9000";
+            editor.Window.Dispatcher.BeginInvoke(DispatcherPriority.ApplicationIdle, new Action(delegate
+            {
+                editor.Window.Dispatcher.BeginInvoke(DispatcherPriority.ApplicationIdle, new Action(delegate
+                {
+                    Window confirmation = Application.Current.Windows.Cast<Window>().Single(w => w.Owner == editor.Window && w.Title == L.T("income.title"));
+                    var panel = (StackPanel)confirmation.Content;
+                    panel.Children.OfType<TextBox>().Single().Text = "200.00";
+                    panel.Children.OfType<WrapPanel>().Single().Children.OfType<Button>()
+                        .Single(b => (string)b.Content == L.T("income.confirm")).RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
+                }));
+                ((Button)editor.Window.FindName("SaveButton")).RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
+            }));
+            if (editor.Show() != true || editor.Result.MonthlySalary != 9000m || editor.Result.OpeningIncome != 200.00m || editor.Result.OpeningAt == null)
+                throw new InvalidOperationException("Salary change did not confirm opening income");
+        }
     }
 
     public sealed class SettingsEditor
@@ -643,9 +667,12 @@ namespace SlavesEncourager
                 try
                 {
                     Settings candidate = Read(true); candidate.Validate();
-                    if (confirmIncome || !original.Configured || original.CycleDay != candidate.CycleDay || (!original.ExpensesEnabled && candidate.ExpensesEnabled))
+                    bool salaryChanged = original.Configured && original.MonthlySalary != candidate.MonthlySalary;
+                    if (confirmIncome || !original.Configured || original.CycleDay != candidate.CycleDay || (!original.ExpensesEnabled && candidate.ExpensesEnabled) || salaryChanged)
                     {
-                        if (original.CycleDay != candidate.CycleDay) { candidate.OpeningAt = null; candidate.OpeningIncome = null; }
+                        // 改月薪或结算日变化都清旧锚点：预估按新月薪重算本期，确认后从新锚点继续。
+                        // A salary or settlement change clears the anchor: the estimate re-runs this cycle on the new salary.
+                        if (original.CycleDay != candidate.CycleDay || salaryChanged) { candidate.OpeningAt = null; candidate.OpeningIncome = null; }
                         DateTime now = DateTime.Now;
                         var confirmation = new IncomeConfirmation(candidate, Window, now);
                         if (confirmation.Window.ShowDialog() != true) return;

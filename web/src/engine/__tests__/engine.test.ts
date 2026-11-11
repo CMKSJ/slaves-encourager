@@ -335,6 +335,20 @@ describe('confirmed opening income', () => {
     anchored.OpeningAt = null;
     rejects(() => validate(anchored));
   });
+  it('re-estimates the cycle on the new salary once the anchor is cleared', () => {
+    // 改月薪保存时锚点被清除，预估按新月薪满勤重算本期 / A salary change clears the anchor; the estimate re-runs on the new salary.
+    const withAnchor = base();
+    withAnchor.Configured = true;
+    confirmIncome(withAnchor, at(2026, 11, 4, 10, 0, 0), 40);
+    withAnchor.MonthlySalary = 9000;
+    const cleared = copySettings(withAnchor);
+    cleared.OpeningAt = null;
+    cleared.OpeningIncome = null;
+    const later = at(2026, 11, 4, 11, 0, 0);
+    // 本期 11-02、11-03 满勤两天 + 11-04 上午 2 小时（有效班次 8 小时），全按新月薪 / Two full days plus 2 of 8 paid hours, all at the new salary.
+    near(calculate(later, cleared).Month, (9000 / 21.75) * (2 + 2.0 / 8));
+    expect(calculate(later, withAnchor).Month).not.toBeCloseTo(calculate(later, cleared).Month, 5);
+  });
 });
 
 describe('settings persistence', () => {

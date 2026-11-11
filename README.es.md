@@ -28,7 +28,7 @@ Elige el día de inicio del 1 al 31 (por defecto, 1). El día 15 abarca del 15 a
 
 Los gastos están ocultos inicialmente. Actívalos en la configuración salarial y personaliza hasta 20 nombres, importes y prioridades. Las barras rojas muestran lo pendiente y bajan al aumentar el ingreso. Primero se cubren gastos y después recompensas. Desactivar conserva la lista guardada.
 
-Al configurar por primera vez, activar gastos a mitad del ciclo o cambiar el día, se confirma lo acumulado antes de guardar. Puedes corregirlo o empezar desde 0; solo se suma lo ganado después. Puedes corregirlo más tarde desde los ajustes salariales; el importe inicial caduca al siguiente ciclo. Son asignaciones estimadas, no pagos. [Reglas completas](docs/EXPENSES.md).
+Al configurar por primera vez, activar gastos a mitad del ciclo, cambiar el día o editar el sueldo, se confirma lo acumulado antes de guardar; editar el sueldo re-estima el ciclo con el nuevo importe. Puedes corregirlo o empezar desde 0; solo se suma lo ganado después. Puedes corregirlo más tarde desde los ajustes salariales; el importe inicial caduca al siguiente ciclo. Son asignaciones estimadas, no pagos. [Reglas completas](docs/EXPENSES.md).
 
 
 ## Uso

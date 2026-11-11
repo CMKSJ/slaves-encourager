@@ -37,9 +37,12 @@ export function SettingsDialog({ initialTab = 0, onClose }: { initialTab?: numbe
     try {
       const candidate = copySettings(draft);
       validate(candidate);
+      const salaryChanged = original.Configured && original.MonthlySalary !== candidate.MonthlySalary;
       const needsIncome = adjustIncome || !original.Configured || cycleDay(original) !== cycleDay(candidate) ||
-        (!original.ExpensesEnabled && candidate.ExpensesEnabled);
-      if (cycleDay(original) !== cycleDay(candidate)) {
+        (!original.ExpensesEnabled && candidate.ExpensesEnabled) || salaryChanged;
+      // 改月薪或结算日变化都清旧锚点：预估按新月薪重算本期，确认后从新锚点继续。
+      // A salary or settlement change clears the anchor: the estimate re-runs this cycle on the new salary.
+      if (cycleDay(original) !== cycleDay(candidate) || salaryChanged) {
         candidate.OpeningAt = null;
         candidate.OpeningIncome = null;
       }

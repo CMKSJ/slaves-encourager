@@ -28,7 +28,7 @@ Choose a reset day from 1–31 (default: 1). Day 15 means the 15th through the n
 
 Living expenses are hidden by default. Enable them in first-time salary settings and customize up to 20 names, amounts and priorities. Red bars show the uncovered share and shrink as income increases. Income covers expenses before reward goals. Turning the feature off keeps the saved list.
 
-On first setup, enabling expenses mid-cycle or changing the reset day, saving asks you to confirm estimated earnings so far. Edit the amount or start from 0; only income after confirmation is added. “Adjust earnings so far…” lets you correct it later. The opening amount expires next cycle. Allocations are estimates, not bill payments. [Full rules](docs/EXPENSES.md).
+On first setup, enabling expenses mid-cycle, changing the reset day or editing the salary, saving asks you to confirm estimated earnings so far; a salary edit re-estimates this cycle on the new salary. Edit the amount or start from 0; only income after confirmation is added. “Adjust earnings so far…” lets you correct it later. The opening amount expires next cycle. Allocations are estimates, not bill payments. [Full rules](docs/EXPENSES.md).
 
 <img src="docs/screenshots/en-expenses.png" width="380" alt="Shrinking red bars as income covers living expenses">
 

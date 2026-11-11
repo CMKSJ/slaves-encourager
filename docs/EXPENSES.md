@@ -52,6 +52,6 @@ Older JSON settings without these fields use day 1, expenses disabled and no ope
 
 Income covers enabled expense rows in priority order. Red bars show the uncovered fraction. Only surplus funds goals; remaining work-hour estimates include outstanding expenses. No duplicate allocation, financial transactions or network access are introduced.
 
-On first setup, enabling expenses or changing the reset day, the settings dialog requires an editable estimate confirmation before committing. Cancel and failed persistence leave the original intact. “Adjust earnings so far…” requests another confirmation. The engine derives future increments from local schedule time and expires the anchor next cycle.
+On first setup, enabling expenses, changing the reset day or editing the salary, the settings dialog requires an editable estimate confirmation before committing. A salary edit clears the prior anchor so the estimate re-runs this cycle on the new salary; the confirmed amount then anchors future increments. Cancel and failed persistence leave the original intact. “Adjust earnings so far…” requests another confirmation. The engine derives future increments from local schedule time and expires the anchor next cycle.
 
 For overnight work, period attribution follows the shift's start date, while the reset occurs at local midnight. A shift that started before the reset does not contribute to the new cycle. The daily card and period card can therefore refer to different cycles during that boundary interval.
