@@ -1,4 +1,4 @@
-/* 翻页数字：每位一格，变化时翻页/滑动 / Flip digits: one tile per character with flip/slide transitions. */
+/* 翻页数字：每位一格，变化时旧数字翻出、新数字翻入 / Flip digits: the old digit flips out while the new one flips in. */
 .flip-number {
   display: flex;
   gap: 2px;
@@ -16,7 +16,7 @@
   display: inline-block;
   min-width: 0.62em;
   text-align: center;
-  perspective: 200px;
+  position: relative;
 }
 .flip-tile > span {
   display: inline-block;
@@ -25,30 +25,39 @@
   border-radius: 6px;
   padding: 2px 0;
 }
+.flip-tile > .flip-old {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+}
 .flip-static {
   display: inline-block;
   min-width: 0.35em;
   text-align: center;
 }
 
+/* 翻页：新数字从上方翻入盖住旧数字，旧数字向下翻出 / Flip: the new digit folds in from the top as the old one folds away. */
 @keyframes flip-in {
-  0% { transform: rotateX(-88deg); opacity: 0.2; }
+  0% { transform: rotateX(-90deg); opacity: 0.2; }
   100% { transform: rotateX(0deg); opacity: 1; }
 }
-.flip-tile > span.flip-in {
-  animation: flip-in ease-out;
-  transform-origin: top center;
-  backface-visibility: hidden;
+@keyframes flip-out {
+  0% { transform: rotateX(0deg); opacity: 1; }
+  100% { transform: rotateX(90deg); opacity: 0; }
 }
+.flip-tile > span[style*='flip-in'] { transform-origin: top center; backface-visibility: hidden; }
+.flip-tile > span[style*='flip-out'] { transform-origin: bottom center; backface-visibility: hidden; }
 
-@keyframes flip-slide {
+/* 滑动：旧数字滑出、新数字滑入 / Slide: the old digit slides out as the new one slides in. */
+@keyframes slide-in {
   0% { transform: translateY(-0.75em); opacity: 0; }
   100% { transform: translateY(0); opacity: 1; }
 }
-.flip-tile > span.flip-slide {
-  animation: flip-slide ease-out;
+@keyframes slide-out {
+  0% { transform: translateY(0); opacity: 1; }
+  100% { transform: translateY(0.75em); opacity: 0; }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .flip-tile > span.flip-in, .flip-tile > span.flip-slide { animation: none; }
+  .flip-tile > span { animation: none !important; }
 }
