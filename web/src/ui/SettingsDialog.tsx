@@ -159,7 +159,12 @@ function languageName(code: string): string {
   return NAMES[code] ?? code;
 }
 
-function AppearanceTab({ draft, touch }: { draft: Settings; touch: () => void }) {
+const PATTERN_PRESETS = ['{symbol}{amount}', '{amount} {code}', '{amount}'];
+
+// 选"自定义"后从当前文本开始编辑，对照桌面 PatternBox/PatternText 行为。
+// Choosing "custom" starts editing from the current text, mirroring the desktop PatternBox/PatternText.
+export function AppearanceTab({ draft, touch }: { draft: Settings; touch: () => void }) {
+  const [customMode, setCustomMode] = useState(!PATTERN_PRESETS.includes(draft.Pattern));
   return (
     <div class="form-grid">
       <Field label={t('appearance.animation')}>
@@ -206,11 +211,11 @@ function AppearanceTab({ draft, touch }: { draft: Settings; touch: () => void })
       </label>
       <Field label={t('appearance.layout')}>
         <select
-          value={['{symbol}{amount}', '{amount} {code}', '{amount}'].includes(draft.Pattern) ? draft.Pattern : 'custom'}
+          value={customMode || !PATTERN_PRESETS.includes(draft.Pattern) ? 'custom' : draft.Pattern}
           onChange={(e) => {
             const value = e.currentTarget.value;
-            if (value !== 'custom') draft.Pattern = value;
-            else if (!['{symbol}{amount}', '{amount} {code}', '{amount}'].includes(draft.Pattern)) draft.Pattern = draft.Pattern;
+            if (value === 'custom') setCustomMode(true);
+            else { draft.Pattern = value; setCustomMode(false); }
             touch();
           }}
         >
@@ -220,7 +225,7 @@ function AppearanceTab({ draft, touch }: { draft: Settings; touch: () => void })
           <option value="custom">{t('pattern.custom')}</option>
         </select>
       </Field>
-      {(['{symbol}{amount}', '{amount} {code}', '{amount}'].includes(draft.Pattern) ? '' : draft.Pattern) !== '' && (
+      {(customMode || !PATTERN_PRESETS.includes(draft.Pattern)) && (
         <Field label={t('pattern.label')}>
           <input value={draft.Pattern} maxLength={48} onInput={(e) => { draft.Pattern = e.currentTarget.value; touch(); }} />
         </Field>
