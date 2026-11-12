@@ -214,8 +214,11 @@ export function AppearanceTab({ draft, touch }: { draft: Settings; touch: () => 
           value={customMode || !PATTERN_PRESETS.includes(draft.Pattern) ? 'custom' : draft.Pattern}
           onChange={(e) => {
             const value = e.currentTarget.value;
-            if (value === 'custom') setCustomMode(true);
-            else { draft.Pattern = value; setCustomMode(false); }
+            if (value === 'custom') {
+              // 从预设切入自定义时展示全部占位符，已有自定义则保留 / Entering custom from a preset shows every token; existing custom text is kept.
+              if (PATTERN_PRESETS.includes(draft.Pattern)) draft.Pattern = '{symbol}{amount} {code}';
+              setCustomMode(true);
+            } else { draft.Pattern = value; setCustomMode(false); }
             touch();
           }}
         >

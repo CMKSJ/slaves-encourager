@@ -23,13 +23,14 @@ describe('custom money template', () => {
     expect(select.value).toBe('{symbol}{amount}');
     expect(host.querySelectorAll('input[type="text"], input:not([type])').length).toBe(0);
 
-    // 选自定义：输入框出现并保留当前文本 / Pick custom: the editor appears with the current text
+    // 选自定义：输入框出现并展示全部占位符 / Pick custom: the editor appears showing every token
     select.value = 'custom';
     select.dispatchEvent(new Event('change', { bubbles: true }));
     draw();
     expect(option('custom').selected).toBe(true);
     const field = host.querySelector<HTMLInputElement>('input:not([type])')!;
-    expect(field.value).toBe('{symbol}{amount}');
+    expect(field.value).toBe('{symbol}{amount} {code}');
+    expect(draft.Pattern).toBe('{symbol}{amount} {code}');
 
     // 编辑为自定义模板 / Edit into a custom template
     field.value = '{amount} 元';
@@ -45,6 +46,15 @@ describe('custom money template', () => {
     draw();
     expect(draft.Pattern).toBe('{amount} {code}');
     expect(host.querySelector('input:not([type])')).toBeNull();
+
+    // 已有自定义文本时重开设置直接进入自定义模式且不覆盖 / Reopening with custom text keeps it intact
+    draft.Pattern = '{amount} 元';
     host.remove();
+    const reopen = document.createElement('div');
+    document.body.appendChild(reopen);
+    render(<AppearanceTab draft={draft} touch={() => {}} />, reopen);
+    const kept = reopen.querySelector<HTMLInputElement>('input:not([type])')!;
+    expect(kept.value).toBe('{amount} 元');
+    reopen.remove();
   });
 });
